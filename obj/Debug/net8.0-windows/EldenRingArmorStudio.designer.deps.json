@@ -192,6 +192,17 @@
           }
         }
       },
+      "OpenTK.GLWpfControl/4.3.6": {
+        "dependencies": {
+          "OpenTK": "4.9.4"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/GLWpfControl.dll": {
+            "assemblyVersion": "4.3.6.0",
+            "fileVersion": "4.3.6.0"
+          }
+        }
+      },
       "OpenTK.Graphics/4.9.4": {
         "dependencies": {
           "OpenTK.Core": "4.9.4",
@@ -619,6 +630,13 @@
       "sha512": "sha512-N4F8kFT7l+nZIpMrtnp/MdJWKv9o+OsQwuDBZxr2Qg7Hz3FeW7fgsRo0kwrpQss8/bv8AYO+xqrhpbKlSImtMw==",
       "path": "opentk.glcontrol/4.0.2",
       "hashPath": "opentk.glcontrol.4.0.2.nupkg.sha512"
+    },
+    "OpenTK.GLWpfControl/4.3.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eXrvRhK3Tr8MAflBe+U2/2dpEnE6LfRHG75pYtIaam6lgNSkIZ5Ly3Ddzq2YMn+fRbstKItyVeuq3Q7vQfpUGg==",
+      "path": "opentk.glwpfcontrol/4.3.6",
+      "hashPath": "opentk.glwpfcontrol.4.3.6.nupkg.sha512"
     },
     "OpenTK.Graphics/4.9.4": {
       "type": "package",

@@ -257,6 +257,22 @@
           "Microsoft.WindowsDesktop.App.WindowsForms"
         ]
       },
+      "OpenTK.GLWpfControl/4.3.6": {
+        "type": "package",
+        "dependencies": {
+          "OpenTK": "[4.9.4, 5.0.0)"
+        },
+        "compile": {
+          "lib/netcoreapp3.1/GLWpfControl.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/GLWpfControl.dll": {
+            "related": ".pdb"
+          }
+        }
+      },
       "OpenTK.Graphics/4.9.4": {
         "type": "package",
         "dependencies": {
@@ -1025,6 +1041,20 @@
         "opentk.glcontrol.nuspec"
       ]
     },
+    "OpenTK.GLWpfControl/4.3.6": {
+      "sha512": "eXrvRhK3Tr8MAflBe+U2/2dpEnE6LfRHG75pYtIaam6lgNSkIZ5Ly3Ddzq2YMn+fRbstKItyVeuq3Q7vQfpUGg==",
+      "type": "package",
+      "path": "opentk.glwpfcontrol/4.3.6",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "docs/README.md",
+        "lib/netcoreapp3.1/GLWpfControl.dll",
+        "lib/netcoreapp3.1/GLWpfControl.pdb",
+        "opentk.glwpfcontrol.4.3.6.nupkg.sha512",
+        "opentk.glwpfcontrol.nuspec"
+      ]
+    },
     "OpenTK.Graphics/4.9.4": {
       "sha512": "yZeq5swIsRnNzifVA9fLtl+qMAQvmYiF1b7U/XQLARmmU4PYQ23lPNahqAdD22XzA21ew7eG3yDyPLkYw+hDBA==",
       "type": "package",
@@ -1519,6 +1549,7 @@
       "Newtonsoft.Json >= 13.0.4",
       "OpenTK >= 4.9.4",
       "OpenTK.GLControl >= 4.0.2",
+      "OpenTK.GLWpfControl >= 4.3.6",
       "Pfim >= 0.11.4",
       "Serilog >= 4.3.1",
       "Serilog.Sinks.File >= 7.0.0",
@@ -1613,6 +1644,10 @@
           "OpenTK.GLControl": {
             "target": "Package",
             "version": "[4.0.2, )"
+          },
+          "OpenTK.GLWpfControl": {
+            "target": "Package",
+            "version": "[4.3.6, )"
           },
           "Pfim": {
             "target": "Package",

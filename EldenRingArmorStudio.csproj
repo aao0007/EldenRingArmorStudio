@@ -17,6 +17,8 @@
 		<PackageReference Include="OpenTK" Version="4.9.4" />
 
 		<PackageReference Include="OpenTK.GLControl" Version="4.0.2" />
+
+		<PackageReference Include="OpenTK.GLWpfControl" Version="4.3.6" />
 		<PackageReference Include="Pfim" Version="0.11.4" />
 		<PackageReference Include="BCnEncoder.Net" Version="2.3.0" />
 
@@ -32,6 +34,9 @@
 		<Reference Include="SoulsFormats">
 			<HintPath>Libs\SoulsFormats.dll</HintPath>
 		</Reference>
+		<None Update="data\EquipParamProtector.csv">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>

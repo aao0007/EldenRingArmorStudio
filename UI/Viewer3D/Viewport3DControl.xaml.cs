@@ -1,6 +1,8 @@
 ﻿using EldenRingArmorStudio.Core;
+using OpenTK.GLControl;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using OpenTK.Wpf;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -23,18 +25,21 @@ namespace EldenRingArmorStudio.UI.Viewer3D
         public Viewport3DControl()
         {
             InitializeComponent();
-            var settings = new GLWpfControlSettings { MajorVersion = 3, MinorVersion = 3, GraphicsProfile = OpenTK.Windowing.Common.ContextProfile.Core };
-            GLControl.Start(settings);
+            var settings = new GLWpfControlSettings
+            {
+                MajorVersion = 3,
+                MinorVersion = 3,
+                Profile = OpenTK.Windowing.Common.ContextProfile.Core
+            };
+            GlControl.Start(settings);
             InitializeShaders();
         }
 
-        // ── 1. Cargar el Modelo desde la memoria principal a la Tarjeta Gráfica ──
         public void LoadModel(FlverModel model)
         {
             if (model == null) return;
             _currentModel = model;
 
-            // 1. Cargar texturas de los materiales a OpenGL
             foreach (var mat in _currentModel.Materials)
             {
                 if (mat.AlbedoData != null)
@@ -43,7 +48,6 @@ namespace EldenRingArmorStudio.UI.Viewer3D
                 }
             }
 
-            // 2. Cargar vértices de las sub-mallas a OpenGL
             foreach (var mesh in _currentModel.Meshes)
             {
                 mesh.VaoId = GL.GenVertexArray();
@@ -52,16 +56,13 @@ namespace EldenRingArmorStudio.UI.Viewer3D
 
                 GL.BindVertexArray(mesh.VaoId);
 
-                // Subir Vértices (Struct Size: 12 floats * 4 bytes = 48 bytes)
                 GL.BindBuffer(BufferTarget.ArrayBuffer, mesh.VboId);
                 int vertexSize = Marshal.SizeOf<FlverVertex>();
                 GL.BufferData(BufferTarget.ArrayBuffer, mesh.Vertices.Length * vertexSize, mesh.Vertices, BufferUsageHint.StaticDraw);
 
-                // Subir Índices
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, mesh.EboId);
                 GL.BufferData(BufferTarget.ElementArrayBuffer, mesh.Indices.Length * sizeof(uint), mesh.Indices, BufferUsageHint.StaticDraw);
 
-                // Configurar Layout (Posición: loc 0, Normal: loc 1, UV: loc 2)
                 GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertexSize, 0);
                 GL.EnableVertexAttribArray(0);
 
@@ -76,12 +77,10 @@ namespace EldenRingArmorStudio.UI.Viewer3D
 
             TxtStats.Text = $"Vértices: {_currentModel.TotalVertices:N0} | Triángulos: {_currentModel.TotalTriangles:N0}";
 
-            // Autoenfoque de cámara
             _zoom = 3.0f;
             _target = new Vector3(0, 1, 0);
         }
 
-        // ── 2. Bucle de Dibujado (Render Loop) ──
         private void GlControl_Render(TimeSpan delta)
         {
             GL.ClearColor(0.08f, 0.08f, 0.10f, 1.0f);
@@ -94,7 +93,6 @@ namespace EldenRingArmorStudio.UI.Viewer3D
 
             GL.UseProgram(_shaderProgram);
 
-            // Calcular Matrices de Cámara
             Vector3 camPos = GetCameraPos();
             Matrix4 view = Matrix4.LookAt(camPos, _target, Vector3.UnitY);
             Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), (float)GlControl.ActualWidth / (float)GlControl.ActualHeight, 0.01f, 500f);
@@ -105,10 +103,8 @@ namespace EldenRingArmorStudio.UI.Viewer3D
             GL.UniformMatrix4(GL.GetUniformLocation(_shaderProgram, "uMVP"), false, ref mvp);
             GL.UniformMatrix4(GL.GetUniformLocation(_shaderProgram, "uModel"), false, ref modelMatrix);
 
-            // Dibujar cada malla
             foreach (var mesh in _currentModel.Meshes)
             {
-                // Configurar Textura del Material
                 int useTextureLoc = GL.GetUniformLocation(_shaderProgram, "uUseTexture");
                 int texHandle = -1;
 
@@ -122,11 +118,11 @@ namespace EldenRingArmorStudio.UI.Viewer3D
                     GL.ActiveTexture(TextureUnit.Texture0);
                     GL.BindTexture(TextureTarget.Texture2D, texHandle);
                     GL.Uniform1(GL.GetUniformLocation(_shaderProgram, "uDiffuseMap"), 0);
-                    GL.Uniform1(useTextureLoc, 1); // 1 = True
+                    GL.Uniform1(useTextureLoc, 1);
                 }
                 else
                 {
-                    GL.Uniform1(useTextureLoc, 0); // 0 = False (Color por defecto)
+                    GL.Uniform1(useTextureLoc, 0);
                 }
 
                 GL.BindVertexArray(mesh.VaoId);
@@ -135,7 +131,6 @@ namespace EldenRingArmorStudio.UI.Viewer3D
             GL.BindVertexArray(0);
         }
 
-        // ── 3. Shaders (Manejan la textura y la luz) ──
         private void InitializeShaders()
         {
             string vertexShaderSource = @"
@@ -152,7 +147,6 @@ namespace EldenRingArmorStudio.UI.Viewer3D
 
                 void main() {
                     vNorm = mat3(transpose(inverse(uModel))) * aNorm;
-                    // Elden Ring/DirectX usualmente tienen la V invertida respecto a OpenGL
                     vUV = vec2(aUV.x, 1.0 - aUV.y); 
                     gl_Position = uMVP * vec4(aPos, 1.0);
                 }
@@ -174,10 +168,9 @@ namespace EldenRingArmorStudio.UI.Viewer3D
                         baseColor = texture(uDiffuseMap, vUV);
                     }
 
-                    // Iluminación suave (Diffuse/Phong básico)
                     vec3 N = normalize(vNorm);
                     vec3 L = normalize(vec3(1.0, 1.5, 1.0));
-                    float diff = max(dot(N, L), 0.2); // 0.2 Ambient
+                    float diff = max(dot(N, L), 0.2); 
                     
                     FragColor = vec4(baseColor.rgb * diff, baseColor.a);
                 }
@@ -200,7 +193,6 @@ namespace EldenRingArmorStudio.UI.Viewer3D
             GL.DeleteShader(fragmentShader);
         }
 
-        // ── 4. Controles de Cámara ──
         private Vector3 GetCameraPos()
         {
             return _target + _zoom * new Vector3(
@@ -215,7 +207,7 @@ namespace EldenRingArmorStudio.UI.Viewer3D
             {
                 _isDragging = true;
                 _lastMousePos = e.GetPosition(this);
-                this.CaptureMouse();
+                this.CaptureMouse(); // <- Ahora C# reconocerá esto porque por fin heredará de UserControl limpio
             }
         }
 
@@ -229,14 +221,12 @@ namespace EldenRingArmorStudio.UI.Viewer3D
 
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
-                    // Orbitar
                     _yaw -= dx * 0.01f;
                     _pitch += dy * 0.01f;
                     _pitch = Math.Clamp(_pitch, -1.5f, 1.5f);
                 }
                 else if (e.MiddleButton == MouseButtonState.Pressed)
                 {
-                    // Paneo
                     Vector3 camPos = GetCameraPos();
                     Vector3 forward = Vector3.Normalize(_target - camPos);
                     Vector3 right = Vector3.Normalize(Vector3.Cross(forward, Vector3.UnitY));
@@ -262,12 +252,5 @@ namespace EldenRingArmorStudio.UI.Viewer3D
             float factor = e.Delta > 0 ? 0.85f : 1.15f;
             _zoom = Math.Clamp(_zoom * factor, 0.1f, 300f);
         }
-    }
-
-    internal class GLWpfControlSettings
-    {
-        public int MajorVersion { get; set; }
-        public int MinorVersion { get; set; }
-        public OpenTK.Windowing.Common.ContextProfile GraphicsProfile { get; set; }
     }
 }

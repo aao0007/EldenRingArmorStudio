@@ -4,7 +4,9 @@
         xmlns:dock="https://github.com/Dirkster99/AvalonDock"
         xmlns:viewer="clr-namespace:EldenRingArmorStudio.UI.Viewer3D"
         Title="Elden Ring Armor Studio - C# Edition" Height="720" Width="1280"
-        Background="#1E1E1E">
+        Background="#1E1E1E"
+        AllowDrop="True" 
+        Drop="Window_Drop">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

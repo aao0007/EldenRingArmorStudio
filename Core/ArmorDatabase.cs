@@ -6,7 +6,6 @@ using Dapper;
 
 namespace EldenRingArmorStudio.Core
 {
-    // Esta es la clase que dice que falta
     public class ArmorPart
     {
         public string EquipModelId { get; set; }
@@ -24,11 +23,41 @@ namespace EldenRingArmorStudio.Core
 
         public ArmorDatabase(string dbPath = "data/armor_db.sqlite")
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(dbPath));
+            Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!);
             _connectionString = $"Data Source={dbPath};Version=3;";
+            InitDb();
         }
 
-        // Este es el método que daba error de que no existía
+        private void InitDb()
+        {
+            using var connection = new SQLiteConnection(_connectionString);
+            connection.Execute(@"
+                CREATE TABLE IF NOT EXISTS armor_parts (
+                    equip_model_id TEXT PRIMARY KEY,
+                    name_en TEXT, name_es TEXT, category TEXT,
+                    is_altered INTEGER, set_name TEXT, file_name TEXT
+                )");
+        }
+
+        // --- NUEVO: Obtener la cantidad de armaduras para saber si está vacía ---
+        public int Count()
+        {
+            using var connection = new SQLiteConnection(_connectionString);
+            return connection.ExecuteScalar<int>("SELECT COUNT(*) FROM armor_parts");
+        }
+
+        // --- NUEVO: Insertar o actualizar una armadura en la BD ---
+        public void Upsert(ArmorPart part)
+        {
+            using var connection = new SQLiteConnection(_connectionString);
+            string sql = @"
+                INSERT OR REPLACE INTO armor_parts 
+                (equip_model_id, name_en, name_es, category, is_altered, set_name, file_name) 
+                VALUES (@EquipModelId, @NameEn, @NameEs, @Category, @IsAltered, @SetName, @FileName)";
+
+            connection.Execute(sql, part);
+        }
+
         public List<ArmorPart> SearchArmor(string query, string category = null)
         {
             using var connection = new SQLiteConnection(_connectionString);

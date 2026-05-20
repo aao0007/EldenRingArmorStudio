@@ -1,0 +1,18 @@
+{
+  "Tools": {
+    "witchybnd_path": "tools/witchybnd/WitchyBND.exe",
+    "flver_editor_path": "tools/flver_editor/FLVER_Editor.exe",
+    "smithbox_path": "tools/smithbox/Smithbox.exe"
+  },
+  "ModEngine2": {
+    "root_path": ""
+  },
+  "Project": {
+    "parts_library_path": ""
+  },
+  "Ui": {
+    "dark_mode": true,
+    "language": "es",
+    "grid_size": 140
+  }
+}

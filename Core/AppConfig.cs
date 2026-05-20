@@ -12,10 +12,17 @@ namespace EldenRingArmorStudio.Core
     {
         public static string Get(string key, string defaultValue = "")
         {
-            if (key == "modengine2.root_path")
-                return @"C:\Users\Anki\Downloads\ModEngine";
-
-            return defaultValue;
+            switch (key)
+            {
+                case "modengine2.root_path":
+                    return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "modengine2");
+                case "project.parts_library_path":
+                    return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "parts");
+                case "tools.witchybnd_path":
+                    return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\tools\WitchyBND\WitchyBND.exe"));
+                default:
+                    return defaultValue;
+            }
         }
 
         private static AppConfig _instance;
