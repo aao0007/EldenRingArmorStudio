@@ -1,0 +1,8 @@
+tools/flver_editor/*
+!tools/flver_editor/.gitkeep
+
+tools/smithbox/*
+!tools/smithbox/.gitkeep
+
+tools/witchybnd/*
+!tools/witchybnd/.gitkeep
