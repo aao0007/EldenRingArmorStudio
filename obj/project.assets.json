@@ -2,10 +2,10 @@
   "version": 4,
   "targets": {
     "net8.0-windows": {
-      "BCnEncoder.Net/2.1.0": {
+      "BCnEncoder.Net/2.3.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Toolkit.HighPerformance": "7.0.2"
+          "CommunityToolkit.HighPerformance": "8.4.0"
         },
         "compile": {
           "lib/netstandard2.1/BCnEncoder.dll": {
@@ -18,11 +18,21 @@
           }
         }
       },
-      "CsvHelper/31.0.0": {
+      "CommunityToolkit.HighPerformance/8.4.0": {
         "type": "package",
-        "dependencies": {
-          "System.Linq.Async": "4.0.0"
+        "compile": {
+          "lib/net8.0/CommunityToolkit.HighPerformance.dll": {
+            "related": ".pdb;.xml"
+          }
         },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.HighPerformance.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "CsvHelper/33.1.0": {
+        "type": "package",
         "compile": {
           "lib/net8.0/CsvHelper.dll": {
             "related": ".xml"
@@ -34,7 +44,20 @@
           }
         }
       },
-      "Dirkster.AvalonDock/4.72.1": {
+      "Dapper/2.1.79": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Dapper.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Dapper.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Dirkster.AvalonDock/4.74.1": {
         "type": "package",
         "compile": {
           "lib/net5.0-windows7.0/AvalonDock.dll": {}
@@ -99,10 +122,10 @@
           }
         }
       },
-      "Dirkster.AvalonDock.Themes.VS2013/4.72.1": {
+      "Dirkster.AvalonDock.Themes.VS2013/4.74.1": {
         "type": "package",
         "dependencies": {
-          "Dirkster.AvalonDock": "4.72.1"
+          "Dirkster.AvalonDock": "4.74.1"
         },
         "compile": {
           "lib/net5.0-windows7.0/AvalonDock.Themes.VS2013.dll": {}
@@ -114,11 +137,12 @@
           "Microsoft.WindowsDesktop.App.WPF"
         ]
       },
-      "Microsoft.Data.Sqlite/8.0.0": {
+      "Microsoft.Data.Sqlite/10.0.8": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Data.Sqlite.Core": "8.0.0",
-          "SQLitePCLRaw.bundle_e_sqlite3": "2.1.6"
+          "Microsoft.Data.Sqlite.Core": "10.0.8",
+          "SQLitePCLRaw.bundle_e_sqlite3": "2.1.11",
+          "SQLitePCLRaw.core": "2.1.11"
         },
         "compile": {
           "lib/netstandard2.0/_._": {}
@@ -127,10 +151,10 @@
           "lib/netstandard2.0/_._": {}
         }
       },
-      "Microsoft.Data.Sqlite.Core/8.0.0": {
+      "Microsoft.Data.Sqlite.Core/10.0.8": {
         "type": "package",
         "dependencies": {
-          "SQLitePCLRaw.core": "2.1.6"
+          "SQLitePCLRaw.core": "2.1.11"
         },
         "compile": {
           "lib/net8.0/Microsoft.Data.Sqlite.dll": {
@@ -140,19 +164,6 @@
         "runtime": {
           "lib/net8.0/Microsoft.Data.Sqlite.dll": {
             "related": ".xml"
-          }
-        }
-      },
-      "Microsoft.Toolkit.HighPerformance/7.0.2": {
-        "type": "package",
-        "compile": {
-          "lib/net5.0/Microsoft.Toolkit.HighPerformance.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/net5.0/Microsoft.Toolkit.HighPerformance.dll": {
-            "related": ".pdb;.xml"
           }
         }
       },
@@ -169,25 +180,25 @@
           }
         }
       },
-      "OpenTK/4.8.2": {
+      "OpenTK/4.9.4": {
         "type": "package",
         "dependencies": {
-          "OpenTK.Audio.OpenAL": "4.8.2",
-          "OpenTK.Compute": "4.8.2",
-          "OpenTK.Core": "4.8.2",
-          "OpenTK.Graphics": "4.8.2",
-          "OpenTK.Input": "4.8.2",
-          "OpenTK.Mathematics": "4.8.2",
-          "OpenTK.Windowing.Common": "4.8.2",
-          "OpenTK.Windowing.Desktop": "4.8.2",
-          "OpenTK.Windowing.GraphicsLibraryFramework": "4.8.2"
+          "OpenTK.Audio.OpenAL": "4.9.4",
+          "OpenTK.Compute": "4.9.4",
+          "OpenTK.Core": "4.9.4",
+          "OpenTK.Graphics": "4.9.4",
+          "OpenTK.Input": "4.9.4",
+          "OpenTK.Mathematics": "4.9.4",
+          "OpenTK.Windowing.Common": "4.9.4",
+          "OpenTK.Windowing.Desktop": "4.9.4",
+          "OpenTK.Windowing.GraphicsLibraryFramework": "4.9.4"
         }
       },
-      "OpenTK.Audio.OpenAL/4.8.2": {
+      "OpenTK.Audio.OpenAL/4.9.4": {
         "type": "package",
         "dependencies": {
-          "OpenTK.Core": "[4.8.2, 4.9.0)",
-          "OpenTK.Mathematics": "[4.8.2, 4.9.0)"
+          "OpenTK.Core": "[4.9.4, 4.10.0)",
+          "OpenTK.Mathematics": "[4.9.4, 4.10.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/OpenTK.Audio.OpenAL.dll": {
@@ -200,7 +211,7 @@
           }
         }
       },
-      "OpenTK.Compute/4.8.2": {
+      "OpenTK.Compute/4.9.4": {
         "type": "package",
         "compile": {
           "lib/netcoreapp3.1/OpenTK.Compute.dll": {
@@ -213,7 +224,7 @@
           }
         }
       },
-      "OpenTK.Core/4.8.2": {
+      "OpenTK.Core/4.9.4": {
         "type": "package",
         "compile": {
           "lib/netstandard2.1/OpenTK.Core.dll": {
@@ -226,11 +237,31 @@
           }
         }
       },
-      "OpenTK.Graphics/4.8.2": {
+      "OpenTK.GLControl/4.0.2": {
         "type": "package",
         "dependencies": {
-          "OpenTK.Core": "[4.8.2, 4.9.0)",
-          "OpenTK.Mathematics": "[4.8.2, 4.9.0)"
+          "OpenTK.Graphics": "4.9.3",
+          "OpenTK.Windowing.Desktop": "4.9.3"
+        },
+        "compile": {
+          "lib/netcoreapp3.1/OpenTK.GLControl.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/OpenTK.GLControl.dll": {
+            "related": ".pdb"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WindowsForms"
+        ]
+      },
+      "OpenTK.Graphics/4.9.4": {
+        "type": "package",
+        "dependencies": {
+          "OpenTK.Core": "[4.9.4, 4.10.0)",
+          "OpenTK.Mathematics": "[4.9.4, 4.10.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/OpenTK.Graphics.dll": {
@@ -243,7 +274,7 @@
           }
         }
       },
-      "OpenTK.Input/4.8.2": {
+      "OpenTK.Input/4.9.4": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/OpenTK.Input.dll": {
@@ -256,10 +287,10 @@
           }
         }
       },
-      "OpenTK.Mathematics/4.8.2": {
+      "OpenTK.Mathematics/4.9.4": {
         "type": "package",
         "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "5.0.0"
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         },
         "compile": {
           "lib/netcoreapp3.1/OpenTK.Mathematics.dll": {
@@ -272,7 +303,7 @@
           }
         }
       },
-      "OpenTK.redist.glfw/3.3.8.39": {
+      "OpenTK.redist.glfw/3.4.0.44": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {}
@@ -281,11 +312,7 @@
           "lib/netstandard2.0/_._": {}
         },
         "runtimeTargets": {
-          "runtimes/linux-x64/native/libglfw-wayland.so.3.3": {
-            "assetType": "native",
-            "rid": "linux-x64"
-          },
-          "runtimes/linux-x64/native/libglfw.so.3.3": {
+          "runtimes/linux-x64/native/libglfw.so.3": {
             "assetType": "native",
             "rid": "linux-x64"
           },
@@ -307,11 +334,11 @@
           }
         }
       },
-      "OpenTK.Windowing.Common/4.8.2": {
+      "OpenTK.Windowing.Common/4.9.4": {
         "type": "package",
         "dependencies": {
-          "OpenTK.Core": "[4.8.2, 4.9.0)",
-          "OpenTK.Mathematics": "[4.8.2, 4.9.0)"
+          "OpenTK.Core": "[4.9.4, 4.10.0)",
+          "OpenTK.Mathematics": "[4.9.4, 4.10.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/OpenTK.Windowing.Common.dll": {
@@ -324,13 +351,13 @@
           }
         }
       },
-      "OpenTK.Windowing.Desktop/4.8.2": {
+      "OpenTK.Windowing.Desktop/4.9.4": {
         "type": "package",
         "dependencies": {
-          "OpenTK.Core": "[4.8.2, 4.9.0)",
-          "OpenTK.Mathematics": "[4.8.2, 4.9.0)",
-          "OpenTK.Windowing.Common": "[4.8.2, 4.9.0)",
-          "OpenTK.Windowing.GraphicsLibraryFramework": "[4.8.2, 4.9.0)"
+          "OpenTK.Core": "[4.9.4, 4.10.0)",
+          "OpenTK.Mathematics": "[4.9.4, 4.10.0)",
+          "OpenTK.Windowing.Common": "[4.9.4, 4.10.0)",
+          "OpenTK.Windowing.GraphicsLibraryFramework": "[4.9.4, 4.10.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/OpenTK.Windowing.Desktop.dll": {
@@ -343,11 +370,11 @@
           }
         }
       },
-      "OpenTK.Windowing.GraphicsLibraryFramework/4.8.2": {
+      "OpenTK.Windowing.GraphicsLibraryFramework/4.9.4": {
         "type": "package",
         "dependencies": {
-          "OpenTK.Core": "[4.8.2, 4.9.0)",
-          "OpenTK.redist.glfw": "3.3.8.39"
+          "OpenTK.Core": "[4.9.4, 4.10.0)",
+          "OpenTK.redist.glfw": "3.4.0.44"
         },
         "compile": {
           "lib/netcoreapp3.1/OpenTK.Windowing.GraphicsLibraryFramework.dll": {
@@ -360,27 +387,7 @@
           }
         }
       },
-      "OpenTK.WinForms/4.0.0-pre.8": {
-        "type": "package",
-        "dependencies": {
-          "OpenTK.Graphics": "4.8.2",
-          "OpenTK.Windowing.Desktop": "4.8.2"
-        },
-        "compile": {
-          "lib/netcoreapp3.1/OpenTK.WinForms.dll": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/netcoreapp3.1/OpenTK.WinForms.dll": {
-            "related": ".pdb"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.WindowsDesktop.App.WindowsForms"
-        ]
-      },
-      "Pfim/0.11.3": {
+      "Pfim/0.11.4": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/Pfim.dll": {}
@@ -405,11 +412,27 @@
           "buildTransitive/Serilog.targets": {}
         }
       },
-      "SQLitePCLRaw.bundle_e_sqlite3/2.1.6": {
+      "Serilog.Sinks.File/7.0.0": {
         "type": "package",
         "dependencies": {
-          "SQLitePCLRaw.lib.e_sqlite3": "2.1.6",
-          "SQLitePCLRaw.provider.e_sqlite3": "2.1.6"
+          "Serilog": "4.2.0"
+        },
+        "compile": {
+          "lib/net8.0/Serilog.Sinks.File.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Serilog.Sinks.File.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "SQLitePCLRaw.bundle_e_sqlite3/2.1.11": {
+        "type": "package",
+        "dependencies": {
+          "SQLitePCLRaw.lib.e_sqlite3": "2.1.11",
+          "SQLitePCLRaw.provider.e_sqlite3": "2.1.11"
         },
         "compile": {
           "lib/netstandard2.0/SQLitePCLRaw.batteries_v2.dll": {}
@@ -418,7 +441,7 @@
           "lib/netstandard2.0/SQLitePCLRaw.batteries_v2.dll": {}
         }
       },
-      "SQLitePCLRaw.core/2.1.6": {
+      "SQLitePCLRaw.core/2.1.11": {
         "type": "package",
         "dependencies": {
           "System.Memory": "4.5.3"
@@ -430,7 +453,7 @@
           "lib/netstandard2.0/SQLitePCLRaw.core.dll": {}
         }
       },
-      "SQLitePCLRaw.lib.e_sqlite3/2.1.6": {
+      "SQLitePCLRaw.lib.e_sqlite3/2.1.11": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/_._": {}
@@ -470,6 +493,14 @@
             "assetType": "native",
             "rid": "linux-musl-arm64"
           },
+          "runtimes/linux-musl-riscv64/native/libe_sqlite3.so": {
+            "assetType": "native",
+            "rid": "linux-musl-riscv64"
+          },
+          "runtimes/linux-musl-s390x/native/libe_sqlite3.so": {
+            "assetType": "native",
+            "rid": "linux-musl-s390x"
+          },
           "runtimes/linux-musl-x64/native/libe_sqlite3.so": {
             "assetType": "native",
             "rid": "linux-musl-x64"
@@ -477,6 +508,10 @@
           "runtimes/linux-ppc64le/native/libe_sqlite3.so": {
             "assetType": "native",
             "rid": "linux-ppc64le"
+          },
+          "runtimes/linux-riscv64/native/libe_sqlite3.so": {
+            "assetType": "native",
+            "rid": "linux-riscv64"
           },
           "runtimes/linux-s390x/native/libe_sqlite3.so": {
             "assetType": "native",
@@ -524,10 +559,10 @@
           }
         }
       },
-      "SQLitePCLRaw.provider.e_sqlite3/2.1.6": {
+      "SQLitePCLRaw.provider.e_sqlite3/2.1.11": {
         "type": "package",
         "dependencies": {
-          "SQLitePCLRaw.core": "2.1.6"
+          "SQLitePCLRaw.core": "2.1.11"
         },
         "compile": {
           "lib/net6.0-windows7.0/SQLitePCLRaw.provider.e_sqlite3.dll": {}
@@ -536,17 +571,29 @@
           "lib/net6.0-windows7.0/SQLitePCLRaw.provider.e_sqlite3.dll": {}
         }
       },
-      "System.Linq.Async/4.0.0": {
+      "System.Data.SQLite/2.0.3": {
         "type": "package",
         "compile": {
-          "ref/netcoreapp3.0/System.Linq.Async.dll": {
+          "lib/netstandard2.1/System.Data.SQLite.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.1/System.Data.SQLite.dll": {}
+        }
+      },
+      "System.IO.Pipelines/10.0.8": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/System.IO.Pipelines.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp3.0/System.Linq.Async.dll": {
+          "lib/net8.0/System.IO.Pipelines.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
         }
       },
       "System.Memory/4.5.3": {
@@ -558,21 +605,50 @@
           "lib/netcoreapp2.1/_._": {}
         }
       },
-      "System.Runtime.CompilerServices.Unsafe/5.0.0": {
+      "System.Runtime.CompilerServices.Unsafe/6.0.0": {
         "type": "package",
         "compile": {
-          "ref/netstandard2.1/System.Runtime.CompilerServices.Unsafe.dll": {
+          "lib/net6.0/System.Runtime.CompilerServices.Unsafe.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp2.0/System.Runtime.CompilerServices.Unsafe.dll": {
+          "lib/net6.0/System.Runtime.CompilerServices.Unsafe.dll": {
             "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/netcoreapp3.1/_._": {}
+        }
+      },
+      "System.Text.Encodings.Web/10.0.8": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/System.Text.Encodings.Web.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/System.Text.Encodings.Web.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll": {
+            "assetType": "runtime",
+            "rid": "browser"
           }
         }
       },
-      "System.Text.Json/8.0.5": {
+      "System.Text.Json/10.0.8": {
         "type": "package",
+        "dependencies": {
+          "System.IO.Pipelines": "10.0.8",
+          "System.Text.Encodings.Web": "10.0.8"
+        },
         "compile": {
           "lib/net8.0/System.Text.Json.dll": {
             "related": ".xml"
@@ -584,34 +660,62 @@
           }
         },
         "build": {
-          "buildTransitive/net6.0/System.Text.Json.targets": {}
+          "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
       }
     }
   },
   "libraries": {
-    "BCnEncoder.Net/2.1.0": {
-      "sha512": "bBKYUDhpYenmp8vy5BVUHmS2LFym0NMga9V+S1eMJ+4zQLBwDw63Bs83AKOyqBKC2AqqgxXdTFA2a2V+SmGoIw==",
+    "BCnEncoder.Net/2.3.0": {
+      "sha512": "DJhHJiBJKXUXxlkkrv74ckzJb3wYxqIAZHjXD9G76kpsD0YyJOmqtNufHWEuJe0eH0tB1tCZn80/3JV2UVP7yQ==",
       "type": "package",
-      "path": "bcnencoder.net/2.1.0",
+      "path": "bcnencoder.net/2.3.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "bcnencoder.net.2.1.0.nupkg.sha512",
+        "bcnencoder.net.2.3.0.nupkg.sha512",
         "bcnencoder.net.nuspec",
+        "lib/netstandard2.0/BCnEncoder.dll",
+        "lib/netstandard2.0/BCnEncoder.xml",
         "lib/netstandard2.1/BCnEncoder.dll",
         "lib/netstandard2.1/BCnEncoder.xml"
       ]
     },
-    "CsvHelper/31.0.0": {
-      "sha512": "PypRJq7AugnCJjq6Zu5EqFDTfRv7Gh+MtSH2T/kwiGmg1UHAflq4cE8j3uMkvXSxaayVtcwi+8hC0w+30YzzWA==",
+    "CommunityToolkit.HighPerformance/8.4.0": {
+      "sha512": "flxspiBs0G/0GMp7IK2J2ijV9bTG6hEwFc/z6ekHqB6nwRJ4Ry2yLdx+TkbCUYFCl4XhABkAwomeKbT6zM2Zlg==",
       "type": "package",
-      "path": "csvhelper/31.0.0",
+      "path": "communitytoolkit.highperformance/8.4.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
-        "csvhelper.31.0.0.nupkg.sha512",
+        "License.md",
+        "ThirdPartyNotices.txt",
+        "communitytoolkit.highperformance.8.4.0.nupkg.sha512",
+        "communitytoolkit.highperformance.nuspec",
+        "lib/net7.0/CommunityToolkit.HighPerformance.dll",
+        "lib/net7.0/CommunityToolkit.HighPerformance.pdb",
+        "lib/net7.0/CommunityToolkit.HighPerformance.xml",
+        "lib/net8.0/CommunityToolkit.HighPerformance.dll",
+        "lib/net8.0/CommunityToolkit.HighPerformance.pdb",
+        "lib/net8.0/CommunityToolkit.HighPerformance.xml",
+        "lib/netstandard2.0/CommunityToolkit.HighPerformance.dll",
+        "lib/netstandard2.0/CommunityToolkit.HighPerformance.pdb",
+        "lib/netstandard2.0/CommunityToolkit.HighPerformance.xml",
+        "lib/netstandard2.1/CommunityToolkit.HighPerformance.dll",
+        "lib/netstandard2.1/CommunityToolkit.HighPerformance.pdb",
+        "lib/netstandard2.1/CommunityToolkit.HighPerformance.xml"
+      ]
+    },
+    "CsvHelper/33.1.0": {
+      "sha512": "kqfTOZGrn7NarNeXgjh86JcpTHUoeQDMB8t9NVa/ZtlSYiV1rxfRnQ49WaJsob4AiGrbK0XDzpyKkBwai4F8eg==",
+      "type": "package",
+      "path": "csvhelper/33.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "csvhelper.33.1.0.nupkg.sha512",
         "csvhelper.nuspec",
         "lib/net462/CsvHelper.dll",
         "lib/net462/CsvHelper.xml",
@@ -619,28 +723,65 @@
         "lib/net47/CsvHelper.xml",
         "lib/net48/CsvHelper.dll",
         "lib/net48/CsvHelper.xml",
-        "lib/net6.0/CsvHelper.dll",
-        "lib/net6.0/CsvHelper.xml",
-        "lib/net7.0/CsvHelper.dll",
-        "lib/net7.0/CsvHelper.xml",
         "lib/net8.0/CsvHelper.dll",
         "lib/net8.0/CsvHelper.xml",
+        "lib/net9.0/CsvHelper.dll",
+        "lib/net9.0/CsvHelper.xml",
         "lib/netstandard2.0/CsvHelper.dll",
         "lib/netstandard2.0/CsvHelper.xml",
         "lib/netstandard2.1/CsvHelper.dll",
         "lib/netstandard2.1/CsvHelper.xml"
       ]
     },
-    "Dirkster.AvalonDock/4.72.1": {
-      "sha512": "m5J03HVntDM3eu7GyzLWlNdr2c2TTBAoD33Pq1yCID7vEtk13VVngtlmegp67WUvpL5JUC8G2xU8n+ThZKKz0Q==",
+    "Dapper/2.1.79": {
+      "sha512": "8YijbzgTfmqmQOnVNorYM6K++pxqnW3nJ4aC1sRHzxUA2CcuoJ9gsTem3kgBnPRMc38zZHl4Esb6hAezXIEEuw==",
       "type": "package",
-      "path": "dirkster.avalondock/4.72.1",
+      "path": "dapper/2.1.79",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Dapper.png",
+        "dapper.2.1.79.nupkg.sha512",
+        "dapper.nuspec",
+        "lib/net10.0/Dapper.dll",
+        "lib/net10.0/Dapper.xml",
+        "lib/net461/Dapper.dll",
+        "lib/net461/Dapper.xml",
+        "lib/net8.0/Dapper.dll",
+        "lib/net8.0/Dapper.xml",
+        "lib/netstandard2.0/Dapper.dll",
+        "lib/netstandard2.0/Dapper.xml",
+        "readme.md"
+      ]
+    },
+    "Dirkster.AvalonDock/4.74.1": {
+      "sha512": "Wf3tjZmN8cjepp5m3dlI68TzDGBnkbxLmbdGD4BkgmbpTPHC0SUSiCTI/BY55KFwWXov714DDbebSCUnl2w97Q==",
+      "type": "package",
+      "path": "dirkster.avalondock/4.74.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE",
-        "dirkster.avalondock.4.72.1.nupkg.sha512",
+        "dirkster.avalondock.4.74.1.nupkg.sha512",
         "dirkster.avalondock.nuspec",
+        "lib/net10.0-windows7.0/AvalonDock.dll",
+        "lib/net10.0-windows7.0/ca-ES/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/cs-CZ/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/de/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/es/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/fr/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/hu/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/it/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/ja/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/ko/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/nl-BE/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/pl/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/pt/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/ro/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/ru/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/sv/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/zh-Hans/AvalonDock.resources.dll",
+        "lib/net10.0-windows7.0/zh-Hant/AvalonDock.resources.dll",
         "lib/net40/AvalonDock.dll",
         "lib/net40/ca-ES/AvalonDock.resources.dll",
         "lib/net40/cs-CZ/AvalonDock.resources.dll",
@@ -659,6 +800,24 @@
         "lib/net40/sv/AvalonDock.resources.dll",
         "lib/net40/zh-Hans/AvalonDock.resources.dll",
         "lib/net40/zh-Hant/AvalonDock.resources.dll",
+        "lib/net48/AvalonDock.dll",
+        "lib/net48/ca-ES/AvalonDock.resources.dll",
+        "lib/net48/cs-CZ/AvalonDock.resources.dll",
+        "lib/net48/de/AvalonDock.resources.dll",
+        "lib/net48/es/AvalonDock.resources.dll",
+        "lib/net48/fr/AvalonDock.resources.dll",
+        "lib/net48/hu/AvalonDock.resources.dll",
+        "lib/net48/it/AvalonDock.resources.dll",
+        "lib/net48/ja/AvalonDock.resources.dll",
+        "lib/net48/ko/AvalonDock.resources.dll",
+        "lib/net48/nl-BE/AvalonDock.resources.dll",
+        "lib/net48/pl/AvalonDock.resources.dll",
+        "lib/net48/pt/AvalonDock.resources.dll",
+        "lib/net48/ro/AvalonDock.resources.dll",
+        "lib/net48/ru/AvalonDock.resources.dll",
+        "lib/net48/sv/AvalonDock.resources.dll",
+        "lib/net48/zh-Hans/AvalonDock.resources.dll",
+        "lib/net48/zh-Hant/AvalonDock.resources.dll",
         "lib/net5.0-windows7.0/AvalonDock.dll",
         "lib/net5.0-windows7.0/ca-ES/AvalonDock.resources.dll",
         "lib/net5.0-windows7.0/cs-CZ/AvalonDock.resources.dll",
@@ -677,6 +836,24 @@
         "lib/net5.0-windows7.0/sv/AvalonDock.resources.dll",
         "lib/net5.0-windows7.0/zh-Hans/AvalonDock.resources.dll",
         "lib/net5.0-windows7.0/zh-Hant/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/AvalonDock.dll",
+        "lib/net9.0-windows7.0/ca-ES/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/cs-CZ/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/de/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/es/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/fr/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/hu/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/it/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/ja/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/ko/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/nl-BE/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/pl/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/pt/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/ro/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/ru/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/sv/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/zh-Hans/AvalonDock.resources.dll",
+        "lib/net9.0-windows7.0/zh-Hant/AvalonDock.resources.dll",
         "lib/netcoreapp3.0/AvalonDock.dll",
         "lib/netcoreapp3.0/ca-ES/AvalonDock.resources.dll",
         "lib/netcoreapp3.0/cs-CZ/AvalonDock.resources.dll",
@@ -697,81 +874,53 @@
         "lib/netcoreapp3.0/zh-Hant/AvalonDock.resources.dll"
       ]
     },
-    "Dirkster.AvalonDock.Themes.VS2013/4.72.1": {
-      "sha512": "g+hcHokgRFSvznqsVWxHxPCrUMxe18MTJjXMRVQJTVNo/Kwx8krdNiRnCSUDkuVtr2z29EtC4QofZhwUB7FS+w==",
+    "Dirkster.AvalonDock.Themes.VS2013/4.74.1": {
+      "sha512": "CDEvJeUM10m96BnffmqkjEKb8ipgHlimkrSyxAhHyer/v03rBU3h/NoB9UI/vUv3NqsJKl3Yof8XsgSkU0cvvA==",
       "type": "package",
-      "path": "dirkster.avalondock.themes.vs2013/4.72.1",
+      "path": "dirkster.avalondock.themes.vs2013/4.74.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE",
-        "dirkster.avalondock.themes.vs2013.4.72.1.nupkg.sha512",
+        "dirkster.avalondock.themes.vs2013.4.74.1.nupkg.sha512",
         "dirkster.avalondock.themes.vs2013.nuspec",
+        "lib/net10.0-windows7.0/AvalonDock.Themes.VS2013.dll",
         "lib/net40/AvalonDock.Themes.VS2013.dll",
+        "lib/net48/AvalonDock.Themes.VS2013.dll",
         "lib/net5.0-windows7.0/AvalonDock.Themes.VS2013.dll",
+        "lib/net9.0-windows7.0/AvalonDock.Themes.VS2013.dll",
         "lib/netcoreapp3.0/AvalonDock.Themes.VS2013.dll"
       ]
     },
-    "Microsoft.Data.Sqlite/8.0.0": {
-      "sha512": "H+iC5IvkCCKSNHXzL3JARvDn7VpkvuJM91KVB89sKjeTF/KX/BocNNh93ZJtX5MCQKb/z4yVKgkU2sVIq+xKfg==",
+    "Microsoft.Data.Sqlite/10.0.8": {
+      "sha512": "iyDWyD6r/SnqgoYYQIlLhxL1ZIGZr+SByMXrJKSA1w7sOt7bPMJmN3h2laqwKqyQkjh/lUPJ7LTXwpvqzhggOQ==",
       "type": "package",
-      "path": "microsoft.data.sqlite/8.0.0",
+      "path": "microsoft.data.sqlite/10.0.8",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
+        "PACKAGE.md",
         "lib/netstandard2.0/_._",
-        "microsoft.data.sqlite.8.0.0.nupkg.sha512",
+        "microsoft.data.sqlite.10.0.8.nupkg.sha512",
         "microsoft.data.sqlite.nuspec"
       ]
     },
-    "Microsoft.Data.Sqlite.Core/8.0.0": {
-      "sha512": "pujbzfszX7jAl7oTbHhqx7pxd9jibeyHHl8zy1gd55XMaKWjDtc5XhhNYwQnrwWYCInNdVoArbaaAvLgW7TwuA==",
+    "Microsoft.Data.Sqlite.Core/10.0.8": {
+      "sha512": "26t7WDiEjjAls/sFpWvVEFDxt+7Q5VPt6+blU2Lafuj9L8PzAv/GtGV4cqVPtrhWbfD2BX/z2v8hD1qXYtK6Aw==",
       "type": "package",
-      "path": "microsoft.data.sqlite.core/8.0.0",
+      "path": "microsoft.data.sqlite.core/10.0.8",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
-        "lib/net6.0/Microsoft.Data.Sqlite.dll",
-        "lib/net6.0/Microsoft.Data.Sqlite.xml",
+        "PACKAGE.md",
         "lib/net8.0/Microsoft.Data.Sqlite.dll",
         "lib/net8.0/Microsoft.Data.Sqlite.xml",
         "lib/netstandard2.0/Microsoft.Data.Sqlite.dll",
         "lib/netstandard2.0/Microsoft.Data.Sqlite.xml",
-        "microsoft.data.sqlite.core.8.0.0.nupkg.sha512",
+        "microsoft.data.sqlite.core.10.0.8.nupkg.sha512",
         "microsoft.data.sqlite.core.nuspec"
-      ]
-    },
-    "Microsoft.Toolkit.HighPerformance/7.0.2": {
-      "sha512": "tG6v0AhDw/yJMtiH/tI4F6I/+sNIfu4++6WFfN73FyNcPh31et33w45wo8Lx1sfxcfLtkYk+w2fvU/MubYg4VQ==",
-      "type": "package",
-      "path": "microsoft.toolkit.highperformance/7.0.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "images/nuget.png",
-        "lib/net5.0/Microsoft.Toolkit.HighPerformance.dll",
-        "lib/net5.0/Microsoft.Toolkit.HighPerformance.pdb",
-        "lib/net5.0/Microsoft.Toolkit.HighPerformance.xml",
-        "lib/netcoreapp2.1/Microsoft.Toolkit.HighPerformance.dll",
-        "lib/netcoreapp2.1/Microsoft.Toolkit.HighPerformance.pdb",
-        "lib/netcoreapp2.1/Microsoft.Toolkit.HighPerformance.xml",
-        "lib/netcoreapp3.1/Microsoft.Toolkit.HighPerformance.dll",
-        "lib/netcoreapp3.1/Microsoft.Toolkit.HighPerformance.pdb",
-        "lib/netcoreapp3.1/Microsoft.Toolkit.HighPerformance.xml",
-        "lib/netstandard1.4/Microsoft.Toolkit.HighPerformance.dll",
-        "lib/netstandard1.4/Microsoft.Toolkit.HighPerformance.pdb",
-        "lib/netstandard1.4/Microsoft.Toolkit.HighPerformance.xml",
-        "lib/netstandard2.0/Microsoft.Toolkit.HighPerformance.dll",
-        "lib/netstandard2.0/Microsoft.Toolkit.HighPerformance.pdb",
-        "lib/netstandard2.0/Microsoft.Toolkit.HighPerformance.xml",
-        "lib/netstandard2.1/Microsoft.Toolkit.HighPerformance.dll",
-        "lib/netstandard2.1/Microsoft.Toolkit.HighPerformance.pdb",
-        "lib/netstandard2.1/Microsoft.Toolkit.HighPerformance.xml",
-        "license.md",
-        "microsoft.toolkit.highperformance.7.0.2.nupkg.sha512",
-        "microsoft.toolkit.highperformance.nuspec"
       ]
     },
     "Newtonsoft.Json/13.0.4": {
@@ -804,194 +953,211 @@
         "packageIcon.png"
       ]
     },
-    "OpenTK/4.8.2": {
-      "sha512": "s2bqkD0glaX5Zbrv0Nj91zcefGrwq+nAp7SnXw14Z22Wj1nVE9CWkEyKX8tha1EdxqSRwKdP6gi+xzZXs4nK4Q==",
+    "OpenTK/4.9.4": {
+      "sha512": "fp9ZI6akO4ZuIGzuUE0QRU5zRJhXbSXa5racehFoTdvodhRDecXCOcH68mRsZaMwnxLO9ECnf2LGM9BmiJKvhw==",
       "type": "package",
-      "path": "opentk/4.8.2",
+      "path": "opentk/4.9.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "opentk.4.8.2.nupkg.sha512",
+        "opentk.4.9.4.nupkg.sha512",
         "opentk.nuspec"
       ]
     },
-    "OpenTK.Audio.OpenAL/4.8.2": {
-      "sha512": "/Xe0luzJiVOvJ8YXGMY/YLZsGsb0/7Ms09isb/WxkKWjLyuiB2OIflZ49VHmumZpQDz2PUgwqOt2fucviLOmuw==",
+    "OpenTK.Audio.OpenAL/4.9.4": {
+      "sha512": "N/SCeFrLJ3ckUbshyfsonbtjmDxh55urGiR+Fe1iPkTWyEW5OKfQRoIOZyjEva/4eRqOXdt3bV2ka4IJ2+JvZw==",
       "type": "package",
-      "path": "opentk.audio.openal/4.8.2",
+      "path": "opentk.audio.openal/4.9.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "docs/README.md",
+        "images/opentk-blue-hexagon.png",
         "lib/netcoreapp3.1/OpenTK.Audio.OpenAL.dll",
         "lib/netcoreapp3.1/OpenTK.Audio.OpenAL.pdb",
         "lib/netcoreapp3.1/OpenTK.Audio.OpenAL.xml",
-        "opentk.audio.openal.4.8.2.nupkg.sha512",
+        "opentk.audio.openal.4.9.4.nupkg.sha512",
         "opentk.audio.openal.nuspec"
       ]
     },
-    "OpenTK.Compute/4.8.2": {
-      "sha512": "n3gBbXOTCkvkNjSOKkVpoxfF/QXzo+cPWKtzObm4f/J+5mOE8odHKXgPn1765Tnu2Ou2ImvdXi/bUFQt/V5Qiw==",
+    "OpenTK.Compute/4.9.4": {
+      "sha512": "30G+/9mtrUJwX5xcRyz2qcujQ2s+wDm+C7qg6jDsLyGWUdND3j/vD+nlQ6tuKuAow51zWduFVujPkaS8VrBinQ==",
       "type": "package",
-      "path": "opentk.compute/4.8.2",
+      "path": "opentk.compute/4.9.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "docs/README.md",
+        "images/opentk-blue-hexagon.png",
         "lib/netcoreapp3.1/OpenTK.Compute.dll",
         "lib/netcoreapp3.1/OpenTK.Compute.pdb",
         "lib/netcoreapp3.1/OpenTK.Compute.xml",
-        "opentk.compute.4.8.2.nupkg.sha512",
+        "opentk.compute.4.9.4.nupkg.sha512",
         "opentk.compute.nuspec"
       ]
     },
-    "OpenTK.Core/4.8.2": {
-      "sha512": "BS5IM1W/BK9BtmsEnYT/RGv+KDK0Zrnw8nDDGvK45ywBjMLv+qBRB+Vkx5sQ4Jjy7btLxxqrPHmT3wt5N/PcxA==",
+    "OpenTK.Core/4.9.4": {
+      "sha512": "/4Mn3ABf1xNfHMzDFUapVY2K4PG3oP/oWTQJlK0JacT20HwsNe/HPIAhnAJWz27EM3ukOJDtqyQRukvQKqkcLw==",
       "type": "package",
-      "path": "opentk.core/4.8.2",
+      "path": "opentk.core/4.9.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "docs/README.md",
+        "images/opentk-blue-hexagon.png",
         "lib/netstandard2.1/OpenTK.Core.dll",
         "lib/netstandard2.1/OpenTK.Core.pdb",
         "lib/netstandard2.1/OpenTK.Core.xml",
-        "opentk.core.4.8.2.nupkg.sha512",
+        "opentk.core.4.9.4.nupkg.sha512",
         "opentk.core.nuspec"
       ]
     },
-    "OpenTK.Graphics/4.8.2": {
-      "sha512": "qpbyWqdO+yEFVFinKwEWKgi1Jgd0fVSgHbB7d5I8ozI9RL/SKZSNmJDxLjTMSQImJtFixmATcLEWwvEceJ/JsQ==",
+    "OpenTK.GLControl/4.0.2": {
+      "sha512": "N4F8kFT7l+nZIpMrtnp/MdJWKv9o+OsQwuDBZxr2Qg7Hz3FeW7fgsRo0kwrpQss8/bv8AYO+xqrhpbKlSImtMw==",
       "type": "package",
-      "path": "opentk.graphics/4.8.2",
+      "path": "opentk.glcontrol/4.0.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "lib/netcoreapp3.1/OpenTK.GLControl.dll",
+        "lib/netcoreapp3.1/OpenTK.GLControl.pdb",
+        "opentk.glcontrol.4.0.2.nupkg.sha512",
+        "opentk.glcontrol.nuspec"
+      ]
+    },
+    "OpenTK.Graphics/4.9.4": {
+      "sha512": "yZeq5swIsRnNzifVA9fLtl+qMAQvmYiF1b7U/XQLARmmU4PYQ23lPNahqAdD22XzA21ew7eG3yDyPLkYw+hDBA==",
+      "type": "package",
+      "path": "opentk.graphics/4.9.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "docs/README.md",
+        "images/opentk-blue-hexagon.png",
         "lib/netcoreapp3.1/OpenTK.Graphics.dll",
         "lib/netcoreapp3.1/OpenTK.Graphics.pdb",
         "lib/netcoreapp3.1/OpenTK.Graphics.xml",
         "lib/netstandard2.1/OpenTK.Graphics.dll",
         "lib/netstandard2.1/OpenTK.Graphics.pdb",
         "lib/netstandard2.1/OpenTK.Graphics.xml",
-        "opentk.graphics.4.8.2.nupkg.sha512",
+        "opentk.graphics.4.9.4.nupkg.sha512",
         "opentk.graphics.nuspec"
       ]
     },
-    "OpenTK.Input/4.8.2": {
-      "sha512": "BGs7STF0/o4kNJ1pWXko4I3IwEhieOHVgJFzXzo5m1tI4zMKjBqmzuc4GGfCu+Gtiv33vRYx3dt9f659nr5J8w==",
+    "OpenTK.Input/4.9.4": {
+      "sha512": "njbC7fySQEK30rjOQ1uRjlycEkLw+UVoPT3nRQ8uBPNLotDgr47NEcPEjmJyX1ll+pm/wmtcvJIYHBRi1HbOqg==",
       "type": "package",
-      "path": "opentk.input/4.8.2",
+      "path": "opentk.input/4.9.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "docs/README.md",
+        "images/opentk-blue-hexagon.png",
         "lib/netstandard2.0/OpenTK.Input.dll",
         "lib/netstandard2.0/OpenTK.Input.pdb",
         "lib/netstandard2.0/OpenTK.Input.xml",
-        "opentk.input.4.8.2.nupkg.sha512",
+        "opentk.input.4.9.4.nupkg.sha512",
         "opentk.input.nuspec"
       ]
     },
-    "OpenTK.Mathematics/4.8.2": {
-      "sha512": "A8D3eBWi/LKndvTQQ9o9uwyQJUjGORfWCn/gOvX0jIwmTctkLGnOdw5kw4JbRnzfrhZoSIaqZ7MYWWhIkasORw==",
+    "OpenTK.Mathematics/4.9.4": {
+      "sha512": "2ucF25RVJzdSLXUHgjAgB058gVfSgerrR5pLCn9J+Bnyqi45NrBfPu9wyTT35ZCjYwLJCu/HJMnzKFLjq+uFIA==",
       "type": "package",
-      "path": "opentk.mathematics/4.8.2",
+      "path": "opentk.mathematics/4.9.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "docs/README.md",
+        "images/opentk-blue-hexagon.png",
         "lib/netcoreapp3.1/OpenTK.Mathematics.dll",
         "lib/netcoreapp3.1/OpenTK.Mathematics.pdb",
         "lib/netcoreapp3.1/OpenTK.Mathematics.xml",
         "lib/netstandard2.1/OpenTK.Mathematics.dll",
         "lib/netstandard2.1/OpenTK.Mathematics.pdb",
         "lib/netstandard2.1/OpenTK.Mathematics.xml",
-        "opentk.mathematics.4.8.2.nupkg.sha512",
+        "opentk.mathematics.4.9.4.nupkg.sha512",
         "opentk.mathematics.nuspec"
       ]
     },
-    "OpenTK.redist.glfw/3.3.8.39": {
-      "sha512": "JzjaBzHTyKenUk9CXOYIqA/v7VMnjFnqmd3SKR3I1YpuOTu/H3ohyy3o+ZfMCQ6IRKs7CLfSPXMarKLvwD0WgQ==",
+    "OpenTK.redist.glfw/3.4.0.44": {
+      "sha512": "HEjbdk0wWxSRrXHl3DSmrA8trecndgJpAHHloJJ1vPseNfeu/ynmrH/LturU1KguRn4r3IzZ81UIp5xRjnyahg==",
       "type": "package",
-      "path": "opentk.redist.glfw/3.3.8.39",
+      "path": "opentk.redist.glfw/3.4.0.44",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "COPYING.md",
         "lib/netstandard2.0/_._",
         "opentk.png",
-        "opentk.redist.glfw.3.3.8.39.nupkg.sha512",
+        "opentk.redist.glfw.3.4.0.44.nupkg.sha512",
         "opentk.redist.glfw.nuspec",
-        "runtimes/linux-x64/native/libglfw-wayland.so.3.3",
-        "runtimes/linux-x64/native/libglfw.so.3.3",
+        "runtimes/linux-x64/native/libglfw.so.3",
         "runtimes/osx-arm64/native/libglfw.3.dylib",
         "runtimes/osx-x64/native/libglfw.3.dylib",
         "runtimes/win-x64/native/glfw3.dll",
         "runtimes/win-x86/native/glfw3.dll"
       ]
     },
-    "OpenTK.Windowing.Common/4.8.2": {
-      "sha512": "cE7w2AboX/cxtOl7UWa1rTnH4uUoCEg9rtppN6d1/8GOfKUW8LjO6bjEePrRk9LzRZL+5dky3nfw6ZONn5ItyA==",
+    "OpenTK.Windowing.Common/4.9.4": {
+      "sha512": "xNjvKjoptAh6w5/YYIx/9sNv3/A2VVlTahlekTlLP+qfNyig+0jBuLHO4bWELWZ7Ta3Y1m/2Pvk0Z1KCG8VZOA==",
       "type": "package",
-      "path": "opentk.windowing.common/4.8.2",
+      "path": "opentk.windowing.common/4.9.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "docs/README.md",
+        "images/opentk-blue-hexagon.png",
         "lib/netcoreapp3.1/OpenTK.Windowing.Common.dll",
         "lib/netcoreapp3.1/OpenTK.Windowing.Common.pdb",
         "lib/netcoreapp3.1/OpenTK.Windowing.Common.xml",
         "lib/netstandard2.1/OpenTK.Windowing.Common.dll",
         "lib/netstandard2.1/OpenTK.Windowing.Common.pdb",
         "lib/netstandard2.1/OpenTK.Windowing.Common.xml",
-        "opentk.windowing.common.4.8.2.nupkg.sha512",
+        "opentk.windowing.common.4.9.4.nupkg.sha512",
         "opentk.windowing.common.nuspec"
       ]
     },
-    "OpenTK.Windowing.Desktop/4.8.2": {
-      "sha512": "SlEuiAllLgE03/jJbloCOD1iNtBpnhMuVb510ccA/ILp//mzXHeRKsz7zFJ1ct7yIxe5U2WExXx52Tan++p11Q==",
+    "OpenTK.Windowing.Desktop/4.9.4": {
+      "sha512": "LBX4jwCneISIBST2vWYLI8cdR8tLwHNcswK1decElbTAXMB+H6uFIoF41ld+af4q3TsHpjR5fyP2ilbTK3T0rA==",
       "type": "package",
-      "path": "opentk.windowing.desktop/4.8.2",
+      "path": "opentk.windowing.desktop/4.9.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "docs/README.md",
+        "images/opentk-blue-hexagon.png",
         "lib/netcoreapp3.1/OpenTK.Windowing.Desktop.dll",
         "lib/netcoreapp3.1/OpenTK.Windowing.Desktop.pdb",
         "lib/netcoreapp3.1/OpenTK.Windowing.Desktop.xml",
-        "opentk.windowing.desktop.4.8.2.nupkg.sha512",
+        "opentk.windowing.desktop.4.9.4.nupkg.sha512",
         "opentk.windowing.desktop.nuspec"
       ]
     },
-    "OpenTK.Windowing.GraphicsLibraryFramework/4.8.2": {
-      "sha512": "o50PgKL8G0Pqs7Lo7hu1ru+5X5l03aht5jaeik7McXFgVaBJzMLhMhZkiferx4bbcC9Rq597BOknDwqE/bsLOw==",
+    "OpenTK.Windowing.GraphicsLibraryFramework/4.9.4": {
+      "sha512": "wNlxnPrD7veMV8EGTTi/sCDeg5V8w/18vC0aw0Ao69eNneD7YSq9Ad+C389rVA957eHNR6Xieu/5qzHQeEOyxQ==",
       "type": "package",
-      "path": "opentk.windowing.graphicslibraryframework/4.8.2",
+      "path": "opentk.windowing.graphicslibraryframework/4.9.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "docs/README.md",
+        "images/opentk-blue-hexagon.png",
         "lib/netcoreapp3.1/OpenTK.Windowing.GraphicsLibraryFramework.dll",
         "lib/netcoreapp3.1/OpenTK.Windowing.GraphicsLibraryFramework.pdb",
         "lib/netcoreapp3.1/OpenTK.Windowing.GraphicsLibraryFramework.xml",
-        "opentk.windowing.graphicslibraryframework.4.8.2.nupkg.sha512",
+        "opentk.windowing.graphicslibraryframework.4.9.4.nupkg.sha512",
         "opentk.windowing.graphicslibraryframework.nuspec"
       ]
     },
-    "OpenTK.WinForms/4.0.0-pre.8": {
-      "sha512": "CgfkPzHY2U60zYXnTik6XPCLoLuCkTYAyH1GpsfeYvX5OwYqlLn4fvlD9x/IH2BV+Cyd/AP0ssIxDsrU6Akmjw==",
+    "Pfim/0.11.4": {
+      "sha512": "B3KDFyxY1NTqbeqGEaOM9uE+G71GG2TxWqVSs57e1pWYPf2vNLMIxk+x55MXdkon0iGeaekolFTlLS2CkgktYg==",
       "type": "package",
-      "path": "opentk.winforms/4.0.0-pre.8",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/netcoreapp3.1/OpenTK.WinForms.dll",
-        "lib/netcoreapp3.1/OpenTK.WinForms.pdb",
-        "opentk.winforms.4.0.0-pre.8.nupkg.sha512",
-        "opentk.winforms.nuspec"
-      ]
-    },
-    "Pfim/0.11.3": {
-      "sha512": "UNVStuGHVIGyBlQaLX8VY6KpzZm/pG2zpV8ewNSXNFKFVPn8dLQKJITfps3lwUMzwTL+Do7RrMUvgQ1ZsPTu4w==",
-      "type": "package",
-      "path": "pfim/0.11.3",
+      "path": "pfim/0.11.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.0/Pfim.dll",
-        "pfim.0.11.3.nupkg.sha512",
+        "pfim.0.11.4.nupkg.sha512",
         "pfim.nuspec"
       ]
     },
@@ -1024,10 +1190,35 @@
         "serilog.nuspec"
       ]
     },
-    "SQLitePCLRaw.bundle_e_sqlite3/2.1.6": {
-      "sha512": "BmAf6XWt4TqtowmiWe4/5rRot6GerAeklmOPfviOvwLoF5WwgxcJHAxZtySuyW9r9w+HLILnm8VfJFLCUJYW8A==",
+    "Serilog.Sinks.File/7.0.0": {
+      "sha512": "fKL7mXv7qaiNBUC71ssvn/dU0k9t0o45+qm2XgKAlSt19xF+ijjxyA3R6HmCgfKEKwfcfkwWjayuQtRueZFkYw==",
       "type": "package",
-      "path": "sqlitepclraw.bundle_e_sqlite3/2.1.6",
+      "path": "serilog.sinks.file/7.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net462/Serilog.Sinks.File.dll",
+        "lib/net462/Serilog.Sinks.File.xml",
+        "lib/net471/Serilog.Sinks.File.dll",
+        "lib/net471/Serilog.Sinks.File.xml",
+        "lib/net6.0/Serilog.Sinks.File.dll",
+        "lib/net6.0/Serilog.Sinks.File.xml",
+        "lib/net8.0/Serilog.Sinks.File.dll",
+        "lib/net8.0/Serilog.Sinks.File.xml",
+        "lib/net9.0/Serilog.Sinks.File.dll",
+        "lib/net9.0/Serilog.Sinks.File.xml",
+        "lib/netstandard2.0/Serilog.Sinks.File.dll",
+        "lib/netstandard2.0/Serilog.Sinks.File.xml",
+        "serilog-sink-nuget.png",
+        "serilog.sinks.file.7.0.0.nupkg.sha512",
+        "serilog.sinks.file.nuspec"
+      ]
+    },
+    "SQLitePCLRaw.bundle_e_sqlite3/2.1.11": {
+      "sha512": "DC4nA7yWnf4UZdgJDF+9Mus4/cb0Y3Sfgi3gDnAoKNAIBwzkskNAbNbyu+u4atT0ruVlZNJfwZmwiEwE5oz9LQ==",
+      "type": "package",
+      "path": "sqlitepclraw.bundle_e_sqlite3/2.1.11",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1040,26 +1231,26 @@
         "lib/net6.0-tvos10.0/SQLitePCLRaw.batteries_v2.dll",
         "lib/netstandard2.0/SQLitePCLRaw.batteries_v2.dll",
         "lib/xamarinios10/SQLitePCLRaw.batteries_v2.dll",
-        "sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg.sha512",
+        "sqlitepclraw.bundle_e_sqlite3.2.1.11.nupkg.sha512",
         "sqlitepclraw.bundle_e_sqlite3.nuspec"
       ]
     },
-    "SQLitePCLRaw.core/2.1.6": {
-      "sha512": "wO6v9GeMx9CUngAet8hbO7xdm+M42p1XeJq47ogyRoYSvNSp0NGLI+MgC0bhrMk9C17MTVFlLiN6ylyExLCc5w==",
+    "SQLitePCLRaw.core/2.1.11": {
+      "sha512": "PK0GLFkfhZzLQeR3PJf71FmhtHox+U3vcY6ZtswoMjrefkB9k6ErNJEnwXqc5KgXDSjige2XXrezqS39gkpQKA==",
       "type": "package",
-      "path": "sqlitepclraw.core/2.1.6",
+      "path": "sqlitepclraw.core/2.1.11",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.0/SQLitePCLRaw.core.dll",
-        "sqlitepclraw.core.2.1.6.nupkg.sha512",
+        "sqlitepclraw.core.2.1.11.nupkg.sha512",
         "sqlitepclraw.core.nuspec"
       ]
     },
-    "SQLitePCLRaw.lib.e_sqlite3/2.1.6": {
-      "sha512": "2ObJJLkIUIxRpOUlZNGuD4rICpBnrBR5anjyfUFQep4hMOIeqW+XGQYzrNmHSVz5xSWZ3klSbh7sFR6UyDj68Q==",
+    "SQLitePCLRaw.lib.e_sqlite3/2.1.11": {
+      "sha512": "Ev2ytaXiOlWZ4b3R67GZBsemTINslLD1DCJr2xiacpn4tbapu0Q4dHEzSvZSMnVWeE5nlObU3VZN2p81q3XOYQ==",
       "type": "package",
-      "path": "sqlitepclraw.lib.e_sqlite3/2.1.6",
+      "path": "sqlitepclraw.lib.e_sqlite3/2.1.11",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1067,19 +1258,24 @@
         "buildTransitive/net6.0/SQLitePCLRaw.lib.e_sqlite3.targets",
         "buildTransitive/net7.0/SQLitePCLRaw.lib.e_sqlite3.targets",
         "buildTransitive/net8.0/SQLitePCLRaw.lib.e_sqlite3.targets",
+        "buildTransitive/net9.0/SQLitePCLRaw.lib.e_sqlite3.targets",
         "lib/net461/_._",
         "lib/netstandard2.0/_._",
         "runtimes/browser-wasm/nativeassets/net6.0/e_sqlite3.a",
         "runtimes/browser-wasm/nativeassets/net7.0/e_sqlite3.a",
         "runtimes/browser-wasm/nativeassets/net8.0/e_sqlite3.a",
+        "runtimes/browser-wasm/nativeassets/net9.0/e_sqlite3.a",
         "runtimes/linux-arm/native/libe_sqlite3.so",
         "runtimes/linux-arm64/native/libe_sqlite3.so",
         "runtimes/linux-armel/native/libe_sqlite3.so",
         "runtimes/linux-mips64/native/libe_sqlite3.so",
         "runtimes/linux-musl-arm/native/libe_sqlite3.so",
         "runtimes/linux-musl-arm64/native/libe_sqlite3.so",
+        "runtimes/linux-musl-riscv64/native/libe_sqlite3.so",
+        "runtimes/linux-musl-s390x/native/libe_sqlite3.so",
         "runtimes/linux-musl-x64/native/libe_sqlite3.so",
         "runtimes/linux-ppc64le/native/libe_sqlite3.so",
+        "runtimes/linux-riscv64/native/libe_sqlite3.so",
         "runtimes/linux-s390x/native/libe_sqlite3.so",
         "runtimes/linux-x64/native/libe_sqlite3.so",
         "runtimes/linux-x86/native/libe_sqlite3.so",
@@ -1095,49 +1291,65 @@
         "runtimes/win10-arm64/nativeassets/uap10.0/e_sqlite3.dll",
         "runtimes/win10-x64/nativeassets/uap10.0/e_sqlite3.dll",
         "runtimes/win10-x86/nativeassets/uap10.0/e_sqlite3.dll",
-        "sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg.sha512",
+        "sqlitepclraw.lib.e_sqlite3.2.1.11.nupkg.sha512",
         "sqlitepclraw.lib.e_sqlite3.nuspec"
       ]
     },
-    "SQLitePCLRaw.provider.e_sqlite3/2.1.6": {
-      "sha512": "PQ2Oq3yepLY4P7ll145P3xtx2bX8xF4PzaKPRpw9jZlKvfe4LE/saAV82inND9usn1XRpmxXk7Lal3MTI+6CNg==",
+    "SQLitePCLRaw.provider.e_sqlite3/2.1.11": {
+      "sha512": "Y/0ZkR+r0Cg3DQFuCl1RBnv/tmxpIZRU3HUvelPw6MVaKHwYYR8YNvgs0vuNuXCMvlyJ+Fh88U1D4tah1tt6qw==",
       "type": "package",
-      "path": "sqlitepclraw.provider.e_sqlite3/2.1.6",
+      "path": "sqlitepclraw.provider.e_sqlite3/2.1.11",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/net6.0-windows7.0/SQLitePCLRaw.provider.e_sqlite3.dll",
         "lib/net6.0/SQLitePCLRaw.provider.e_sqlite3.dll",
         "lib/netstandard2.0/SQLitePCLRaw.provider.e_sqlite3.dll",
-        "sqlitepclraw.provider.e_sqlite3.2.1.6.nupkg.sha512",
+        "sqlitepclraw.provider.e_sqlite3.2.1.11.nupkg.sha512",
         "sqlitepclraw.provider.e_sqlite3.nuspec"
       ]
     },
-    "System.Linq.Async/4.0.0": {
-      "sha512": "WbiYEedFZeM+psmMyoCt1AKbZppAZg8Eq1ZTQ+521fGNeXqlgJj0tZYV5n1LsKRO5osQuitYxGNuzPTy3213sg==",
+    "System.Data.SQLite/2.0.3": {
+      "sha512": "5I9dVqmHp1v0dhco21btIRkUE47zHSy4t6bRLwIO6nGZ1mxGIL1f1yp1zWI/AAZFfdUz7n6RrH1hyi/6EhlIeQ==",
       "type": "package",
-      "path": "system.linq.async/4.0.0",
+      "path": "system.data.sqlite/2.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "lib/net461/System.Linq.Async.dll",
-        "lib/net461/System.Linq.Async.xml",
-        "lib/netcoreapp3.0/System.Linq.Async.dll",
-        "lib/netcoreapp3.0/System.Linq.Async.xml",
-        "lib/netstandard2.0/System.Linq.Async.dll",
-        "lib/netstandard2.0/System.Linq.Async.xml",
-        "lib/netstandard2.1/System.Linq.Async.dll",
-        "lib/netstandard2.1/System.Linq.Async.xml",
-        "ref/net461/System.Linq.Async.dll",
-        "ref/net461/System.Linq.Async.xml",
-        "ref/netcoreapp3.0/System.Linq.Async.dll",
-        "ref/netcoreapp3.0/System.Linq.Async.xml",
-        "ref/netstandard2.0/System.Linq.Async.dll",
-        "ref/netstandard2.0/System.Linq.Async.xml",
-        "ref/netstandard2.1/System.Linq.Async.dll",
-        "ref/netstandard2.1/System.Linq.Async.xml",
-        "system.linq.async.4.0.0.nupkg.sha512",
-        "system.linq.async.nuspec"
+        "lib/net471/System.Data.SQLite.dll",
+        "lib/netstandard2.0/System.Data.SQLite.dll",
+        "lib/netstandard2.1/System.Data.SQLite.dll",
+        "system.data.sqlite.2.0.3.nupkg.sha512",
+        "system.data.sqlite.nuspec"
+      ]
+    },
+    "System.IO.Pipelines/10.0.8": {
+      "sha512": "STVNTIVd+UrYvSo31D2tOOTs19IThdjGDN14FS3/NZb4PWsVakAg/VT4sq+JYWGP/GtazzvXwebWL6LPBAwnFQ==",
+      "type": "package",
+      "path": "system.io.pipelines/10.0.8",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.IO.Pipelines.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.IO.Pipelines.targets",
+        "lib/net10.0/System.IO.Pipelines.dll",
+        "lib/net10.0/System.IO.Pipelines.xml",
+        "lib/net462/System.IO.Pipelines.dll",
+        "lib/net462/System.IO.Pipelines.xml",
+        "lib/net8.0/System.IO.Pipelines.dll",
+        "lib/net8.0/System.IO.Pipelines.xml",
+        "lib/net9.0/System.IO.Pipelines.dll",
+        "lib/net9.0/System.IO.Pipelines.xml",
+        "lib/netstandard2.0/System.IO.Pipelines.dll",
+        "lib/netstandard2.0/System.IO.Pipelines.xml",
+        "system.io.pipelines.10.0.8.nupkg.sha512",
+        "system.io.pipelines.nuspec",
+        "useSharedDesignerContext.txt"
       ]
     },
     "System.Memory/4.5.3": {
@@ -1161,47 +1373,76 @@
         "version.txt"
       ]
     },
-    "System.Runtime.CompilerServices.Unsafe/5.0.0": {
-      "sha512": "ZD9TMpsmYJLrxbbmdvhwt9YEgG5WntEnZ/d1eH8JBX9LBp+Ju8BSBhUGbZMNVHHomWo2KVImJhTDl2hIgw/6MA==",
+    "System.Runtime.CompilerServices.Unsafe/6.0.0": {
+      "sha512": "/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg==",
       "type": "package",
-      "path": "system.runtime.compilerservices.unsafe/5.0.0",
+      "path": "system.runtime.compilerservices.unsafe/6.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
-        "lib/net45/System.Runtime.CompilerServices.Unsafe.dll",
-        "lib/net45/System.Runtime.CompilerServices.Unsafe.xml",
-        "lib/netcoreapp2.0/System.Runtime.CompilerServices.Unsafe.dll",
-        "lib/netcoreapp2.0/System.Runtime.CompilerServices.Unsafe.xml",
-        "lib/netstandard1.0/System.Runtime.CompilerServices.Unsafe.dll",
-        "lib/netstandard1.0/System.Runtime.CompilerServices.Unsafe.xml",
+        "buildTransitive/netcoreapp2.0/System.Runtime.CompilerServices.Unsafe.targets",
+        "buildTransitive/netcoreapp3.1/_._",
+        "lib/net461/System.Runtime.CompilerServices.Unsafe.dll",
+        "lib/net461/System.Runtime.CompilerServices.Unsafe.xml",
+        "lib/net6.0/System.Runtime.CompilerServices.Unsafe.dll",
+        "lib/net6.0/System.Runtime.CompilerServices.Unsafe.xml",
+        "lib/netcoreapp3.1/System.Runtime.CompilerServices.Unsafe.dll",
+        "lib/netcoreapp3.1/System.Runtime.CompilerServices.Unsafe.xml",
         "lib/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll",
         "lib/netstandard2.0/System.Runtime.CompilerServices.Unsafe.xml",
-        "ref/net461/System.Runtime.CompilerServices.Unsafe.dll",
-        "ref/net461/System.Runtime.CompilerServices.Unsafe.xml",
-        "ref/netstandard1.0/System.Runtime.CompilerServices.Unsafe.dll",
-        "ref/netstandard1.0/System.Runtime.CompilerServices.Unsafe.xml",
-        "ref/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll",
-        "ref/netstandard2.0/System.Runtime.CompilerServices.Unsafe.xml",
-        "ref/netstandard2.1/System.Runtime.CompilerServices.Unsafe.dll",
-        "ref/netstandard2.1/System.Runtime.CompilerServices.Unsafe.xml",
-        "system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512",
+        "system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
         "system.runtime.compilerservices.unsafe.nuspec",
-        "useSharedDesignerContext.txt",
-        "version.txt"
+        "useSharedDesignerContext.txt"
       ]
     },
-    "System.Text.Json/8.0.5": {
-      "sha512": "0f1B50Ss7rqxXiaBJyzUu9bWFOO2/zSlifZ/UNMdiIpDYe4cY4LQQicP4nirK1OS31I43rn062UIJ1Q9bpmHpg==",
+    "System.Text.Encodings.Web/10.0.8": {
+      "sha512": "HvFIJXM/CMTRu6PBQmjukQZ/O32Vx5fOEYZs0kq0OD5s9vJQ19KHLWCVmnfh3gNC7pbYomm06tzOTgJBflr/nQ==",
       "type": "package",
-      "path": "system.text.json/8.0.5",
+      "path": "system.text.encodings.web/10.0.8",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
-        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Text.Encodings.Web.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Text.Encodings.Web.targets",
+        "lib/net10.0/System.Text.Encodings.Web.dll",
+        "lib/net10.0/System.Text.Encodings.Web.xml",
+        "lib/net462/System.Text.Encodings.Web.dll",
+        "lib/net462/System.Text.Encodings.Web.xml",
+        "lib/net8.0/System.Text.Encodings.Web.dll",
+        "lib/net8.0/System.Text.Encodings.Web.xml",
+        "lib/net9.0/System.Text.Encodings.Web.dll",
+        "lib/net9.0/System.Text.Encodings.Web.xml",
+        "lib/netstandard2.0/System.Text.Encodings.Web.dll",
+        "lib/netstandard2.0/System.Text.Encodings.Web.xml",
+        "runtimes/browser/lib/net10.0/System.Text.Encodings.Web.dll",
+        "runtimes/browser/lib/net10.0/System.Text.Encodings.Web.xml",
+        "runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll",
+        "runtimes/browser/lib/net8.0/System.Text.Encodings.Web.xml",
+        "runtimes/wasi/lib/net10.0/System.Text.Encodings.Web.dll",
+        "runtimes/wasi/lib/net10.0/System.Text.Encodings.Web.xml",
+        "runtimes/win/lib/net9.0/System.Text.Encodings.Web.dll",
+        "runtimes/win/lib/net9.0/System.Text.Encodings.Web.xml",
+        "system.text.encodings.web.10.0.8.nupkg.sha512",
+        "system.text.encodings.web.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "System.Text.Json/10.0.8": {
+      "sha512": "/fysUDkD7oFGaRPoA7IaFs0wRoO3GlwlCNq2P+xWZqxLy1R4cktRSKfMjJDy9ymS4grL7IDVdt8de8L9a0z55Q==",
+      "type": "package",
+      "path": "system.text.json/10.0.8",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
         "PACKAGE.md",
         "THIRD-PARTY-NOTICES.TXT",
         "analyzers/dotnet/roslyn3.11/cs/System.Text.Json.SourceGeneration.dll",
@@ -1248,20 +1489,20 @@
         "analyzers/dotnet/roslyn4.4/cs/zh-Hant/System.Text.Json.SourceGeneration.resources.dll",
         "buildTransitive/net461/System.Text.Json.targets",
         "buildTransitive/net462/System.Text.Json.targets",
-        "buildTransitive/net6.0/System.Text.Json.targets",
+        "buildTransitive/net8.0/System.Text.Json.targets",
         "buildTransitive/netcoreapp2.0/System.Text.Json.targets",
         "buildTransitive/netstandard2.0/System.Text.Json.targets",
+        "lib/net10.0/System.Text.Json.dll",
+        "lib/net10.0/System.Text.Json.xml",
         "lib/net462/System.Text.Json.dll",
         "lib/net462/System.Text.Json.xml",
-        "lib/net6.0/System.Text.Json.dll",
-        "lib/net6.0/System.Text.Json.xml",
-        "lib/net7.0/System.Text.Json.dll",
-        "lib/net7.0/System.Text.Json.xml",
         "lib/net8.0/System.Text.Json.dll",
         "lib/net8.0/System.Text.Json.xml",
+        "lib/net9.0/System.Text.Json.dll",
+        "lib/net9.0/System.Text.Json.xml",
         "lib/netstandard2.0/System.Text.Json.dll",
         "lib/netstandard2.0/System.Text.Json.xml",
-        "system.text.json.8.0.5.nupkg.sha512",
+        "system.text.json.10.0.8.nupkg.sha512",
         "system.text.json.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -1269,17 +1510,20 @@
   },
   "projectFileDependencyGroups": {
     "net8.0-windows": [
-      "BCnEncoder.Net >= 2.1.0",
-      "CsvHelper >= 31.0.0",
-      "Dirkster.AvalonDock >= 4.72.1",
-      "Dirkster.AvalonDock.Themes.VS2013 >= 4.72.1",
-      "Microsoft.Data.Sqlite >= 8.0.0",
+      "BCnEncoder.Net >= 2.3.0",
+      "CsvHelper >= 33.1.0",
+      "Dapper >= 2.1.79",
+      "Dirkster.AvalonDock >= 4.74.1",
+      "Dirkster.AvalonDock.Themes.VS2013 >= 4.74.1",
+      "Microsoft.Data.Sqlite >= 10.0.8",
       "Newtonsoft.Json >= 13.0.4",
-      "OpenTK >= 4.8.2",
-      "OpenTK.WinForms >= 4.0.0-pre.8",
-      "Pfim >= 0.11.3",
+      "OpenTK >= 4.9.4",
+      "OpenTK.GLControl >= 4.0.2",
+      "Pfim >= 0.11.4",
       "Serilog >= 4.3.1",
-      "System.Text.Json >= 8.0.5"
+      "Serilog.Sinks.File >= 7.0.0",
+      "System.Data.SQLite >= 2.0.3",
+      "System.Text.Json >= 10.0.8"
     ]
   },
   "packageFolders": {
@@ -1336,23 +1580,27 @@
         "dependencies": {
           "BCnEncoder.Net": {
             "target": "Package",
-            "version": "[2.1.0, )"
+            "version": "[2.3.0, )"
           },
           "CsvHelper": {
             "target": "Package",
-            "version": "[31.0.0, )"
+            "version": "[33.1.0, )"
+          },
+          "Dapper": {
+            "target": "Package",
+            "version": "[2.1.79, )"
           },
           "Dirkster.AvalonDock": {
             "target": "Package",
-            "version": "[4.72.1, )"
+            "version": "[4.74.1, )"
           },
           "Dirkster.AvalonDock.Themes.VS2013": {
             "target": "Package",
-            "version": "[4.72.1, )"
+            "version": "[4.74.1, )"
           },
           "Microsoft.Data.Sqlite": {
             "target": "Package",
-            "version": "[8.0.0, )"
+            "version": "[10.0.8, )"
           },
           "Newtonsoft.Json": {
             "target": "Package",
@@ -1360,23 +1608,31 @@
           },
           "OpenTK": {
             "target": "Package",
-            "version": "[4.8.2, )"
+            "version": "[4.9.4, )"
           },
-          "OpenTK.WinForms": {
+          "OpenTK.GLControl": {
             "target": "Package",
-            "version": "[4.0.0-pre.8, )"
+            "version": "[4.0.2, )"
           },
           "Pfim": {
             "target": "Package",
-            "version": "[0.11.3, )"
+            "version": "[0.11.4, )"
           },
           "Serilog": {
             "target": "Package",
             "version": "[4.3.1, )"
           },
+          "Serilog.Sinks.File": {
+            "target": "Package",
+            "version": "[7.0.0, )"
+          },
+          "System.Data.SQLite": {
+            "target": "Package",
+            "version": "[2.0.3, )"
+          },
           "System.Text.Json": {
             "target": "Package",
-            "version": "[8.0.5, )"
+            "version": "[10.0.8, )"
           }
         },
         "imports": [
@@ -1394,7 +1650,7 @@
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           },
-          "Microsoft.WindowsDesktop.App": {
+          "Microsoft.WindowsDesktop.App.WPF": {
             "privateAssets": "none"
           }
         },

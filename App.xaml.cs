@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic.Logging;
-using Serilog;
+﻿using Serilog;
 using System.Windows;
 
 namespace EldenRingArmorStudio;

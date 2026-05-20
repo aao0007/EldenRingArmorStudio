@@ -3,3 +3,5 @@ C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\n
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\App.g.cs
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\EldenRingArmorStudio_MarkupCompile.cache
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\EldenRingArmorStudio_MarkupCompile.lref
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\MainWindow.g.cs
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs

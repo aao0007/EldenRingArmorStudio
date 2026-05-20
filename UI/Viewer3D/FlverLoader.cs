@@ -1,6 +1,8 @@
-﻿using Microsoft.VisualBasic.Logging;
-using Serilog;
+﻿using Serilog;
 using System.IO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 // SoulsFormats se referencia como proyecto local o NuGet
 // using SoulsFormats;
 
@@ -24,7 +26,7 @@ public static class FlverLoader
     /// <summary>
     /// Carga un modelo desde la carpeta donde WitchyBND desempaquetó el BND.
     /// </summary>
-    public static FlverModel? LoadFromDirectory(string unpackedDir)
+    public static FlverModel LoadFromDirectory(string unpackedDir)
     {
         var flverFiles = Directory.GetFiles(unpackedDir, "*.flver", SearchOption.AllDirectories);
         if (flverFiles.Length == 0)
@@ -44,7 +46,7 @@ public static class FlverLoader
 
     // ── FLVER parsing ─────────────────────────────────────────────────────────
 
-    private static FlverModel? LoadFlver(string flverPath, Dictionary<string, byte[]> textureMap)
+    private static FlverModel LoadFlver(string flverPath, Dictionary<string, byte[]> textureMap)
     {
         try
         {
@@ -174,7 +176,7 @@ public static class FlverLoader
     /// Parser binario nativo de FLVER2 (fallback sin SoulsFormats).
     /// Lee posición, normal y UV del primer buffer de cada sub-malla.
     /// </summary>
-    private static FlverModel? ParseNative(string flverPath, Dictionary<string, byte[]> textureMap)
+    private static FlverModel ParseNative(string flverPath, Dictionary<string, byte[]> textureMap)
     {
         var data = File.ReadAllBytes(flverPath);
         if (data.Length < 0x80 || data[0] != 'F' || data[1] != 'L' || data[2] != 'V') return null;
@@ -420,7 +422,7 @@ public static class FlverLoader
         byte[] data, List<FaceSetInfo> fss, List<int> fsIds, int vertCount, int dataOff)
     {
         // Buscar LOD0 (el face set con índice más pequeño, asumiendo que el primero es LOD0)
-        FaceSetInfo? chosen = null;
+        FaceSetInfo chosen = null;
         foreach (var fsi in fsIds)
         {
             if (fsi < 0 || fsi >= fss.Count) continue;
@@ -601,7 +603,7 @@ public static class FlverLoader
 #endif
     }
 
-    private static byte[]? FindTextureData(string texName, Dictionary<string, byte[]> map)
+    private static byte[] FindTextureData(string texName, Dictionary<string, byte[]> map)
     {
         // Busca por nombre exacto, luego sin sufijos
         if (map.TryGetValue(texName, out var data)) return data;

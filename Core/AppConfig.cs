@@ -10,7 +10,15 @@ namespace EldenRingArmorStudio.Core
     /// </summary>
     public class AppConfig
     {
-        private static AppConfig? _instance;
+        public static string Get(string key, string defaultValue = "")
+        {
+            if (key == "modengine2.root_path")
+                return @"C:\Users\Anki\Downloads\ModEngine";
+
+            return defaultValue;
+        }
+
+        private static AppConfig _instance;
         public static AppConfig Instance => _instance ??= new AppConfig();
 
         private const string SettingsPath = "data/settings.json";
