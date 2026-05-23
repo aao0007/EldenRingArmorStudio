@@ -1,12 +1,17 @@
-﻿<Window x:Class="EldenRingArmorStudio.UI.Viewer3D.Viewport3DControl"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EldenRingArmorStudio.UI.Viewer3D"
-        mc:Ignorable="d"
-        Title="Viewport3DControl" Height="450" Width="800">
+﻿<UserControl x:Class="EldenRingArmorStudio.UI.Viewer3D.Viewport3DControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:glWpf="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
+             Background="#0E0E10"
+             Focusable="True"
+             MouseDown="OnMouseDown"
+             MouseMove="OnMouseMove"
+             MouseUp="OnMouseUp"
+             MouseWheel="OnMouseWheel">
     <Grid>
-        
+        <glWpf:GLWpfControl x:Name="GlControl" Render="GlControl_Render"/>
+
+        <TextBlock x:Name="TxtStats" Foreground="#C9A96E" FontWeight="Bold" Margin="10" 
+                   HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False"/>
     </Grid>
-</Window>
+</UserControl>

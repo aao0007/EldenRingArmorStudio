@@ -2,6 +2,15 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="UI\Panels\Armorexplorerpanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UI\Panels\ArmorInfoPanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UI\Panels\Filetreepanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\Viewer3D\Viewport3DControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -7,73 +7,47 @@ namespace EldenRingArmorStudio.Core
 {
     public static class TextureManager
     {
-        public static int LoadDdsTexture(string filePath)
+        public static int LoadDdsTextureFromBytes(byte[] textureData)
         {
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException($"No se encontró la textura DDS: {filePath}");
+            if (textureData == null || textureData.Length == 0) return -1;
 
-            using (IImage image = Pfim.Pfim.FromStream(File.OpenRead(filePath)))
+            using (var stream = new MemoryStream(textureData))
+            using (IImage image = Pfim.Pfimage.FromStream(stream))
             {
                 int textureId = GL.GenTexture();
                 GL.BindTexture(TextureTarget.Texture2D, textureId);
 
                 PixelInternalFormat internalFormat;
-                PixelFormat pixelFormat;
-                PixelType pixelType = PixelType.UnsignedByte;
+                PixelFormat format;
 
-                // Mapear el formato DDS decodificado por Pfim al formato nativo de OpenGL
-                switch (image.Format)
+                // Pfim descomprime automáticamente DXT a Rgba32 o Rgb24
+                if (image.Format == Pfim.ImageFormat.Rgba32)
                 {
-                    case Pfim.ImageFormat.Rgb24:
-                        internalFormat = PixelInternalFormat.Rgb8;
-                        pixelFormat = PixelFormat.Bgr;
-                        break;
-                    case Pfim.ImageFormat.Rgba32:
-                        internalFormat = PixelInternalFormat.Rgba8;
-                        pixelFormat = PixelFormat.Bgra;
-                        break;
-                    default:
-                        // Si es un formato comprimido (BC1/BC3/DXT), Pfim expone los datos directamente
-                        internalFormat = GetCompressedFormat(image.Format);
-                        UploadCompressedTexture(image, internalFormat);
-                        SetTextureParameters();
-                        return textureId;
+                    internalFormat = PixelInternalFormat.Rgba;
+                    format = PixelFormat.Bgra;
+                }
+                else
+                {
+                    internalFormat = PixelInternalFormat.Rgb;
+                    format = PixelFormat.Bgr;
                 }
 
-                // Subida para texturas no comprimidas
-                GL.TexImage2D(TextureTarget.Texture2D, 0, internalFormat, image.Width, image.Height,
-                    0, pixelFormat, pixelType, image.Data);
+                // OpenTK 4 requiere el uso de punteros (unsafe/IntPtr) para pasar los datos de la imagen
+                unsafe
+                {
+                    fixed (byte* ptr = image.Data)
+                    {
+                        GL.TexImage2D(TextureTarget.Texture2D, 0, internalFormat,
+                            image.Width, image.Height, 0, format, PixelType.UnsignedByte, (IntPtr)ptr);
+                    }
+                }
 
-                SetTextureParameters();
+                GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
                 return textureId;
             }
-        }
-
-        private static void UploadCompressedTexture(IImage image, PixelInternalFormat format)
-        {
-            // OpenGL maneja la carga de texturas con compresión de bloques nativa (DXT/BC)
-            GL.CompressedTexImage2D(TextureTarget.Texture2D, 0, format,
-                image.Width, image.Height, 0, image.DataLen, image.Data);
-        }
-
-        private static PixelInternalFormat GetCompressedFormat(Pfim.ImageFormat format)
-        {
-            return format switch
-            {
-                Pfim.ImageFormat.Dxt1 => PixelInternalFormat.CompressedRgbaS3tcDxt1Ext,
-                Pfim.ImageFormat.Dxt3 => PixelInternalFormat.CompressedRgbaS3tcDxt3Ext,
-                Pfim.ImageFormat.Dxt5 => PixelInternalFormat.CompressedRgbaS3tcDxt5Ext,
-                _ => throw new NotSupportedException($"Formato DDS de Elden Ring no soportado en este cargador: {format}")
-            };
-        }
-
-        private static void SetTextureParameters()
-        {
-            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
         }
     }
 }

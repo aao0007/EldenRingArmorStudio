@@ -6,3 +6,26 @@ tools/smithbox/*
 
 tools/witchybnd/*
 !tools/witchybnd/.gitkeep
+!data/icons/.gitkeep
+
+[Bb]in/
+[Oo]bj/
+
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+packages/
+.nuget/
+
+*.log
+Thumbs.db
+ehthumbs.db
+Desktop.ini

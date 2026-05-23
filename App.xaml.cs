@@ -1,7 +1,6 @@
-﻿using Microsoft.VisualBasic.Logging;
-using Serilog;
+﻿using Serilog;
 using System.Windows;
-
+using EldenRingArmorStudio.Core;
 namespace EldenRingArmorStudio;
 
 public partial class App : Application
