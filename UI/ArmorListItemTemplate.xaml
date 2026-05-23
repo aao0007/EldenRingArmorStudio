@@ -1,0 +1,67 @@
+﻿<!-- 
+    Archivo: UI/ArmorListItemTemplate.xaml
+    Usar como ResourceDictionary o pegar el DataTemplate dentro de MainWindow.xaml → Window.Resources
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:EldenRingArmorStudio.ViewModels">
+
+    <!-- Placeholder cuando no hay icono -->
+    <DrawingImage x:Key="NoIconDrawing">
+        <DrawingImage.Drawing>
+            <GeometryDrawing Brush="#44FFFFFF"
+                             Geometry="M 8,8 L 56,8 L 56,56 L 8,56 Z"/>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <!-- Template para cada ArmorListItemViewModel en el ListBox -->
+    <DataTemplate DataType="{x:Type vm:ArmorListItemViewModel}">
+        <Border Padding="6,4" BorderThickness="0,0,0,1"
+                BorderBrush="#33FFFFFF" Background="Transparent">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="56"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Icono 56×56 -->
+                <Border Grid.Column="0"
+                        Width="48" Height="48"
+                        Background="#1A000000"
+                        BorderBrush="#33FFFFFF" BorderThickness="1"
+                        CornerRadius="3"
+                        Margin="0,0,6,0">
+                    <Image Width="44" Height="44" Stretch="Uniform"
+                           RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Source" Value="{StaticResource NoIconDrawing}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IconImage, Converter={StaticResource NullToBoolConverter}}"
+                                                 Value="True">
+                                        <Setter Property="Source" Value="{Binding IconImage}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Border>
+
+                <!-- Nombre + subtítulo -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding DisplayName}"
+                               Foreground="White"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding SubLine}"
+                               Foreground="#AAAAAA"
+                               FontSize="11"
+                               TextTrimming="CharacterEllipsis"
+                               Margin="0,2,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+</ResourceDictionary>
