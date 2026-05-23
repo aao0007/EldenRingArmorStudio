@@ -3,57 +3,109 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dock="https://github.com/Dirkster99/AvalonDock"
         xmlns:viewer="clr-namespace:EldenRingArmorStudio.UI.Viewer3D"
-        xmlns:panels="clr-namespace:EldenRingArmorStudio.UI.Panels"
+        xmlns:vm="clr-namespace:EldenRingArmorStudio.ViewModels"
         Title="Elden Ring Armor Studio - C# Edition" Height="720" Width="1280"
-        Background="#F5F5F5"
-        AllowDrop="True" Drop="Window_Drop">
+        Background="#1E1E1E">
+
+    <Window.Resources>
+        <!-- DataTemplate: icono 48x48 + nombre + subtítulo -->
+        <DataTemplate DataType="{x:Type vm:ArmorListItemViewModel}">
+            <StackPanel Orientation="Horizontal" Margin="4,2">
+                <Image Source="{Binding IconImage}"
+                       Width="48" Height="48"
+                       Stretch="Uniform"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       Margin="0,0,8,0"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding DisplayName}"
+                               Foreground="White" FontSize="13" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding SubLine}"
+                               Foreground="#AAAAAA" FontSize="11" Margin="0,2,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Background="#F0F0F0" Foreground="Black" Padding="2">
+        <Menu Grid.Row="0" Background="#2D2D30" Foreground="White">
             <MenuItem Header="Archivo">
-                <MenuItem Header="Configurar Directorio de Modelos..." Click="MenuConfigurarModelos_Click"/>
-                <MenuItem Header="Recargar CSV (desde /data)" Click="MenuRecargarCsv_Click"/>
+                <MenuItem Header="Abrir Game Directory..."/>
                 <MenuItem Header="Guardar Cambios (.csv)"/>
                 <Separator/>
-                <MenuItem Header="Salir" Click="Exit_Click"/>
+                <MenuItem Header="Salir"/>
             </MenuItem>
             <MenuItem Header="Herramientas">
                 <MenuItem Header="Ejecutar WitchyBND Unpack"/>
-                <MenuItem Header="Generar Invisible Flags" Click="MenuGenerarFlags_Click"/>
+                <MenuItem Header="Generar Invisible Flags"/>
             </MenuItem>
         </Menu>
 
-        <dock:DockingManager Grid.Row="1">
+        <dock:DockingManager Grid.Row="1" Theme="{Binding Source={StaticResource VS2013DarkTheme}}">
             <dock:LayoutRoot>
-                <dock:LayoutPanel Orientation="Vertical">
+                <dock:LayoutPanel Orientation="Horizontal">
 
-                    <dock:LayoutPanel Orientation="Horizontal">
+                    <dock:LayoutAnchorablePane DockWidth="300">
+                        <dock:LayoutAnchorable Title="Lista de Armaduras (SQLite)" CanClose="False">
+                            <ListBox x:Name="ArmorListBox" Background="#252526" Foreground="White"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     VirtualizingPanel.IsVirtualizing="True"
+                                     VirtualizingPanel.VirtualizationMode="Recycling"/>
+                        </dock:LayoutAnchorable>
+                    </dock:LayoutAnchorablePane>
 
-                        <dock:LayoutAnchorablePane DockWidth="350">
-                            <dock:LayoutAnchorable Title="Propiedades de Armadura" CanClose="False">
-                                <panels:ArmorInfoPanel x:Name="InfoPanel"/>
-                            </dock:LayoutAnchorable>
+                    <dock:LayoutDocumentPane>
+                        <dock:LayoutDocument Title="Visualizador FLVER 3D" CanClose="False">
+                            <viewer:Viewport3DControl x:Name="FlverViewport"/>
+                        </dock:LayoutDocument>
+                    </dock:LayoutDocumentPane>
 
-                            <dock:LayoutAnchorable Title="Archivos (Mods/Parts)" CanClose="False">
-                                <panels:FileTreePanel x:Name="FileTree"/>
-                            </dock:LayoutAnchorable>
-                        </dock:LayoutAnchorablePane>
+                    <dock:LayoutAnchorablePane DockWidth="350">
+                        <dock:LayoutAnchorable Title="Propiedades y Params / Smithbox" CanClose="False">
+                            <Grid Background="#252526">
+                                <!-- Placeholder -->
+                                <TextBlock x:Name="PropsPlaceholder"
+                                           Text="Selecciona una pieza para ver sus flags ocultos."
+                                           Foreground="Gray"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                        <dock:LayoutDocumentPane>
-                            <dock:LayoutDocument Title="Visualizador FLVER 3D" CanClose="False">
-                                <viewer:Viewport3DControl x:Name="FlverViewport"/>
-                            </dock:LayoutDocument>
-                        </dock:LayoutDocumentPane>
+                                <!-- Panel de detalle, oculto hasta seleccionar -->
+                                <ScrollViewer x:Name="PropsPanel"
+                                              Visibility="Collapsed"
+                                              VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="12">
+                                        <!-- Icono grande + nombre -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                            <Image x:Name="PropsIcon"
+                                                   Width="72" Height="72"
+                                                   Stretch="Uniform"
+                                                   RenderOptions.BitmapScalingMode="HighQuality"
+                                                   Margin="0,0,12,0"/>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock x:Name="PropsNameEs"
+                                                           Foreground="White" FontSize="15"
+                                                           FontWeight="Bold" TextWrapping="Wrap"/>
+                                                <TextBlock x:Name="PropsNameEn"
+                                                           Foreground="#AAAAAA" FontSize="11"
+                                                           TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                                <TextBlock x:Name="PropsCategory"
+                                                           Foreground="#888" FontSize="11"
+                                                           Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </StackPanel>
 
-                    </dock:LayoutPanel>
+                                        <Separator Background="#33FFFFFF" Margin="0,0,0,8"/>
 
-                    <dock:LayoutAnchorablePane DockHeight="250">
-                        <dock:LayoutAnchorable Title="Explorador de Armaduras" CanClose="False">
-                            <panels:ArmorExplorerPanel x:Name="ExplorerPanel"/>
+                                        <TextBlock x:Name="PropsModelId"
+                                                   Foreground="#666" FontSize="10"
+                                                   FontFamily="Consolas"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Grid>
                         </dock:LayoutAnchorable>
                     </dock:LayoutAnchorablePane>
 

@@ -74,7 +74,7 @@ namespace EldenRingArmorStudio.UI.Viewer3D {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/EldenRingArmorStudio;V1.0.0.0;component/ui/viewer3d/viewport3dcontrol.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/EldenRingArmorStudio;component/ui/viewer3d/viewport3dcontrol.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\..\UI\Viewer3D\Viewport3DControl.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
