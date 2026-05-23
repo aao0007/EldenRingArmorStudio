@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EldenRingArmorStudio")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2458230d3a95b88df7ac30e98d7d2d954b9a6f94")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ce4d7c845447530e87c59135423d3f9bf2e7e54e")]
 [assembly: System.Reflection.AssemblyProductAttribute("EldenRingArmorStudio")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EldenRingArmorStudio")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
