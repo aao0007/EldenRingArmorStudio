@@ -83,7 +83,7 @@ namespace EldenRingArmorStudio.UI.Viewer3D
 
         private void GlControl_Render(TimeSpan delta)
         {
-            GL.ClearColor(0.08f, 0.08f, 0.10f, 1.0f);
+            GL.ClearColor(0.05f, 0.05f, 0.06f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);

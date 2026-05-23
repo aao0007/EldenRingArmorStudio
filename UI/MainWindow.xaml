@@ -3,50 +3,57 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dock="https://github.com/Dirkster99/AvalonDock"
         xmlns:viewer="clr-namespace:EldenRingArmorStudio.UI.Viewer3D"
+        xmlns:panels="clr-namespace:EldenRingArmorStudio.UI.Panels"
         Title="Elden Ring Armor Studio - C# Edition" Height="720" Width="1280"
-        Background="#1E1E1E"
-        AllowDrop="True" 
-        Drop="Window_Drop">
+        Background="#F5F5F5"
+        AllowDrop="True" Drop="Window_Drop">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Background="#2D2D30" Foreground="White">
+        <Menu Grid.Row="0" Background="#F0F0F0" Foreground="Black" Padding="2">
             <MenuItem Header="Archivo">
-                <MenuItem Header="Abrir Game Directory..."/>
+                <MenuItem Header="Configurar Directorio de Modelos..." Click="MenuConfigurarModelos_Click"/>
+                <MenuItem Header="Recargar CSV (desde /data)" Click="MenuRecargarCsv_Click"/>
                 <MenuItem Header="Guardar Cambios (.csv)"/>
                 <Separator/>
-                <MenuItem Header="Salir"/>
+                <MenuItem Header="Salir" Click="Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Herramientas">
                 <MenuItem Header="Ejecutar WitchyBND Unpack"/>
-                <MenuItem Header="Generar Invisible Flags"/>
+                <MenuItem Header="Generar Invisible Flags" Click="MenuGenerarFlags_Click"/>
             </MenuItem>
         </Menu>
 
-        <dock:DockingManager Grid.Row="1" Theme="{Binding Source={StaticResource VS2013DarkTheme}}">
+        <dock:DockingManager Grid.Row="1">
             <dock:LayoutRoot>
-                <dock:LayoutPanel Orientation="Horizontal">
+                <dock:LayoutPanel Orientation="Vertical">
 
-                    <dock:LayoutAnchorablePane DockWidth="300">
-                        <dock:LayoutAnchorable Title="Lista de Armaduras (SQLite)" CanClose="False">
-                            <ListBox x:Name="ArmorListBox" Background="#252526" Foreground="White"/>
-                        </dock:LayoutAnchorable>
-                    </dock:LayoutAnchorablePane>
+                    <dock:LayoutPanel Orientation="Horizontal">
 
-                    <dock:LayoutDocumentPane>
-                        <dock:LayoutDocument Title="Visualizador FLVER 3D" CanClose="False">
-                            <viewer:Viewport3DControl x:Name="FlverViewport"/>
-                        </dock:LayoutDocument>
-                    </dock:LayoutDocumentPane>
+                        <dock:LayoutAnchorablePane DockWidth="350">
+                            <dock:LayoutAnchorable Title="Propiedades de Armadura" CanClose="False">
+                                <panels:ArmorInfoPanel x:Name="InfoPanel"/>
+                            </dock:LayoutAnchorable>
 
-                    <dock:LayoutAnchorablePane DockWidth="350">
-                        <dock:LayoutAnchorable Title="Propiedades y Params / Smithbox" CanClose="False">
-                            <Grid Background="#252526">
-                                <TextBlock Text="Selecciona una pieza para ver sus flags ocultos." Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Grid>
+                            <dock:LayoutAnchorable Title="Archivos (Mods/Parts)" CanClose="False">
+                                <panels:FileTreePanel x:Name="FileTree"/>
+                            </dock:LayoutAnchorable>
+                        </dock:LayoutAnchorablePane>
+
+                        <dock:LayoutDocumentPane>
+                            <dock:LayoutDocument Title="Visualizador FLVER 3D" CanClose="False">
+                                <viewer:Viewport3DControl x:Name="FlverViewport"/>
+                            </dock:LayoutDocument>
+                        </dock:LayoutDocumentPane>
+
+                    </dock:LayoutPanel>
+
+                    <dock:LayoutAnchorablePane DockHeight="250">
+                        <dock:LayoutAnchorable Title="Explorador de Armaduras" CanClose="False">
+                            <panels:ArmorExplorerPanel x:Name="ExplorerPanel"/>
                         </dock:LayoutAnchorable>
                     </dock:LayoutAnchorablePane>
 

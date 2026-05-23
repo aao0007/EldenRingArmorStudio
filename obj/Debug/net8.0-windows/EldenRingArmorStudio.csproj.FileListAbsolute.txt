@@ -83,9 +83,15 @@ C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\bin\Debug\n
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\bin\Debug\net8.0-windows\DrSwizzler.dll
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\bin\Debug\net8.0-windows\ZstdNet.dll
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\EldenRingArmorStudio.csproj.AssemblyReference.cache
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Panels\Armorexplorerpanel.baml
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Panels\ArmorInfoPanel.baml
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Panels\Filetreepanel.baml
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Viewer3D\Viewport3DControl.baml
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\App.baml
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\MainWindow.g.cs
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Panels\Armorexplorerpanel.g.cs
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Panels\ArmorInfoPanel.g.cs
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Panels\Filetreepanel.g.cs
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Viewer3D\Viewport3DControl.g.cs
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\App.g.cs
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
