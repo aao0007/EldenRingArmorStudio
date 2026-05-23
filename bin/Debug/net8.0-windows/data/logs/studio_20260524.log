@@ -1,0 +1,519 @@
+2026-05-24 00:07:58 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 00:08:01 | INF |  | DB cargada: 751 piezas
+2026-05-24 00:08:01 | ERR |  | Error inicializando DB
+System.ArgumentOutOfRangeException: Exception of type 'System.ArgumentOutOfRangeException' was thrown. (Parameter 'name')
+Actual value was gender.
+   at Microsoft.Data.Sqlite.SqliteDataRecord.GetOrdinal(String name)
+   at Microsoft.Data.Sqlite.SqliteDataRecord.get_Item(String name)
+   at Microsoft.Data.Sqlite.SqliteDataReader.get_Item(String name)
+   at EldenRingArmorStudio.Core.ArmorDatabase.ReadRecord(SqliteDataReader r) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 182
+   at EldenRingArmorStudio.Core.ArmorDatabase.Search(String query, String category, Boolean alteredOnly) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 145
+   at EldenRingArmorStudio.UI.MainWindow.CargarLista() in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 41
+   at EldenRingArmorStudio.UI.MainWindow.MainWindow_Loaded(Object sender, RoutedEventArgs e) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 29
+2026-05-24 00:09:23 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 00:09:25 | INF |  | DB cargada: 751 piezas
+2026-05-24 00:09:25 | ERR |  | Error inicializando DB
+System.ArgumentOutOfRangeException: Exception of type 'System.ArgumentOutOfRangeException' was thrown. (Parameter 'name')
+Actual value was gender.
+   at Microsoft.Data.Sqlite.SqliteDataRecord.GetOrdinal(String name)
+   at Microsoft.Data.Sqlite.SqliteDataRecord.get_Item(String name)
+   at Microsoft.Data.Sqlite.SqliteDataReader.get_Item(String name)
+   at EldenRingArmorStudio.Core.ArmorDatabase.ReadRecord(SqliteDataReader r) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 182
+   at EldenRingArmorStudio.Core.ArmorDatabase.Search(String query, String category, Boolean alteredOnly) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 145
+   at EldenRingArmorStudio.UI.MainWindow.CargarLista() in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 41
+   at EldenRingArmorStudio.UI.MainWindow.MainWindow_Loaded(Object sender, RoutedEventArgs e) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 29
+2026-05-24 00:18:22 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 00:18:25 | INF |  | DB cargada: 751 piezas
+2026-05-24 00:18:25 | ERR |  | Error inicializando DB o cargando componentes
+System.ArgumentOutOfRangeException: Exception of type 'System.ArgumentOutOfRangeException' was thrown. (Parameter 'name')
+Actual value was gender.
+   at Microsoft.Data.Sqlite.SqliteDataRecord.GetOrdinal(String name)
+   at Microsoft.Data.Sqlite.SqliteDataRecord.get_Item(String name)
+   at Microsoft.Data.Sqlite.SqliteDataReader.get_Item(String name)
+   at EldenRingArmorStudio.Core.ArmorDatabase.ReadRecord(SqliteDataReader r) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 182
+   at EldenRingArmorStudio.Core.ArmorDatabase.Search(String query, String category, Boolean alteredOnly) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 145
+   at EldenRingArmorStudio.UI.MainWindow.CargarBaseDeDatos(String query) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 72
+   at EldenRingArmorStudio.UI.MainWindow.MainWindow_Loaded(Object sender, RoutedEventArgs e) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 34
+2026-05-24 00:30:35 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 00:30:38 | INF |  | Base de datos SQLite cargada. Registros: 751
+2026-05-24 00:30:38 | ERR |  | Error crítico durante la inicialización de la ventana principal
+System.ArgumentOutOfRangeException: Exception of type 'System.ArgumentOutOfRangeException' was thrown. (Parameter 'name')
+Actual value was gender.
+   at Microsoft.Data.Sqlite.SqliteDataRecord.GetOrdinal(String name)
+   at Microsoft.Data.Sqlite.SqliteDataRecord.get_Item(String name)
+   at Microsoft.Data.Sqlite.SqliteDataReader.get_Item(String name)
+   at EldenRingArmorStudio.Core.ArmorDatabase.ReadRecord(SqliteDataReader r) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 182
+   at EldenRingArmorStudio.Core.ArmorDatabase.Search(String query, String category, Boolean alteredOnly) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 145
+   at EldenRingArmorStudio.UI.MainWindow.CargarBaseDeDatos(String query) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 92
+   at EldenRingArmorStudio.UI.MainWindow.MainWindow_Loaded(Object sender, RoutedEventArgs e) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 36
+2026-05-24 00:30:51 | INF |  | Directorio de modelos configurado en: C:\Users\Anki\Documents\.apps\PMU\parts
+2026-05-24 00:30:53 | ERR |  | Error desempaquetando BND: C:\Users\Anki\Documents\.apps\PMU\parts\am_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:30:53 | WRN |  | No se pudo extraer un FlverModel válido del archivo am_m_1360.partsbnd.dcx
+2026-05-24 00:32:08 | INF |  | Directorio de modelos configurado en: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Coop\mod
+2026-05-24 00:35:28 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 00:35:30 | INF |  | Base de datos SQLite cargada. Registros: 751
+2026-05-24 00:35:30 | ERR |  | Error crítico durante la inicialización de la ventana principal
+System.ArgumentOutOfRangeException: Exception of type 'System.ArgumentOutOfRangeException' was thrown. (Parameter 'name')
+Actual value was gender.
+   at Microsoft.Data.Sqlite.SqliteDataRecord.GetOrdinal(String name)
+   at Microsoft.Data.Sqlite.SqliteDataRecord.get_Item(String name)
+   at Microsoft.Data.Sqlite.SqliteDataReader.get_Item(String name)
+   at EldenRingArmorStudio.Core.ArmorDatabase.ReadRecord(SqliteDataReader r) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 182
+   at EldenRingArmorStudio.Core.ArmorDatabase.Search(String query, String category, Boolean alteredOnly) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 145
+   at EldenRingArmorStudio.UI.MainWindow.CargarBaseDeDatos(String query) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 92
+   at EldenRingArmorStudio.UI.MainWindow.MainWindow_Loaded(Object sender, RoutedEventArgs e) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 36
+2026-05-24 00:35:51 | INF |  | Directorio de modelos configurado en: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black
+2026-05-24 00:35:52 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:35:58 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_f_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:35:59 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:36:00 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_m_1361.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:36:00 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:36:01 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_f_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:36:01 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\am_m_1361.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:36:01 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_f_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:36:02 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:36:21 | INF |  | Modelo 3D cargado exitosamente en el visor.
+2026-05-24 00:36:25 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:36:34 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\lg_m_1361.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:36:45 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\lg_m_1360_l.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:37:07 | INF |  | Modelo 3D cargado exitosamente en el visor.
+2026-05-24 00:37:10 | INF |  | Modelo 3D cargado exitosamente en el visor.
+2026-05-24 00:37:12 | INF |  | Modelo 3D cargado exitosamente en el visor.
+2026-05-24 00:37:19 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_f_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:37:25 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\am_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:37:33 | INF |  | Directorio de modelos configurado en: C:\Users\Anki\Documents\.apps\PMU\parts
+2026-05-24 00:37:34 | ERR |  | Error desempaquetando BND: C:\Users\Anki\Documents\.apps\PMU\parts\am_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:42:09 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 00:42:10 | INF |  | Base de datos SQLite cargada. Registros: 751
+2026-05-24 00:42:10 | ERR |  | Error crítico durante la inicialización de la ventana principal
+System.ArgumentOutOfRangeException: Exception of type 'System.ArgumentOutOfRangeException' was thrown. (Parameter 'name')
+Actual value was gender.
+   at Microsoft.Data.Sqlite.SqliteDataRecord.GetOrdinal(String name)
+   at Microsoft.Data.Sqlite.SqliteDataRecord.get_Item(String name)
+   at Microsoft.Data.Sqlite.SqliteDataReader.get_Item(String name)
+   at EldenRingArmorStudio.Core.ArmorDatabase.ReadRecord(SqliteDataReader r) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 182
+   at EldenRingArmorStudio.Core.ArmorDatabase.Search(String query, String category, Boolean alteredOnly) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 145
+   at EldenRingArmorStudio.UI.MainWindow.CargarBaseDeDatos(String query) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 92
+   at EldenRingArmorStudio.UI.MainWindow.MainWindow_Loaded(Object sender, RoutedEventArgs e) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 36
+2026-05-24 00:42:29 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\am_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:42:33 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\bd_m_1361_l.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:42:37 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_f_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:46:36 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 00:46:38 | INF |  | Base de datos SQLite cargada. Registros: 751
+2026-05-24 00:46:38 | ERR |  | Error crítico durante la inicialización de la ventana principal
+System.ArgumentOutOfRangeException: Exception of type 'System.ArgumentOutOfRangeException' was thrown. (Parameter 'name')
+Actual value was gender.
+   at Microsoft.Data.Sqlite.SqliteDataRecord.GetOrdinal(String name)
+   at Microsoft.Data.Sqlite.SqliteDataRecord.get_Item(String name)
+   at Microsoft.Data.Sqlite.SqliteDataReader.get_Item(String name)
+   at EldenRingArmorStudio.Core.ArmorDatabase.ReadRecord(SqliteDataReader r) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 182
+   at EldenRingArmorStudio.Core.ArmorDatabase.Search(String query, String category, Boolean alteredOnly) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 145
+   at EldenRingArmorStudio.UI.MainWindow.CargarBaseDeDatos(String query) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 92
+   at EldenRingArmorStudio.UI.MainWindow.MainWindow_Loaded(Object sender, RoutedEventArgs e) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 36
+2026-05-24 00:46:46 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_f_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:46:49 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\bd_f_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:46:53 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\lg_m_1361.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:46:54 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\lg_m_1361.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:47:32 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\am_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:47:33 | ERR |  | Error desempaquetando BND: D:\SteamLibrary\steamapps\common\ELDEN RING\Game\ModEngine-Creative\mod\parts\2B black\am_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:47:48 | ERR |  | Error desempaquetando BND: C:\Users\Anki\Documents\.apps\PMU\parts\am_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:47:49 | ERR |  | Error desempaquetando BND: C:\Users\Anki\Documents\.apps\PMU\parts\am_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:47:52 | ERR |  | Error desempaquetando BND: C:\Users\Anki\Documents\.apps\PMU\parts\am_m_1360-partsbnd-dcx\ElfDGAM.flver
+System.IO.InvalidDataException: Read ASCII: FLVE | Expected ASCII: BND4
+   at SoulsFormats.BinaryReaderEx.AssertASCII(String[] values)
+   at SoulsFormats.BND4.ReadHeader(IBND4 bnd, BinaryReaderEx br)
+   at SoulsFormats.BND4.Read(BinaryReaderEx br)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:47:53 | ERR |  | Error desempaquetando BND: C:\Users\Anki\Documents\.apps\PMU\parts\am_m_1360-partsbnd-dcx\ElfDGAM.flver
+System.IO.InvalidDataException: Read ASCII: FLVE | Expected ASCII: BND4
+   at SoulsFormats.BinaryReaderEx.AssertASCII(String[] values)
+   at SoulsFormats.BND4.ReadHeader(IBND4 bnd, BinaryReaderEx br)
+   at SoulsFormats.BND4.Read(BinaryReaderEx br)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:50:08 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 00:50:09 | INF |  | Base de datos SQLite cargada. Registros: 751
+2026-05-24 00:50:09 | ERR |  | Error crítico durante la inicialización de la ventana principal
+System.ArgumentOutOfRangeException: Exception of type 'System.ArgumentOutOfRangeException' was thrown. (Parameter 'name')
+Actual value was gender.
+   at Microsoft.Data.Sqlite.SqliteDataRecord.GetOrdinal(String name)
+   at Microsoft.Data.Sqlite.SqliteDataRecord.get_Item(String name)
+   at Microsoft.Data.Sqlite.SqliteDataReader.get_Item(String name)
+   at EldenRingArmorStudio.Core.ArmorDatabase.ReadRecord(SqliteDataReader r) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 182
+   at EldenRingArmorStudio.Core.ArmorDatabase.Search(String query, String category, Boolean alteredOnly) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\Core\ArmorDatabase.cs:line 145
+   at EldenRingArmorStudio.UI.MainWindow.CargarBaseDeDatos(String query) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 92
+   at EldenRingArmorStudio.UI.MainWindow.MainWindow_Loaded(Object sender, RoutedEventArgs e) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\MainWindow.xaml.cs:line 36
+2026-05-24 00:50:17 | ERR |  | Error desempaquetando BND: C:\Users\Anki\Documents\.apps\PMU\parts\am_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:50:19 | ERR |  | Error desempaquetando BND: C:\Users\Anki\Documents\.apps\PMU\parts\am_m_1360.partsbnd.dcx
+SoulsFormats.Exceptions.NoOodleFoundException: Could not find a supported version of oo2core.
+Please copy oo2core_6_win64.dll, oo2core_8_win64.dll or oo2core_9_win64.dll into the program directory
+Last Error Oodle 6: No se puede encontrar el módulo especificado.
+Last Error Oodle 8: No se puede encontrar el módulo especificado.
+Last Error Oodle 9: No se puede encontrar el módulo especificado.
+
+   at SoulsFormats.Oodle.GetOodleCompressor()
+   at SoulsFormats.DCX.DecompressDCXKRAK(BinaryReaderEx br, DcxKrakCompressionInfo compression)
+   at SoulsFormats.DCX.Decompress(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SFUtil.GetDecompressedBinaryReader(BinaryReaderEx br, CompressionInfo& compression)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:50:23 | ERR |  | Error desempaquetando BND: C:\Users\Anki\Documents\.apps\PMU\parts\am_m_1360-partsbnd-dcx\ElfDGAM.flver
+System.IO.InvalidDataException: Read ASCII: FLVE | Expected ASCII: BND4
+   at SoulsFormats.BinaryReaderEx.AssertASCII(String[] values)
+   at SoulsFormats.BND4.ReadHeader(IBND4 bnd, BinaryReaderEx br)
+   at SoulsFormats.BND4.Read(BinaryReaderEx br)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:50:23 | ERR |  | Error desempaquetando BND: C:\Users\Anki\Documents\.apps\PMU\parts\am_m_1360-partsbnd-dcx\ElfDGAM.flver
+System.IO.InvalidDataException: Read ASCII: FLVE | Expected ASCII: BND4
+   at SoulsFormats.BinaryReaderEx.AssertASCII(String[] values)
+   at SoulsFormats.BND4.ReadHeader(IBND4 bnd, BinaryReaderEx br)
+   at SoulsFormats.BND4.Read(BinaryReaderEx br)
+   at SoulsFormats.SoulsFile`1.Read(String path)
+   at EldenRingArmorStudio.UI.Viewer3D.FlverLoader.LoadFromBnd(String bndPath) in C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\UI\Viewer3D\FlverLoader.cs:line 39
+2026-05-24 00:56:13 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 00:57:01 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 01:00:57 | INF |  | Iniciando Elden Ring Armor Studio...
+2026-05-24 01:01:18 | INF |  | Cargando FLVER: ElfDGLG.flver
+2026-05-24 01:01:18 | DBG |  | TextureMap: 1 texturas encontradas en C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\bin\Debug\net8.0-windows\data\temp_extract\lg_m_1360-partsbnd-dcx
+2026-05-24 01:01:18 | INF |  | FLVER nativo: 4924 verts, 1688 tris
+2026-05-24 01:01:23 | INF |  | Cargando FLVER: ElfDGHD.flver
+2026-05-24 01:01:23 | DBG |  | TextureMap: 1 texturas encontradas en C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\bin\Debug\net8.0-windows\data\temp_extract\hd_m_1360_l-partsbnd-dcx
+2026-05-24 01:01:23 | INF |  | FLVER nativo: 93584 verts, 36456 tris

@@ -5,10 +5,10 @@
     "smithbox_path": "tools/smithbox/Smithbox.exe"
   },
   "ModEngine2": {
-    "root_path": ""
+    "root_path": "C:/Users/Anki/Downloads/ModEngine"
   },
   "Project": {
-    "parts_library_path": ""
+    "parts_library_path": "C:/Users/Anki/Downloads/ModEngine/mod/parts"
   },
   "Ui": {
     "dark_mode": true,
