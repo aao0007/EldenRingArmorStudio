@@ -23,7 +23,7 @@ public class ArmorGridItem
     public BitmapSource Thumbnail { get; init; } = null!;
 
     // 🚀 Añadimos esto para que el XAML lo encuentre al instante
-    public int IconIdM => Record != null ? Record.IconIdM : 0;
+    public int IconIdM => Record != null ? Record.IconId ?? 0 : 0;
 }
 
 /// <summary>
@@ -120,7 +120,7 @@ public partial class ArmorExplorerPanel : UserControl
         var altOnly = ChkAltered.IsChecked == true;
 
         // Ejecutar la búsqueda en la base de datos de SQLite
-        var results = _db.SearchArmor(query, cat, altOnly);
+        var results = _db.Search(query, cat, altOnly);
 
         _items.Clear();
         foreach (var r in results)

@@ -30,6 +30,58 @@ public static class FlverLoader
         return LoadFlver(flverPath, textureMap);
     }
 
+    public static FlverModel? LoadFromBnd(string bndPath)
+    {
+        if (!File.Exists(bndPath)) return null;
+
+        try
+        {
+            var bnd = SoulsFormats.BND4.Read(bndPath);
+
+            // 🌟 CORRECCIÓN 1: Buscar ".flver" en cualquier parte del nombre (cubre .flver.dcx)
+            var flverFile = bnd.Files.FirstOrDefault(f => f.Name.IndexOf(".flver", StringComparison.OrdinalIgnoreCase) >= 0);
+
+            if (flverFile == null)
+            {
+                Log.Warning("El archivo {File} no contiene geometría FLVER (puede ser un dummy invisible del juego).", Path.GetFileName(bndPath));
+                return null;
+            }
+
+            var textureMap = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+
+            // 🌟 CORRECCIÓN 2: Prevenir que una textura mal empaquetada cancele la carga del modelo 3D
+            var tpfFiles = bnd.Files.Where(f => f.Name.IndexOf(".tpf", StringComparison.OrdinalIgnoreCase) >= 0);
+            foreach (var tpfFile in tpfFiles)
+            {
+                try
+                {
+                    var tpf = SoulsFormats.TPF.Read(tpfFile.Bytes);
+                    foreach (var tex in tpf.Textures)
+                    {
+                        var key = Path.GetFileNameWithoutExtension(tex.Name);
+                        textureMap.TryAdd(key, tex.Bytes);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning("Se omitió una textura ilegible en {TpfName}: {Ex}", tpfFile.Name, ex.Message);
+                }
+            }
+
+            var flver = SoulsFormats.FLVER2.Read(flverFile.Bytes);
+
+#if SOULSTRUCT_AVAILABLE
+            return ParseWithSoulsFormats(flver, textureMap, bndPath);
+#else
+            return ParseWithSoulsFormats(flver, textureMap, bndPath);
+#endif
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Error desempaquetando BND: {File}", bndPath);
+            return null;
+        }
+    }
     private static FlverModel LoadFlver(string flverPath, Dictionary<string, byte[]> textureMap)
     {
         try

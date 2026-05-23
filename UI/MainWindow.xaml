@@ -2,115 +2,120 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dock="https://github.com/Dirkster99/AvalonDock"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewer="clr-namespace:EldenRingArmorStudio.UI.Viewer3D"
-        xmlns:vm="clr-namespace:EldenRingArmorStudio.ViewModels"
+        mc:Ignorable="d"
         Title="Elden Ring Armor Studio - C# Edition" Height="720" Width="1280"
         Background="#1E1E1E">
-
-    <Window.Resources>
-        <!-- DataTemplate: icono 48x48 + nombre + subtítulo -->
-        <DataTemplate DataType="{x:Type vm:ArmorListItemViewModel}">
-            <StackPanel Orientation="Horizontal" Margin="4,2">
-                <Image Source="{Binding IconImage}"
-                       Width="48" Height="48"
-                       Stretch="Uniform"
-                       RenderOptions.BitmapScalingMode="HighQuality"
-                       Margin="0,0,8,0"/>
-                <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="{Binding DisplayName}"
-                               Foreground="White" FontSize="13" FontWeight="SemiBold"/>
-                    <TextBlock Text="{Binding SubLine}"
-                               Foreground="#AAAAAA" FontSize="11" Margin="0,2,0,0"/>
-                </StackPanel>
-            </StackPanel>
-        </DataTemplate>
-    </Window.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="2*" MinHeight="200"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="1*" MinHeight="150"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Background="#2D2D30" Foreground="White">
-            <MenuItem Header="Archivo">
-                <MenuItem Header="Abrir Game Directory..."/>
-                <MenuItem Header="Guardar Cambios (.csv)"/>
-                <Separator/>
-                <MenuItem Header="Salir"/>
-            </MenuItem>
-            <MenuItem Header="Herramientas">
-                <MenuItem Header="Ejecutar WitchyBND Unpack"/>
-                <MenuItem Header="Generar Invisible Flags"/>
-            </MenuItem>
-        </Menu>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320" MinWidth="280"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <dock:DockingManager Grid.Row="1" Theme="{Binding Source={StaticResource VS2013DarkTheme}}">
-            <dock:LayoutRoot>
-                <dock:LayoutPanel Orientation="Horizontal">
+            <Grid Grid.Column="0" Background="#252526">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1.2*"/>
+                </Grid.RowDefinitions>
 
-                    <dock:LayoutAnchorablePane DockWidth="300">
-                        <dock:LayoutAnchorable Title="Lista de Armaduras (SQLite)" CanClose="False">
-                            <ListBox x:Name="ArmorListBox" Background="#252526" Foreground="White"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                     VirtualizingPanel.IsVirtualizing="True"
-                                     VirtualizingPanel.VirtualizationMode="Recycling"/>
-                        </dock:LayoutAnchorable>
-                    </dock:LayoutAnchorablePane>
+                <StackPanel Grid.Row="0" Margin="5" Background="#2D2D30">
+                    <TextBlock Text="Carpeta de Modelos (parts):" Foreground="White" FontSize="11" Margin="0,0,0,3"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtPartsDirectory" Grid.Column="0" IsReadOnly="True" Background="#1E1E1E" Foreground="Gray" BorderBrush="#3F3F46" FontSize="11" VerticalAlignment="Center" Padding="2"/>
+                        <Button x:Name="BtnBrowseDirectory" Grid.Column="1" Content="..." Width="30" Margin="5,0,0,0" Background="#3E3E42" Foreground="White" Click="BtnBrowseDirectory_Click"/>
+                    </Grid>
+                </StackPanel>
 
-                    <dock:LayoutDocumentPane>
-                        <dock:LayoutDocument Title="Visualizador FLVER 3D" CanClose="False">
-                            <viewer:Viewport3DControl x:Name="FlverViewport"/>
-                        </dock:LayoutDocument>
-                    </dock:LayoutDocumentPane>
+                <GroupBox Grid.Row="1" Header="Archivos Físicos (.partsbnd.dcx)" Foreground="White" Margin="5" BorderBrush="#3F3F46">
+                    <ListBox x:Name="ModelFilesListBox" Background="#1E1E1E" Foreground="White" BorderThickness="0" Margin="2" SelectionChanged="ModelFilesListBox_SelectionChanged"/>
+                </GroupBox>
 
-                    <dock:LayoutAnchorablePane DockWidth="350">
-                        <dock:LayoutAnchorable Title="Propiedades y Params / Smithbox" CanClose="False">
-                            <Grid Background="#252526">
-                                <!-- Placeholder -->
-                                <TextBlock x:Name="PropsPlaceholder"
-                                           Text="Selecciona una pieza para ver sus flags ocultos."
-                                           Foreground="Gray"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <GroupBox Grid.Row="2" Header="Detalles del Objeto Seleccionado" Foreground="White" Margin="5" BorderBrush="#3F3F46">
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                                <!-- Panel de detalle, oculto hasta seleccionar -->
-                                <ScrollViewer x:Name="PropsPanel"
-                                              Visibility="Collapsed"
-                                              VerticalScrollBarVisibility="Auto">
-                                    <StackPanel Margin="12">
-                                        <!-- Icono grande + nombre -->
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                            <Image x:Name="PropsIcon"
-                                                   Width="72" Height="72"
-                                                   Stretch="Uniform"
-                                                   RenderOptions.BitmapScalingMode="HighQuality"
-                                                   Margin="0,0,12,0"/>
-                                            <StackPanel VerticalAlignment="Center">
-                                                <TextBlock x:Name="PropsNameEs"
-                                                           Foreground="White" FontSize="15"
-                                                           FontWeight="Bold" TextWrapping="Wrap"/>
-                                                <TextBlock x:Name="PropsNameEn"
-                                                           Foreground="#AAAAAA" FontSize="11"
-                                                           TextWrapping="Wrap" Margin="0,2,0,0"/>
-                                                <TextBlock x:Name="PropsCategory"
-                                                           Foreground="#888" FontSize="11"
-                                                           Margin="0,2,0,0"/>
-                                            </StackPanel>
-                                        </StackPanel>
+                        <Image x:Name="ImgSelectedIcon" Grid.Column="0" Width="64" Height="64" VerticalAlignment="Top" Margin="0,0,8,0" Stretch="Uniform"/>
 
-                                        <Separator Background="#33FFFFFF" Margin="0,0,0,8"/>
+                        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock x:Name="TxtSelectedModelName" Text="Ninguno" Foreground="#FFD700" FontWeight="Bold" FontSize="14" TextWrapping="Wrap" Margin="0,0,0,4"/>
+                                <TextBlock x:Name="TxtSelectedModelFile" Text="-" Foreground="#A9A9A9" FontSize="11" Margin="0,0,0,8"/>
 
-                                        <TextBlock x:Name="PropsModelId"
-                                                   Foreground="#666" FontSize="10"
-                                                   FontFamily="Consolas"/>
-                                    </StackPanel>
-                                </ScrollViewer>
-                            </Grid>
-                        </dock:LayoutAnchorable>
-                    </dock:LayoutAnchorablePane>
+                                <TextBlock Text="Métrica de Atributos:" Foreground="#9CDCFE" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock x:Name="TxtSelectedModelStats" Text="-" Foreground="White" TextWrapping="Wrap" FontSize="11" Margin="0,2,0,8"/>
 
-                </dock:LayoutPanel>
-            </dock:LayoutRoot>
-        </dock:DockingManager>
+                                <TextBlock Text="Ruta Absoluta:" Foreground="#9CDCFE" FontWeight="Bold" FontSize="11"/>
+                                <TextBlock x:Name="TxtSelectedModelPath" Text="-" Foreground="Gray" TextWrapping="Wrap" FontSize="10"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#3F3F46"/>
+
+            <GroupBox Grid.Column="2" Header="Visor de Modelos 3D" Foreground="White" Margin="5" BorderBrush="#3F3F46">
+                <viewer:Viewport3DControl x:Name="Viewport3DViewer"/>
+            </GroupBox>
+        </Grid>
+
+        <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#3F3F46"/>
+
+        <GroupBox Grid.Row="2" Header="Base de Datos del CSV (EquipParamProtector)" Foreground="White" Margin="5" BorderBrush="#3F3F46" Background="#252526">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="Filtrar Armadura:" Foreground="White" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBox x:Name="TxtSearchDb" Width="220" Background="#1E1E1E" Foreground="White" BorderBrush="#3F3F46" VerticalAlignment="Center" Padding="2" TextChanged="TxtSearchDb_TextChanged"/>
+                </StackPanel>
+
+                <DataGrid x:Name="ArmorGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
+                          Background="#1E1E1E" Foreground="White" RowBackground="#2D2D30" AlternatingRowBackground="#252526"
+                          BorderThickness="0" GridLinesVisibility="None" HorizontalGridLinesBrush="#3F3F46" Margin="2"
+                          SelectionChanged="ArmorGrid_SelectionChanged">
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#3E3E42"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Padding" Value="6"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </Style>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Model ID" Binding="{Binding EquipModelId}" Width="100"/>
+                        <DataGridTextColumn Header="Nombre (ES)" Binding="{Binding NameEs}" Width="180"/>
+                        <DataGridTextColumn Header="Nombre (EN)" Binding="{Binding NameEn}" Width="180"/>
+                        <DataGridTextColumn Header="Categoría" Binding="{Binding Category}" Width="90"/>
+                        <DataGridTextColumn Header="Set o Conjunto" Binding="{Binding SetName}" Width="150"/>
+                        <DataGridTextColumn Header="Peso" Binding="{Binding Weight, StringFormat={}{0:F1}}" Width="60"/>
+                        <DataGridTextColumn Header="Física" Binding="{Binding DefensePhys, StringFormat={}{0:P1}}" Width="70"/>
+                        <DataGridTextColumn Header="Mágica" Binding="{Binding DefenseMagic, StringFormat={}{0:P1}}" Width="70"/>
+                        <DataGridTextColumn Header="Estabilidad" Binding="{Binding Poise}" Width="80"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>

@@ -7,7 +7,10 @@
              MouseDown="OnMouseDown"
              MouseMove="OnMouseMove"
              MouseUp="OnMouseUp"
-             MouseWheel="OnMouseWheel">
+             MouseWheel="OnMouseWheel"
+             AllowDrop="True"
+             Drop="OnDrop"
+             DragOver="OnDragOver">
     <Grid>
         <glWpf:GLWpfControl x:Name="GlControl" Render="GlControl_Render"/>
 

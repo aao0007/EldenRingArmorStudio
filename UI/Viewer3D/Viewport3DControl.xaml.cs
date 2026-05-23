@@ -4,6 +4,7 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Wpf;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,6 +34,61 @@ namespace EldenRingArmorStudio.UI.Viewer3D
             };
             GlControl.Start(settings);
             InitializeShaders();
+
+            // 🌟 AÑADIDO: Habilitar arrastrar y soltar
+            this.AllowDrop = true;
+            this.DragOver += OnDragOver;
+            this.Drop += OnDrop;
+        }
+
+        // 🌟 AÑADIDO: Eventos para manejar el archivo soltado
+        private void OnDragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effects = DragDropEffects.Copy;
+            else
+                e.Effects = DragDropEffects.None;
+
+            e.Handled = true;
+        }
+
+        private void OnDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files != null && files.Length > 0)
+                {
+                    string path = files[0];
+                    try
+                    {
+                        FlverModel flverModel = null;
+
+                        // 🌟 CORRECCIÓN 3: Soportar tanto carpetas desempaquetadas como archivos DCX puros
+                        if (Directory.Exists(path))
+                        {
+                            flverModel = FlverLoader.LoadFromDirectory(path);
+                        }
+                        else if (File.Exists(path))
+                        {
+                            flverModel = FlverLoader.LoadFromBnd(path);
+                        }
+
+                        if (flverModel != null)
+                        {
+                            LoadModel(flverModel);
+                        }
+                        else
+                        {
+                            MessageBox.Show("El archivo/carpeta seleccionado no contiene un modelo FLVER válido.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al cargar el modelo:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
 
         public void LoadModel(FlverModel model)
@@ -207,7 +263,7 @@ namespace EldenRingArmorStudio.UI.Viewer3D
             {
                 _isDragging = true;
                 _lastMousePos = e.GetPosition(this);
-                this.CaptureMouse(); // <- Ahora C# reconocerá esto porque por fin heredará de UserControl limpio
+                this.CaptureMouse();
             }
         }
 
