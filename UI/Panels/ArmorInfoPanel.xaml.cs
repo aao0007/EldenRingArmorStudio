@@ -15,7 +15,6 @@ namespace EldenRingArmorStudio.UI.Panels;
 /// <summary>
 /// Panel izquierdo: ficha completa de la armadura seleccionada +
 /// checkboxes de InvisibleFlags + generador de CSV para Smithbox.
-/// Se actualiza con un clic en el ArmorExplorerPanel inferior.
 /// </summary>
 public partial class ArmorInfoPanel : UserControl
 {
@@ -24,9 +23,7 @@ public partial class ArmorInfoPanel : UserControl
     private readonly Dictionary<string, CheckBox> _flagChecks = new();
 
     // ── Eventos ───────────────────────────────────────────────────────────────
-    /// <summary>Se emite cuando el usuario pulsa "Ver en visor 3D".</summary>
     public event Action<string> LoadModelRequested;
-    /// <summary>Se emite cuando cambia la selección de flags.</summary>
     public event Action<List<string>> FlagsChanged;
 
     // ── Colores / emojis por categoría ────────────────────────────────────────
@@ -71,11 +68,9 @@ public partial class ArmorInfoPanel : UserControl
             return;
         }
 
-        // 1. Mostrar Textos y Nombres
         TxtNameEs.Text = string.IsNullOrWhiteSpace(record.NameEs) ? record.NameEn : record.NameEs;
         TxtNameEn.Text = record.NameEn;
 
-        // 2. Mostrar Identificadores y Campos
         var midNum = new string(record.EquipModelId.Where(char.IsDigit).ToArray());
         TxtId.Text = $"{record.EquipModelId}  (#{midNum})";
         TxtCat.Text = CatLabel.GetValueOrDefault(record.Category, record.Category);
@@ -83,64 +78,87 @@ public partial class ArmorInfoPanel : UserControl
         TxtAltered.Text = record.IsAltered ? "Sí ✓" : "No";
         TxtFile.Text = string.IsNullOrWhiteSpace(record.FileName) ? "—" : record.FileName;
 
-        // 3. Activar/Desactivar botón del visor 3D
         BtnLoadModel.IsEnabled = !string.IsNullOrWhiteSpace(record.FileName);
 
-        // 4. Reconstruir los Checkboxes de InvisibleFlags
         RebuildFlagsUI(record.Category);
 
-        // 5. 🚀 CARGA DE BANNER / IMAGEN CON PRIORIDAD
-        BitmapImage imageResult = null;
+        // Resolver imagen con la misma lógica centralizada
+        string rutaAbsoluta = ResolveIconPath(record.ThumbnailPath, record.EquipModelId);
 
-        if (!string.IsNullOrEmpty(record.ThumbnailPath))
+        // Fallback a IconIdM / IconIdF si ThumbnailPath no funcionó (registros legacy)
+        if (rutaAbsoluta == null && record.IconIdM != 0)
+        {
+            string rel = Path.Combine("data", "icons",
+                $"MENU_Knowledge_{record.IconIdM.ToString("D5")}.png");
+            rutaAbsoluta = ResolveIconPath(rel, record.EquipModelId);
+        }
+        if (rutaAbsoluta == null && record.IconIdF != 0)
+        {
+            string rel = Path.Combine("data", "icons",
+                $"MENU_Knowledge_{record.IconIdF.ToString("D5")}.png");
+            rutaAbsoluta = ResolveIconPath(rel, record.EquipModelId);
+        }
+
+        if (rutaAbsoluta != null)
         {
             try
             {
-                string rutaAbsoluta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, record.ThumbnailPath);
-
-                // Si no existe ahí, buscamos tres carpetas hacia atrás en la raíz del proyecto fuente
-                if (!File.Exists(rutaAbsoluta))
-                {
-                    string raizProyecto = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\"));
-                    rutaAbsoluta = Path.Combine(raizProyecto, record.ThumbnailPath);
-                }
-
-                // Si encontramos el PNG físico en alguna de las rutas, lo cargamos en memoria
-                if (File.Exists(rutaAbsoluta))
-                {
-                    BitmapImage bmp = new BitmapImage();
-                    bmp.BeginInit();
-                    bmp.UriSource = new Uri(rutaAbsoluta);
-                    bmp.CacheOption = BitmapCacheOption.OnLoad; // Desvincular de disco para no bloquearlo
-                    bmp.EndInit();
-                    bmp.Freeze(); // Permitir compartir la imagen en la UI con total fluidez
-                    imageResult = bmp;
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"⚠️ No se encontró el icono PNG en: {rutaAbsoluta}");
-                }
+                var bmp = new BitmapImage();
+                bmp.BeginInit();
+                bmp.UriSource = new Uri(rutaAbsoluta);
+                bmp.CacheOption = BitmapCacheOption.OnLoad;
+                bmp.EndInit();
+                bmp.Freeze();
+                ImgBanner.Source = bmp;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ Error al cargar la imagen del panel de detalles: {ex.Message}");
+                Log.Error(ex, "[Icons] Error cargando banner para {Id} desde {Path}",
+                    record.EquipModelId, rutaAbsoluta);
+                ImgBanner.Source = MakePlaceholder(record.Category);
             }
-        }
-
-        // 6. Asignar imagen final al control (Prioridad PNG > Fallback Placeholder)
-        if (imageResult != null)
-        {
-            ImgBanner.Source = imageResult;
         }
         else
         {
-            // Si no se encontró el PNG físico o falló la ruta, pintamos el fondo con el emoji dinámico
             ImgBanner.Source = MakePlaceholder(record.Category);
         }
     }
 
     public List<string> GetActivePresetKeys() =>
         _flagChecks.Where(kv => kv.Value.IsChecked == true).Select(kv => kv.Key).ToList();
+
+    // ── Resolución de ruta de icono ───────────────────────────────────────────
+
+    /// <summary>
+    /// Intenta resolver la ruta absoluta a partir de una ruta relativa guardada en BD.
+    /// Busca primero junto al ejecutable, luego en la raíz del proyecto fuente.
+    /// Devuelve null y emite un warning en el log si no la encuentra.
+    /// </summary>
+    private static string ResolveIconPath(string relativePath, string equipModelId)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return null;
+
+        // 1. Junto al ejecutable
+        string rutaEjecutable = Path.GetFullPath(
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath));
+
+        if (File.Exists(rutaEjecutable))
+            return rutaEjecutable;
+
+        // 2. Raíz del proyecto fuente (3 niveles arriba)
+        string raizProyecto = Path.GetFullPath(
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\"));
+        string rutaProyecto = Path.GetFullPath(Path.Combine(raizProyecto, relativePath));
+
+        if (File.Exists(rutaProyecto))
+            return rutaProyecto;
+
+        Log.Warning("[Icons] Imagen no encontrada para {Id} | Ruta relativa: {Rel} | Buscado en: {P1} y {P2}",
+            equipModelId, relativePath, rutaEjecutable, rutaProyecto);
+
+        return null;
+    }
 
     // ── InvisibleFlags UI ─────────────────────────────────────────────────────
 
@@ -162,7 +180,6 @@ public partial class ArmorInfoPanel : UserControl
             return;
         }
 
-        // Hint
         FlagsPanel.Children.Add(new TextBlock
         {
             Text = "✅ Marca los flags a aplicar al duplicar.\nSe generará CSV para Smithbox.",
@@ -219,7 +236,6 @@ public partial class ArmorInfoPanel : UserControl
             return;
         }
 
-        // Recopilar flags combinados
         var combinedFlags = new HashSet<int>();
         var labels = new List<string>();
         foreach (var key in activeKeys)
@@ -230,7 +246,6 @@ public partial class ArmorInfoPanel : UserControl
             labels.Add(preset.Label);
         }
 
-        // Diálogo guardar
         var dlg = new SaveFileDialog
         {
             Title = "Guardar CSV de flags",
@@ -241,7 +256,6 @@ public partial class ArmorInfoPanel : UserControl
         };
         if (dlg.ShowDialog() != true) return;
 
-        // Buscar IDs en el CSV del juego
         var gameCsv = Path.GetFullPath("data/EquipParamProtector.csv");
         var midNum = new string(_current.EquipModelId.Where(char.IsDigit).ToArray());
         var paramIds = File.Exists(gameCsv)

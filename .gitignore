@@ -6,7 +6,6 @@ tools/smithbox/*
 
 tools/witchybnd/*
 !tools/witchybnd/.gitkeep
-!data/icons/.gitkeep
 
 [Bb]in/
 [Oo]bj/

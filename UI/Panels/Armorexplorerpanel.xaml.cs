@@ -3,52 +3,139 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.Linq;
 
 namespace EldenRingArmorStudio.UI.Panels;
 
 /// <summary>
-/// Item de datos para el grid de miniaturas (binding).
+/// Item con carga LAZY de imagen: solo decodifica el PNG cuando WPF
+/// accede a Thumbnail por primera vez (el item entra en el viewport).
 /// </summary>
-public class ArmorGridItem
+public class ArmorGridItem : INotifyPropertyChanged
 {
+    private static readonly string BaseDir = AppDomain.CurrentDomain.BaseDirectory;
+    private static readonly string ProjectDir = Path.GetFullPath(
+        Path.Combine(BaseDir, @"..\..\..\"));
+
     public ArmorRecord Record { get; init; } = null!;
     public string Label { get; init; } = "";
-    public BitmapSource Thumbnail { get; init; } = null!;
 
-    // 🚀 Añadimos esto para que el XAML lo encuentre al instante
-    public int IconIdM => Record != null ? Record.IconIdM : 0;
+    // Ruta absoluta resuelta una sola vez en el constructor
+    private readonly string _resolvedPath;
+
+    // Placeholder estático compartido por todos los items sin imagen
+    private static BitmapSource _sharedPlaceholder;
+
+    private BitmapSource _thumbnail;
+    private bool _loaded;
+
+    public int IconIdM => Record?.IconIdM ?? 0;
+
+    public BitmapSource Thumbnail
+    {
+        get
+        {
+            if (!_loaded)
+            {
+                _loaded = true;
+                // Carga en background para no bloquear el scroll
+                Task.Run(() => LoadImage()).ContinueWith(t =>
+                {
+                    if (t.Result != null)
+                    {
+                        _thumbnail = t.Result;
+                        OnPropertyChanged();
+                    }
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+            return _thumbnail ?? GetPlaceholder(Record?.Category);
+        }
+    }
+
+    public ArmorGridItem(string resolvedPath)
+    {
+        _resolvedPath = resolvedPath;
+    }
+
+    private BitmapSource LoadImage()
+    {
+        if (string.IsNullOrEmpty(_resolvedPath)) return null;
+        try
+        {
+            var bmp = new BitmapImage();
+            bmp.BeginInit();
+            bmp.UriSource = new Uri(_resolvedPath);
+            bmp.CacheOption = BitmapCacheOption.OnLoad;
+            bmp.DecodePixelWidth = 64; // solo 64px en memoria, no el PNG completo
+            bmp.EndInit();
+            bmp.Freeze();
+            return bmp;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "[Icons] Error cargando {Path}", _resolvedPath);
+            return null;
+        }
+    }
+
+    // Placeholder por categoría, creado una sola vez y compartido
+    private static readonly Dictionary<string, BitmapSource> PlaceholderCache = new();
+    private static readonly Dictionary<string, Color> CatColor = new()
+    {
+        {"Head", Color.FromRgb(90,74,173)}, {"Body", Color.FromRgb(42,106,74)},
+        {"Arms", Color.FromRgb(122,74,26)}, {"Legs", Color.FromRgb(74,26,106)},
+    };
+    private static readonly Dictionary<string, string> CatEmoji = new()
+    {
+        {"Head","🪖"},{"Body","🥋"},{"Arms","🧤"},{"Legs","👢"}
+    };
+
+    private static BitmapSource GetPlaceholder(string category)
+    {
+        category ??= "Head";
+        if (PlaceholderCache.TryGetValue(category, out var cached)) return cached;
+        var ph = ArmorExplorerPanel.MakePlaceholder(category, 64);
+        PlaceholderCache[category] = ph;
+        return ph;
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void OnPropertyChanged([CallerMemberName] string name = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 /// <summary>
-/// Panel inferior con grid de miniaturas de armaduras.
-/// Un clic → ArmorClicked (para el panel de info).
-/// Doble clic → ModelDoubleClicked (para cargar en visor).
+/// Panel inferior con grid virtualizado de miniaturas de armaduras.
 /// </summary>
 public partial class ArmorExplorerPanel : UserControl
 {
-    // ── Estado ────────────────────────────────────────────────────────────────
     private ArmorDatabase _db;
     private readonly DispatcherTimer _searchTimer;
     private readonly ObservableCollection<ArmorGridItem> _items = new();
+
+    private static readonly string BaseDir = AppDomain.CurrentDomain.BaseDirectory;
+    private static readonly string ProjectDir = Path.GetFullPath(
+        Path.Combine(BaseDir, @"..\..\..\"));
 
     private static readonly Dictionary<string, string> CatEmoji = new()
     {
         {"Head","🪖"},{"Body","🥋"},{"Arms","🧤"},{"Legs","👢"},{"Todos","🗂"}
     };
-    private static readonly Dictionary<string, Color> CatColor = new()
+    internal static readonly Dictionary<string, Color> CatColor = new()
     {
         {"Head",Color.FromRgb(90,74,173)}, {"Body",Color.FromRgb(42,106,74)},
         {"Arms",Color.FromRgb(122,74,26)}, {"Legs",Color.FromRgb(74,26,106)},
     };
 
-    // ── Eventos ───────────────────────────────────────────────────────────────
     public event Action<ArmorRecord> ArmorClicked;
     public event Action<string> ModelDoubleClicked;
 
@@ -56,42 +143,34 @@ public partial class ArmorExplorerPanel : UserControl
     {
         InitializeComponent();
 
-        // Timer debounce búsqueda
         _searchTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
         _searchTimer.Tick += (_, _) => { _searchTimer.Stop(); PerformSearch(); };
 
         ArmorGrid.ItemsSource = _items;
 
-        // Placeholder en TextBox
         TxtSearch.GotFocus += (_, _) => { if (TxtSearch.Text == (string)TxtSearch.Tag) TxtSearch.Text = ""; };
         TxtSearch.LostFocus += (_, _) => { if (string.IsNullOrEmpty(TxtSearch.Text)) TxtSearch.Text = (string)TxtSearch.Tag; };
         TxtSearch.Text = (string)TxtSearch.Tag;
-
-        // Color del texto gris al perder el foco (Placeholder)
         TxtSearch.Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150));
-        // Color del texto NEGRO al escribir
         TxtSearch.GotFocus += (_, _) => TxtSearch.Foreground = new SolidColorBrush(Colors.Black);
-        TxtSearch.LostFocus += (_, _) => { if (TxtSearch.Text == (string)TxtSearch.Tag) TxtSearch.Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150)); };
+        TxtSearch.LostFocus += (_, _) =>
+        {
+            if (TxtSearch.Text == (string)TxtSearch.Tag)
+                TxtSearch.Foreground = new SolidColorBrush(Color.FromRgb(150, 150, 150));
+        };
     }
-
-    // ── Inicialización ────────────────────────────────────────────────────────
 
     public void Initialize(ArmorDatabase db)
     {
         _db = db;
-
-        // Categorías
         ComboCat.Items.Clear();
         foreach (var cat in new[] { "Todos", "Head", "Body", "Arms", "Legs" })
             ComboCat.Items.Add($"{CatEmoji.GetValueOrDefault(cat, "")} {cat}");
         ComboCat.SelectedIndex = 0;
-
         PerformSearch();
     }
 
     public void Refresh() => PerformSearch();
-
-    // ── Búsqueda ──────────────────────────────────────────────────────────────
 
     private void OnSearchChanged(object sender, TextChangedEventArgs e)
     {
@@ -102,6 +181,25 @@ public partial class ArmorExplorerPanel : UserControl
 
     private void OnCategoryChanged(object sender, SelectionChangedEventArgs e) => PerformSearch();
     private void OnFilterChanged(object sender, RoutedEventArgs e) => PerformSearch();
+
+    /// <summary>
+    /// Resuelve la ruta absoluta desde una ruta relativa guardada en BD.
+    /// Busca junto al ejecutable y luego en la raíz del proyecto fuente.
+    /// </summary>
+    private static string ResolveIconPath(string relativePath, string equipModelId)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath)) return null;
+
+        string p1 = Path.GetFullPath(Path.Combine(BaseDir, relativePath));
+        if (File.Exists(p1)) return p1;
+
+        string p2 = Path.GetFullPath(Path.Combine(ProjectDir, relativePath));
+        if (File.Exists(p2)) return p2;
+
+        Log.Warning("[Icons] No encontrada para {Id} | {Rel} | buscado en {P1} y {P2}",
+            equipModelId, relativePath, p1, p2);
+        return null;
+    }
 
     private void PerformSearch()
     {
@@ -117,69 +215,37 @@ public partial class ArmorExplorerPanel : UserControl
                 : catItem.Contains("Legs") ? "Legs"
                 : null;
 
-        var altOnly = ChkAltered.IsChecked == true;
-
-        // Ejecutar la búsqueda en la base de datos de SQLite
-        var results = _db.SearchArmor(query, cat, altOnly);
+        var results = _db.SearchArmor(query, cat);
 
         _items.Clear();
         foreach (var r in results)
         {
-            // Priorizar el nombre en español si existe, si no usa el inglés
             var name = !string.IsNullOrEmpty(r.NameEs) ? r.NameEs : r.NameEn;
             var midNum = new string(r.EquipModelId.Where(char.IsDigit).ToArray());
             var label = $"{(name.Length > 18 ? name[..18] : name)}\n#{midNum}";
 
-            BitmapSource thumb = null;
+            // Resolver ruta una sola vez aquí (barato: solo string ops, sin I/O)
+            string resolvedPath = ResolveIconPath(r.ThumbnailPath, r.EquipModelId);
 
-            // 🚀 RESOLUCIÓN DE RUTA INTELIGENTE PARA LAS IMÁGENES PNG
-            if (!string.IsNullOrEmpty(r.ThumbnailPath))
+            // Fallback a IconIdM / IconIdF si ThumbnailPath vacío o legacy
+            if (resolvedPath == null && r.IconIdM != 0)
+                resolvedPath = ResolveIconPath(
+                    Path.Combine("data", "icons", $"MENU_Knowledge_{r.IconIdM:D5}.png"),
+                    r.EquipModelId);
+            if (resolvedPath == null && r.IconIdF != 0)
+                resolvedPath = ResolveIconPath(
+                    Path.Combine("data", "icons", $"MENU_Knowledge_{r.IconIdF:D5}.png"),
+                    r.EquipModelId);
+
+            _items.Add(new ArmorGridItem(resolvedPath)
             {
-                // 1. Intentar buscar la imagen en la carpeta de ejecución (bin/Debug/net8.0-windows/data/icons...)
-                string rutaAbsoluta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, r.ThumbnailPath);
-
-                // 2. Si no existe ahí, subir 3 niveles en el árbol de directorios hacia la raíz del código fuente (.sln)
-                if (!File.Exists(rutaAbsoluta))
-                {
-                    string raizProyecto = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\"));
-                    rutaAbsoluta = Path.Combine(raizProyecto, r.ThumbnailPath);
-                }
-
-                // 3. Si el archivo físico real existe en alguna de las dos rutas, lo cargamos de forma segura
-                if (File.Exists(rutaAbsoluta))
-                {
-                    try
-                    {
-                        var bmp = new BitmapImage();
-                        bmp.BeginInit();
-                        bmp.UriSource = new Uri(rutaAbsoluta);
-                        bmp.CacheOption = BitmapCacheOption.OnLoad; // Forzar carga en memoria RAM inmediata
-                        bmp.EndInit();
-                        bmp.Freeze(); // Desvincular del hilo principal para máxima fluidez en la UI
-                        thumb = bmp;
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"❌ Error cargando imagen {r.ThumbnailPath}: {ex.Message}");
-                        thumb = null;
-                    }
-                }
-            }
-
-            // Si la imagen no existía en el disco o falló su lectura, usamos el placeholder dinámico
-            if (thumb == null)
-            {
-                thumb = MakePlaceholder(r.Category, 96);
-            }
-
-            // Añadir el item procesado a la colección observable vinculada al Grid del XAML
-            _items.Add(new ArmorGridItem { Record = r, Label = label, Thumbnail = thumb });
+                Record = r,
+                Label = label
+            });
         }
 
         TxtCount.Text = $"{results.Count:N0} resultados";
     }
-
-    // ── Eventos grid ──────────────────────────────────────────────────────────
 
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -193,8 +259,6 @@ public partial class ArmorExplorerPanel : UserControl
             && !string.IsNullOrWhiteSpace(item.Record.FileName))
             ModelDoubleClicked?.Invoke(item.Record.FileName);
     }
-
-    // ── Placeholder ───────────────────────────────────────────────────────────
 
     internal static BitmapSource MakePlaceholder(string category, int size)
     {

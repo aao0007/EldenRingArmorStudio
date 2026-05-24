@@ -111,6 +111,10 @@
             "System.Text.Json": {
               "target": "Package",
               "version": "[10.0.8, )"
+            },
+            "VirtualizingWrapPanel": {
+              "target": "Package",
+              "version": "[2.1.2, )"
             }
           },
           "imports": [

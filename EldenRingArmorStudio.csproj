@@ -15,9 +15,7 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
 		<PackageReference Include="OpenTK" Version="4.9.4" />
-
 		<PackageReference Include="OpenTK.GLControl" Version="4.0.2" />
-
 		<PackageReference Include="OpenTK.GLWpfControl" Version="4.3.6" />
 		<PackageReference Include="Pfim" Version="0.11.4" />
 		<PackageReference Include="BCnEncoder.Net" Version="2.3.0" />
@@ -28,6 +26,9 @@
 		<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
 		<PackageReference Include="System.Data.SQLite" Version="2.0.3" />
 		<PackageReference Include="System.Text.Json" Version="10.0.8" />
+
+		<!-- Panel wrap virtualizado: solo carga los items visibles en pantalla -->
+		<PackageReference Include="VirtualizingWrapPanel" Version="2.1.2" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -40,10 +41,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Services\" />
-	  <Folder Include="tools\flver_editor\" />
-	  <Folder Include="tools\smithbox\" />
-	  <Folder Include="tools\witchybnd\" />
+		<Folder Include="Services\" />
+		<Folder Include="tools\flver_editor\" />
+		<Folder Include="tools\smithbox\" />
+		<Folder Include="tools\witchybnd\" />
 	</ItemGroup>
 
 </Project>

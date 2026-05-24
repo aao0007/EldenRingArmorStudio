@@ -7,40 +7,18 @@
         <localConverters:IconIdToImageConverter x:Key="IconConverter"/>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="8" x:Name="PanelContent">
-
-            <Border Height="120" CornerRadius="6" Background="#EAEAEA"
-                    BorderBrush="#CCCCCC" BorderThickness="1"
-                    Margin="0,0,0,6">
-                <Image x:Name="ImgBanner" 
-               Source="{Binding IconIdM, Converter={StaticResource IconConverter}}" 
-               Stretch="Uniform" Margin="10"/>
+            <Border Height="120" CornerRadius="6" Background="#EAEAEA" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,0,6">
+                <Image x:Name="ImgBanner" Stretch="Uniform" Margin="10"/>
             </Border>
 
-            <TextBlock x:Name="TxtNameEs"
-                       Text="Selecciona una armadura"
-                       FontSize="13" FontWeight="Bold"
-                       Foreground="#A67B27" 
-                       TextWrapping="Wrap"
-                       TextAlignment="Center"
-                       Margin="0,0,0,2"/>
-
-            <TextBlock x:Name="TxtNameEn"
-                       Text="Haz clic en el explorador inferior"
-                       FontSize="10" FontStyle="Italic"
-                       Foreground="#666666"
-                       TextWrapping="Wrap"
-                       TextAlignment="Center"
-                       Margin="0,0,0,8"/>
-
+            <TextBlock x:Name="TxtNameEs" Text="Selecciona una armadura" FontSize="13" FontWeight="Bold" Foreground="#A67B27" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,2"/>
+            <TextBlock x:Name="TxtNameEn" Text="Haz clic en el explorador inferior" FontSize="10" FontStyle="Italic" Foreground="#666666" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,8"/>
             <Separator Background="#DDDDDD" Margin="0,0,0,8"/>
 
-            <GroupBox Header="Identificadores"
-                      Foreground="#A67B27" BorderBrush="#CCCCCC"
-                      Margin="0,0,0,6">
-                <Grid Margin="4,4,4,4">
+            <GroupBox Header="Identificadores" Foreground="#A67B27" BorderBrush="#CCCCCC" Margin="0,0,0,6">
+                <Grid Margin="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="90"/>
                         <ColumnDefinition Width="*"/>
@@ -74,31 +52,12 @@
                 </Grid>
             </GroupBox>
 
-            <Button x:Name="BtnLoadModel"
-                    Content="▶  Ver en visor 3D"
-                    IsEnabled="False"
-                    Click="OnLoadModelClick"
-                    Margin="0,0,0,6"
-                    Padding="6" FontWeight="Bold"
-                    Background="#0078D7" BorderBrush="#005A9E"
-                    Foreground="Black" BorderThickness="1"/>
-
-            <GroupBox x:Name="GrpFlags"
-                      Header="🔧 InvisibleFlags para Smithbox"
-                      Foreground="#A67B27" BorderBrush="#CCCCCC"
-                      Margin="0,0,0,6">
+            <Button x:Name="BtnLoadModel" Content="▶  Ver en visor 3D" IsEnabled="False" Click="OnLoadModelClick" Margin="0,0,0,6" Padding="6" FontWeight="Bold" Background="#0078D7" BorderBrush="#005A9E" Foreground="Black" BorderThickness="1"/>
+            <GroupBox x:Name="GrpFlags" Header="🔧 InvisibleFlags para Smithbox" Foreground="#A67B27" BorderBrush="#CCCCCC" Margin="0,0,0,6">
                 <StackPanel x:Name="FlagsPanel" Margin="4"/>
             </GroupBox>
 
-            <Button x:Name="BtnCsv"
-                    Content="📄  Generar CSV de flags (Smithbox)"
-                    IsEnabled="False"
-                    Click="OnGenerateCsvClick"
-                    Padding="6" FontWeight="Bold" FontSize="11"
-                    Background="#107C10" BorderBrush="#0B5B0B"
-                    Foreground="White" BorderThickness="1"
-                    ToolTip="Genera CSV para importar en Smithbox → Param Editor → EquipParamProtector → Import CSV"/>
-
+            <Button x:Name="BtnCsv" Content="📄  Generar CSV de flags (Smithbox)" IsEnabled="False" Click="OnGenerateCsvClick" Padding="6" FontWeight="Bold" FontSize="11" Background="#107C10" BorderBrush="#0B5B0B" Foreground="White" BorderThickness="1" ToolTip="Genera CSV para importar en Smithbox"/>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

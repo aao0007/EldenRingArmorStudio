@@ -678,6 +678,18 @@
         "build": {
           "buildTransitive/net8.0/System.Text.Json.targets": {}
         }
+      },
+      "VirtualizingWrapPanel/2.1.2": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0-windows7.0/VirtualizingWrapPanel.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0-windows7.0/VirtualizingWrapPanel.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WPF"
+        ]
       }
     }
   },
@@ -1536,6 +1548,20 @@
         "system.text.json.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "VirtualizingWrapPanel/2.1.2": {
+      "sha512": "VnLF8XC6/Y+KsrQQSb986ymguGN2I3TyVV89yefS5AuOEShPjbZAP50+gEOyWWWoisKyrzlGk7z1I93t8P9P2Q==",
+      "type": "package",
+      "path": "virtualizingwrappanel/2.1.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net462/VirtualizingWrapPanel.dll",
+        "lib/net6.0-windows7.0/VirtualizingWrapPanel.dll",
+        "virtualizingwrappanel.2.1.2.nupkg.sha512",
+        "virtualizingwrappanel.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
@@ -1554,7 +1580,8 @@
       "Serilog >= 4.3.1",
       "Serilog.Sinks.File >= 7.0.0",
       "System.Data.SQLite >= 2.0.3",
-      "System.Text.Json >= 10.0.8"
+      "System.Text.Json >= 10.0.8",
+      "VirtualizingWrapPanel >= 2.1.2"
     ]
   },
   "packageFolders": {
@@ -1668,6 +1695,10 @@
           "System.Text.Json": {
             "target": "Package",
             "version": "[10.0.8, )"
+          },
+          "VirtualizingWrapPanel": {
+            "target": "Package",
+            "version": "[2.1.2, )"
           }
         },
         "imports": [

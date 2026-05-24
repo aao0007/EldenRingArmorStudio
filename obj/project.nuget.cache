@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Kzryf+hGioA=",
+  "dgSpecHash": "Vzxpy068wjU=",
   "success": true,
   "projectFilePath": "C:\\Users\\Anki\\source\\repos\\EldenRingArmorStudio\\EldenRingArmorStudio\\EldenRingArmorStudio.csproj",
   "expectedPackageFiles": [
@@ -38,7 +38,8 @@
     "C:\\Users\\Anki\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
     "C:\\Users\\Anki\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "C:\\Users\\Anki\\.nuget\\packages\\system.text.encodings.web\\10.0.8\\system.text.encodings.web.10.0.8.nupkg.sha512",
-    "C:\\Users\\Anki\\.nuget\\packages\\system.text.json\\10.0.8\\system.text.json.10.0.8.nupkg.sha512"
+    "C:\\Users\\Anki\\.nuget\\packages\\system.text.json\\10.0.8\\system.text.json.10.0.8.nupkg.sha512",
+    "C:\\Users\\Anki\\.nuget\\packages\\virtualizingwrappanel\\2.1.2\\virtualizingwrappanel.2.1.2.nupkg.sha512"
   ],
   "logs": []
 }
