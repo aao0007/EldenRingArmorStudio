@@ -4,19 +4,25 @@
         xmlns:dock="https://github.com/Dirkster99/AvalonDock"
         xmlns:viewer="clr-namespace:EldenRingArmorStudio.UI.Viewer3D"
         xmlns:panels="clr-namespace:EldenRingArmorStudio.UI.Panels"
-        Title="Elden Ring Armor Studio - C# Edition" Height="720" Width="1280"
-        Background="#F5F5F5"
+        Title="Elden Ring Armor Studio"
+        Height="720" Width="1280"
+        Background="{DynamicResource AppBackground}"
         AllowDrop="True" Drop="Window_Drop">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Background="#F0F0F0" Foreground="Black" Padding="2">
+        <!-- ── Menú ── -->
+        <Menu Grid.Row="0"
+              Background="{DynamicResource MenuBackground}"
+              Foreground="{DynamicResource MenuForeground}"
+              Padding="4,2">
             <MenuItem Header="Archivo">
-                <MenuItem Header="Configurar Directorio de Modelos..." Click="MenuConfigurarModelos_Click"/>
-                <MenuItem Header="Recargar CSV (desde /data)" Click="MenuRecargarCsv_Click"/>
+                <MenuItem Header="Configurar Directorio de Modelos…" Click="MenuConfigurarModelos_Click"/>
+                <MenuItem Header="Recargar CSV (desde /data)"        Click="MenuRecargarCsv_Click"/>
                 <MenuItem Header="Guardar Cambios (.csv)"/>
                 <Separator/>
                 <MenuItem Header="Salir" Click="Exit_Click"/>
@@ -25,19 +31,26 @@
                 <MenuItem Header="Ejecutar WitchyBND Unpack"/>
                 <MenuItem Header="Generar Invisible Flags" Click="MenuGenerarFlags_Click"/>
             </MenuItem>
+            <MenuItem Header="Vista">
+                <!-- Toggle en caliente → llama a ThemeManager.Toggle() -->
+                <MenuItem x:Name="MenuToggleTheme"
+                          Header="☀  Cambiar a Tema Claro"
+                          Click="MenuToggleTheme_Click"/>
+            </MenuItem>
         </Menu>
 
-        <dock:DockingManager Grid.Row="1">
+        <!-- ── Layout principal ── -->
+        <dock:DockingManager Grid.Row="1"
+                             Background="{DynamicResource AppBackground}">
             <dock:LayoutRoot>
                 <dock:LayoutPanel Orientation="Vertical">
 
                     <dock:LayoutPanel Orientation="Horizontal">
 
-                        <dock:LayoutAnchorablePane DockWidth="350">
-                            <dock:LayoutAnchorable Title="Propiedades de Armadura" CanClose="False">
+                        <dock:LayoutAnchorablePane DockWidth="340">
+                            <dock:LayoutAnchorable Title="Propiedades" CanClose="False">
                                 <panels:ArmorInfoPanel x:Name="InfoPanel"/>
                             </dock:LayoutAnchorable>
-
                             <dock:LayoutAnchorable Title="Archivos (Mods/Parts)" CanClose="False">
                                 <panels:FileTreePanel x:Name="FileTree"/>
                             </dock:LayoutAnchorable>

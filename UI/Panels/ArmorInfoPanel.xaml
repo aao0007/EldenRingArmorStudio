@@ -1,63 +1,118 @@
 ﻿<UserControl x:Class="EldenRingArmorStudio.UI.Panels.ArmorInfoPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:localConverters="clr-namespace:EldenRingArmorStudio.Converters"
-             Background="#F5F5F5">
+             xmlns:conv="clr-namespace:EldenRingArmorStudio.Converters"
+             Background="{DynamicResource PanelBackground}">
+
     <UserControl.Resources>
-        <localConverters:IconIdToImageConverter x:Key="IconConverter"/>
+        <conv:IconIdToImageConverter x:Key="IconConverter"/>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="8" x:Name="PanelContent">
-            <Border Height="120" CornerRadius="6" Background="#EAEAEA" BorderBrush="#CCCCCC" BorderThickness="1" Margin="0,0,0,6">
-                <Image x:Name="ImgBanner" Stretch="Uniform" Margin="10"/>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="10" x:Name="PanelContent">
+
+            <!-- Banner / icono -->
+            <Border Height="116" CornerRadius="6"
+                    Background="{DynamicResource SurfaceAlt}"
+                    BorderBrush="{DynamicResource BorderNormal}"
+                    BorderThickness="1"
+                    Margin="0,0,0,8">
+                <Image x:Name="ImgBanner"
+                       Stretch="Uniform" Margin="10"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
             </Border>
 
-            <TextBlock x:Name="TxtNameEs" Text="Selecciona una armadura" FontSize="13" FontWeight="Bold" Foreground="#A67B27" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,2"/>
-            <TextBlock x:Name="TxtNameEn" Text="Haz clic en el explorador inferior" FontSize="10" FontStyle="Italic" Foreground="#666666" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,8"/>
-            <Separator Background="#DDDDDD" Margin="0,0,0,8"/>
+            <!-- Nombre español -->
+            <TextBlock x:Name="TxtNameEs"
+                       Text="Selecciona una armadura"
+                       FontSize="14" FontWeight="Bold"
+                       Foreground="{DynamicResource TextAccent}"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="0,0,0,2"/>
 
-            <GroupBox Header="Identificadores" Foreground="#A67B27" BorderBrush="#CCCCCC" Margin="0,0,0,6">
-                <Grid Margin="4">
+            <!-- Nombre inglés -->
+            <TextBlock x:Name="TxtNameEn"
+                       Text="Haz clic en el explorador inferior"
+                       FontSize="10" FontStyle="Italic"
+                       Foreground="{DynamicResource TextSecondary}"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+            <Separator/>
+
+            <!-- Identificadores -->
+            <GroupBox Header="Identificadores" Margin="0,8,0,6">
+                <Grid Margin="2,6,2,2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Model ID:" Foreground="#666666" FontSize="10" Grid.Row="0" Grid.Column="0" Margin="0,1"/>
-                    <TextBlock x:Name="TxtId" Foreground="#111111" FontSize="10" FontWeight="SemiBold" TextWrapping="Wrap" Grid.Row="0" Grid.Column="1" Margin="0,1"/>
+                    <TextBlock Text="Model ID:"  Foreground="{DynamicResource TextSecondary}" FontSize="10" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TxtId"    Foreground="{DynamicResource TextPrimary}"   FontSize="10" FontWeight="SemiBold" TextWrapping="Wrap" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"/>
 
-                    <TextBlock Text="Categoría:" Foreground="#666666" FontSize="10" Grid.Row="1" Grid.Column="0" Margin="0,1"/>
-                    <TextBlock x:Name="TxtCat" Foreground="#111111" FontSize="10" Grid.Row="1" Grid.Column="1" Margin="0,1"/>
+                    <TextBlock Text="Categoría:" Foreground="{DynamicResource TextSecondary}" FontSize="10" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TxtCat"   Foreground="{DynamicResource TextPrimary}"   FontSize="10" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"/>
 
-                    <TextBlock Text="Set:" Foreground="#666666" FontSize="10" Grid.Row="2" Grid.Column="0" Margin="0,1"/>
-                    <TextBlock x:Name="TxtSet" Foreground="#111111" FontSize="10" TextWrapping="Wrap" Grid.Row="2" Grid.Column="1" Margin="0,1"/>
+                    <TextBlock Text="Set:"       Foreground="{DynamicResource TextSecondary}" FontSize="10" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TxtSet"   Foreground="{DynamicResource TextPrimary}"   FontSize="10" TextWrapping="Wrap" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
 
-                    <TextBlock Text="Alterado:" Foreground="#666666" FontSize="10" Grid.Row="3" Grid.Column="0" Margin="0,1"/>
-                    <TextBlock x:Name="TxtAltered" Foreground="#111111" FontSize="10" Grid.Row="3" Grid.Column="1" Margin="0,1"/>
+                    <TextBlock Text="Alterado:"  Foreground="{DynamicResource TextSecondary}" FontSize="10" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TxtAltered" Foreground="{DynamicResource TextPrimary}" FontSize="10" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"/>
 
-                    <TextBlock Text="Género:" Foreground="#666666" FontSize="10" Grid.Row="4" Grid.Column="0" Margin="0,1"/>
-                    <TextBlock x:Name="TxtGender" Foreground="#111111" FontSize="10" Grid.Row="4" Grid.Column="1" Margin="0,1"/>
+                    <TextBlock Text="Género:"    Foreground="{DynamicResource TextSecondary}" FontSize="10" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TxtGender" Foreground="{DynamicResource TextPrimary}"  FontSize="10" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center"/>
 
-                    <TextBlock Text="Archivo:" Foreground="#666666" FontSize="10" Grid.Row="5" Grid.Column="0" Margin="0,1"/>
-                    <TextBlock x:Name="TxtFile" Foreground="#111111" FontSize="10" TextWrapping="Wrap" Grid.Row="5" Grid.Column="1" Margin="0,1"/>
+                    <TextBlock Text="Archivo:"   Foreground="{DynamicResource TextSecondary}" FontSize="10" Grid.Row="5" Grid.Column="0" VerticalAlignment="Top" Margin="0,1"/>
+                    <TextBlock x:Name="TxtFile"  Foreground="{DynamicResource TextPrimary}"   FontSize="10" TextWrapping="Wrap" Grid.Row="5" Grid.Column="1" VerticalAlignment="Top" Margin="0,1"/>
                 </Grid>
             </GroupBox>
 
-            <Button x:Name="BtnLoadModel" Content="▶  Ver en visor 3D" IsEnabled="False" Click="OnLoadModelClick" Margin="0,0,0,6" Padding="6" FontWeight="Bold" Background="#0078D7" BorderBrush="#005A9E" Foreground="Black" BorderThickness="1"/>
-            <GroupBox x:Name="GrpFlags" Header="🔧 InvisibleFlags para Smithbox" Foreground="#A67B27" BorderBrush="#CCCCCC" Margin="0,0,0,6">
-                <StackPanel x:Name="FlagsPanel" Margin="4"/>
+            <!-- Botón visor 3D -->
+            <Button x:Name="BtnLoadModel"
+                    Content="▶  Ver en visor 3D"
+                    IsEnabled="False"
+                    Click="OnLoadModelClick"
+                    Margin="0,0,0,8"
+                    Padding="8,6"
+                    FontWeight="SemiBold"
+                    Background="{DynamicResource BtnPrimaryBg}"
+                    BorderBrush="{DynamicResource BtnPrimaryBorder}"
+                    Foreground="{DynamicResource BtnPrimaryFg}"
+                    BorderThickness="1"/>
+
+            <!-- InvisibleFlags -->
+            <GroupBox x:Name="GrpFlags"
+                      Header="🔧 InvisibleFlags (Smithbox)"
+                      Margin="0,0,0,8">
+                <StackPanel x:Name="FlagsPanel" Margin="2,6,2,2"/>
             </GroupBox>
 
-            <Button x:Name="BtnCsv" Content="📄  Generar CSV de flags (Smithbox)" IsEnabled="False" Click="OnGenerateCsvClick" Padding="6" FontWeight="Bold" FontSize="11" Background="#107C10" BorderBrush="#0B5B0B" Foreground="White" BorderThickness="1" ToolTip="Genera CSV para importar en Smithbox"/>
+            <!-- Botón CSV -->
+            <Button x:Name="BtnCsv"
+                    Content="📄  Generar CSV de flags"
+                    IsEnabled="False"
+                    Click="OnGenerateCsvClick"
+                    Padding="8,6"
+                    FontWeight="SemiBold"
+                    FontSize="11"
+                    Background="{DynamicResource BtnSuccessBg}"
+                    BorderBrush="{DynamicResource BtnSuccessBorder}"
+                    Foreground="{DynamicResource BtnSuccessFg}"
+                    BorderThickness="1"
+                    ToolTip="Importar en Smithbox → Param Editor → EquipParamProtector → Import CSV"/>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -1,43 +1,33 @@
 ﻿<UserControl x:Class="EldenRingArmorStudio.UI.Panels.FileTreePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="#F5F5F5">
+             Background="{DynamicResource PanelBackground}">
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="32"/>
+            <RowDefinition Height="36"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="32"/>
         </Grid.RowDefinitions>
 
         <TextBox x:Name="TxtFilter"
                  Grid.Row="0"
-                 Margin="6,4"
+                 Margin="8,5"
                  VerticalContentAlignment="Center"
-                 Padding="6,0"
-                 Background="White" Foreground="Black"
-                 BorderBrush="#CCCCCC" BorderThickness="1"
                  FontSize="11"
-                 Tag="🔍 Filtrar archivos..."
+                 Tag="🔍 Filtrar archivos…"
                  TextChanged="OnFilterChanged"/>
 
         <TabControl x:Name="TabFiles"
                     Grid.Row="1"
-                    Background="#F5F5F5"
-                    BorderBrush="#CCCCCC"
                     Padding="0">
-
-            <TabItem Header="📂 Proyecto" Background="#EAEAEA" Foreground="#333333">
+            <TabItem Header="📂 Proyecto">
                 <TreeView x:Name="TreeProject"
-                          Background="White"
-                          BorderThickness="0"
                           MouseDoubleClick="OnTreeDoubleClick"
                           ContextMenuOpening="OnContextMenu"/>
             </TabItem>
-
-            <TabItem Header="🎮 Mod/Parts" Background="#EAEAEA" Foreground="#333333">
+            <TabItem Header="🎮 Mod/Parts">
                 <TreeView x:Name="TreeMod"
-                          Background="White"
-                          BorderThickness="0"
                           MouseDoubleClick="OnTreeDoubleClick"
                           ContextMenuOpening="OnContextMenu"/>
             </TabItem>
@@ -45,11 +35,8 @@
 
         <Button Grid.Row="2"
                 Content="🔄 Actualizar"
-                Margin="6,2"
+                Margin="8,3"
                 Click="OnRefreshClick"
-                Background="#EAEAEA"
-                Foreground="#333333"
-                BorderBrush="#CCCCCC"
                 FontSize="11"/>
     </Grid>
 </UserControl>

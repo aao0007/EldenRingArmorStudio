@@ -10,9 +10,6 @@ using System.Windows;
 
 namespace EldenRingArmorStudio.UI
 {
-    /// <summary>
-    /// Lógica de interacción para MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private ArmorDatabase _db;
@@ -22,65 +19,92 @@ namespace EldenRingArmorStudio.UI
         {
             InitializeComponent();
 
-            // 1. Inicializar la conexión a la base de datos SQLite
+            // Aplicar tema guardado (oscuro por defecto)
+            ThemeManager.LoadSavedOrDefault();
+            UpdateThemeMenuLabel();
+
             _db = new ArmorDatabase("data/armor_db.sqlite");
-
-            // 2. Autogenerar la base de datos si está vacía
             CheckAndSeedDatabase();
-
-            // 3. Conectar los eventos de tus paneles
 
             if (ExplorerPanel != null)
             {
-                // Inyectamos la BD al explorador para que pueda buscar
                 ExplorerPanel.Initialize(_db);
-
                 ExplorerPanel.ArmorClicked += (record) =>
                 {
                     _selectedRecord = record;
                     InfoPanel.ShowRecord(record);
                 };
-
                 ExplorerPanel.ModelDoubleClicked += async (fileName) =>
-                {
                     await TryLoadModelFromFileNameAsync(fileName);
-                };
             }
 
             if (InfoPanel != null)
-            {
                 InfoPanel.LoadModelRequested += async (fileName) =>
-                {
                     await TryLoadModelFromFileNameAsync(fileName);
-                };
-            }
 
             if (FileTree != null)
-            {
                 FileTree.FileSelected += async (filePath) =>
-                {
                     await LoadModelWorkflowAsync(filePath);
-                };
-            }
         }
+
+        // ── Tema ──────────────────────────────────────────────────────────────
+
+        private void MenuToggleTheme_Click(object sender, RoutedEventArgs e)
+        {
+            ThemeManager.Toggle();
+            UpdateThemeMenuLabel();
+        }
+
+        private void UpdateThemeMenuLabel()
+        {
+            if (MenuToggleTheme == null) return;
+            MenuToggleTheme.Header = ThemeManager.Current == AppTheme.Dark
+                ? "☀  Cambiar a Tema Claro"
+                : "🌙  Cambiar a Tema Oscuro";
+        }
+
+        // ── Base de datos ─────────────────────────────────────────────────────
 
         private void CheckAndSeedDatabase()
         {
-            if (_db.Count() == 0)
+            // Re-seed si la BD tiene rutas absolutas legacy (contienen ":\")
+            bool needsReseed = false;
+            if (_db.Count() > 0)
             {
-                string csvPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "EquipParamProtector.csv");
+                var sample = _db.SearchArmor("", null, false).Take(1).FirstOrDefault();
+                if (sample != null &&
+                    !string.IsNullOrWhiteSpace(sample.ThumbnailPath) &&
+                    (sample.ThumbnailPath.Contains(":\\") || sample.ThumbnailPath.Contains(":/")))
+                {
+                    Serilog.Log.Warning("[MainWindow] Rutas absolutas legacy detectadas, re-seeding...");
+                    needsReseed = true;
+                }
+            }
+
+            if (_db.Count() == 0 || needsReseed)
+            {
+                string csvPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                    "data", "EquipParamProtector.csv");
+
                 if (File.Exists(csvPath))
                 {
+                    if (needsReseed)
+                    {
+                        File.Delete("data/armor_db.sqlite");
+                        _db = new ArmorDatabase("data/armor_db.sqlite");
+                    }
                     DatabaseSeeder.SeedFromCsv(csvPath, _db);
                 }
                 else
                 {
-                    MessageBox.Show("La base de datos está vacía y no se encontró el archivo 'EquipParamProtector.csv' en la carpeta 'data/'.\n\nPor favor, asegúrate de que el CSV esté en la carpeta para cargar las armaduras.", "Faltan datos", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(
+                        "La base de datos está vacía y no se encontró 'EquipParamProtector.csv' en data/.",
+                        "Faltan datos", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
         }
 
-        // ── MENÚ: Configurar Modelos y Recargar CSV ──
+        // ── Menú Archivo ──────────────────────────────────────────────────────
 
         private void MenuConfigurarModelos_Click(object sender, RoutedEventArgs e)
         {
@@ -88,72 +112,57 @@ namespace EldenRingArmorStudio.UI
             {
                 Title = "Selecciona la carpeta donde tienes los modelos (.partsbnd.dcx)"
             };
-
             if (dialog.ShowDialog() == true)
             {
-                string selectedDir = dialog.FolderName;
-
-                // Guardamos la ruta en tu sistema de configuración
-                AppConfig.Instance.Project.PartsLibraryPath = selectedDir;
-
-                // Le decimos al panel lateral izquierdo que recargue su árbol de archivos
-                if (FileTree != null)
-                {
-                    FileTree.Refresh();
-                }
-
-                MessageBox.Show($"Directorio de modelos configurado en:\n{selectedDir}", "Configuración guardada", MessageBoxButton.OK, MessageBoxImage.Information);
+                AppConfig.Instance.Project.PartsLibraryPath = dialog.FolderName;
+                FileTree?.Refresh();
+                MessageBox.Show($"Directorio configurado:\n{dialog.FolderName}",
+                    "Guardado", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
         private void MenuRecargarCsv_Click(object sender, RoutedEventArgs e)
         {
-            string csvPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "EquipParamProtector.csv");
+            string csvPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                "data", "EquipParamProtector.csv");
 
-            if (File.Exists(csvPath))
+            if (!File.Exists(csvPath))
             {
-                try
-                {
-                    DatabaseSeeder.SeedFromCsv(csvPath, _db);
-
-                    // Recargamos las miniaturas del explorador
-                    if (ExplorerPanel != null)
-                    {
-                        ExplorerPanel.Refresh();
-                    }
-
-                    MessageBox.Show("CSV leído correctamente desde /data y armaduras actualizadas.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error al leer el CSV:\n{ex.Message}", "Error de Lectura", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                MessageBox.Show($"No se encontró:\n{csvPath}", "Falta CSV",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
-            else
+            try
             {
-                MessageBox.Show($"No se encontró el archivo en:\n{csvPath}\n\nAsegúrate de poner 'EquipParamProtector.csv' dentro de la carpeta 'data'.", "Falta CSV", MessageBoxButton.OK, MessageBoxImage.Warning);
+                DatabaseSeeder.SeedFromCsv(csvPath, _db);
+                ExplorerPanel?.Refresh();
+                MessageBox.Show("CSV recargado correctamente.", "Éxito",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error:\n{ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        // ── CARGA 3D ──
+        private void Exit_Click(object sender, RoutedEventArgs e) =>
+            Application.Current.Shutdown();
+
+        // ── Carga 3D ──────────────────────────────────────────────────────────
 
         private async Task TryLoadModelFromFileNameAsync(string fileName)
         {
-            string modenginePath = AppConfig.Get("modengine2.root_path");
-            string partsLibraryPath = AppConfig.Get("project.parts_library_path");
+            string p1 = Path.Combine(AppConfig.Get("modengine2.root_path") ?? "", "mod", "parts", fileName);
+            string p2 = Path.Combine(AppConfig.Get("project.parts_library_path") ?? "", fileName);
+            string dcxPath = File.Exists(p1) ? p1 : File.Exists(p2) ? p2 : null;
 
-            string dcxPath = Path.Combine(modenginePath ?? "", "mod", "parts", fileName);
-            if (!File.Exists(dcxPath))
+            if (dcxPath == null)
             {
-                dcxPath = Path.Combine(partsLibraryPath ?? "", fileName);
-            }
-
-            if (!File.Exists(dcxPath))
-            {
-                MessageBox.Show($"No se encontró el archivo de modelo:\n{fileName}\n\nAsegúrate de haber configurado el directorio de modelos en el menú Archivo.", "Archivo no encontrado", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"No se encontró el modelo:\n{fileName}\n\nConfigura el directorio en Archivo.",
+                    "No encontrado", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
             await LoadModelWorkflowAsync(dcxPath);
         }
 
@@ -167,161 +176,128 @@ namespace EldenRingArmorStudio.UI
                 if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
                 Directory.CreateDirectory(tempDir);
 
-                string extension = Path.GetExtension(filePath).ToLower();
+                string ext = Path.GetExtension(filePath).ToLower();
                 string unpackedDir = "";
 
-                if (extension == ".flver")
+                if (ext == ".flver")
                 {
                     unpackedDir = Path.Combine(tempDir, "direct_flver");
                     Directory.CreateDirectory(unpackedDir);
-
-                    string targetFlverPath = Path.Combine(unpackedDir, Path.GetFileName(filePath));
-                    File.Copy(filePath, targetFlverPath);
+                    File.Copy(filePath, Path.Combine(unpackedDir, Path.GetFileName(filePath)));
                 }
-                else if (extension == ".dcx")
+                else if (ext == ".dcx")
                 {
-                    string tempDcxPath = Path.Combine(tempDir, Path.GetFileName(filePath));
-                    File.Copy(filePath, tempDcxPath);
+                    string tmp = Path.Combine(tempDir, Path.GetFileName(filePath));
+                    File.Copy(filePath, tmp);
 
-                    string witchyExe = AppConfig.Get("tools.witchybnd_path");
-                    if (string.IsNullOrEmpty(witchyExe) || !File.Exists(witchyExe))
+                    string witchy = AppConfig.Get("tools.witchybnd_path");
+                    if (string.IsNullOrEmpty(witchy) || !File.Exists(witchy))
                     {
-                        MessageBox.Show("No se encontró WitchyBND. Configura su ruta correctamente.", "Herramienta Faltante", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("No se encontró WitchyBND.", "Falta herramienta",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
 
-                    var carpetasAntes = Directory.GetDirectories(tempDir);
-
-                    var process = new Process
+                    var antes = Directory.GetDirectories(tempDir);
+                    var proc = new Process
                     {
                         StartInfo = new ProcessStartInfo
                         {
-                            FileName = witchyExe,
-                            Arguments = $"-s \"{tempDcxPath}\"",
+                            FileName = witchy,
+                            Arguments = $"-s \"{tmp}\"",
                             WorkingDirectory = tempDir,
                             UseShellExecute = false,
                             CreateNoWindow = true
                         }
                     };
+                    proc.Start();
+                    try { await proc.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15)); }
+                    catch (TimeoutException) { proc.Kill(); return; }
 
-                    process.Start();
-
-                    try
-                    {
-                        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
-                    }
-                    catch (TimeoutException)
-                    {
-                        process.Kill();
-                        MessageBox.Show("WitchyBND tardó demasiado tiempo en responder (Timeout de 15s).", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
-                    var carpetasDespues = Directory.GetDirectories(tempDir);
-                    unpackedDir = carpetasDespues.FirstOrDefault(d => !carpetasAntes.Contains(d));
+                    var despues = Directory.GetDirectories(tempDir);
+                    unpackedDir = despues.FirstOrDefault(d => !antes.Contains(d)) ?? "";
 
                     if (string.IsNullOrEmpty(unpackedDir))
                     {
-                        string nombreSinDcx = Path.GetFileNameWithoutExtension(tempDcxPath);
-                        string baseName = nombreSinDcx.Split('.')[0];
-
+                        string baseName = Path.GetFileNameWithoutExtension(tmp).Split('.')[0];
                         unpackedDir = Directory.GetDirectories(tempDir)
-                            .FirstOrDefault(d => Path.GetFileName(d).StartsWith(baseName, StringComparison.OrdinalIgnoreCase));
+                            .FirstOrDefault(d => Path.GetFileName(d)
+                                .StartsWith(baseName, StringComparison.OrdinalIgnoreCase)) ?? "";
                     }
                 }
 
                 if (!string.IsNullOrEmpty(unpackedDir) && Directory.Exists(unpackedDir))
                 {
-                    FlverModel miModelo = FlverLoader.LoadFromDirectory(unpackedDir);
-
-                    if (miModelo != null)
-                    {
-                        FlverViewport.LoadModel(miModelo);
-                        FlverViewport.ToolTip = null;
-                    }
-                    else
-                    {
-                        MessageBox.Show("El archivo FLVER no contiene geometría válida.", "Error 3D", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                    var model = FlverLoader.LoadFromDirectory(unpackedDir);
+                    if (model != null) { FlverViewport.LoadModel(model); FlverViewport.ToolTip = null; }
+                    else MessageBox.Show("FLVER sin geometría válida.", "Error 3D",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
-                {
-                    MessageBox.Show("No se encontró la carpeta extraída.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+                    MessageBox.Show("No se encontró la carpeta extraída.", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error en el renderizado:\n{ex.Message}", "Excepción", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error:\n{ex.Message}", "Excepción",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        // ── OTROS EVENTOS ──
+        // ── Flags ─────────────────────────────────────────────────────────────
 
         private void MenuGenerarFlags_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedRecord != null)
+            if (_selectedRecord == null)
             {
-                var flagsActivos = new List<int>();
-
-                var preset = InvisibleFlags.Presets.FirstOrDefault(p => p.Key == "head_face_cover");
-                if (preset != null) flagsActivos.AddRange(preset.Flags);
-
-                string numericId = new string(_selectedRecord.EquipModelId.Where(char.IsDigit).ToArray());
-                if (string.IsNullOrEmpty(numericId)) numericId = "10000";
-
-                var entradas = new List<(string ParamId, IEnumerable<int> Flags)> { (numericId, flagsActivos) };
-
-                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
-                {
-                    FileName = $"flags_{_selectedRecord.EquipModelId}.csv",
-                    DefaultExt = ".csv",
-                    Filter = "Archivos CSV (*.csv)|*.csv"
-                };
-
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    if (InvisibleFlags.GenerateSmithboxCsv(saveFileDialog.FileName, entradas))
-                        MessageBox.Show("¡CSV generado con éxito! Importa este archivo en Smithbox.", "Guardado", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                MessageBox.Show("Selecciona una armadura primero.", "Aviso",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
-            else
+
+            var flags = new List<int>();
+            var preset = InvisibleFlags.Presets.FirstOrDefault(p => p.Key == "head_face_cover");
+            if (preset != null) flags.AddRange(preset.Flags);
+
+            string numId = new string(_selectedRecord.EquipModelId.Where(char.IsDigit).ToArray());
+            if (string.IsNullOrEmpty(numId)) numId = "10000";
+
+            var dlg = new Microsoft.Win32.SaveFileDialog
             {
-                MessageBox.Show("Selecciona primero una armadura.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+                FileName = $"flags_{_selectedRecord.EquipModelId}.csv",
+                DefaultExt = ".csv",
+                Filter = "CSV (*.csv)|*.csv"
+            };
+            if (dlg.ShowDialog() == true &&
+                InvisibleFlags.GenerateSmithboxCsv(dlg.FileName,
+                    new List<(string, IEnumerable<int>)> { (numId, flags) }))
+                MessageBox.Show("CSV generado. Importa en Smithbox.", "OK",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
+        // ── Drag & Drop ───────────────────────────────────────────────────────
 
         private async void Window_Drop(object sender, DragEventArgs e)
         {
             try
             {
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files?.Length > 0)
                 {
-                    string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-                    if (files != null && files.Length > 0)
-                    {
-                        string filePath = files[0];
-
-                        if (filePath.EndsWith(".dcx", StringComparison.OrdinalIgnoreCase) ||
-                            filePath.EndsWith(".flver", StringComparison.OrdinalIgnoreCase))
-                        {
-                            await LoadModelWorkflowAsync(filePath);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Arrastra un modelo válido (.dcx o .flver).", "Archivo no soportado", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
+                    string f = files[0];
+                    if (f.EndsWith(".dcx", StringComparison.OrdinalIgnoreCase) ||
+                        f.EndsWith(".flver", StringComparison.OrdinalIgnoreCase))
+                        await LoadModelWorkflowAsync(f);
+                    else
+                        MessageBox.Show("Arrastra un .dcx o .flver.", "No soportado",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al procesar el archivo:\n{ex.Message}", "Error Drag & Drop", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error drag & drop:\n{ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

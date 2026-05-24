@@ -112,3 +112,6 @@ C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\n
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\EldenRingArmorStudio.genruntimeconfig.cache
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\ref\EldenRingArmorStudio.dll
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\bin\Debug\net8.0-windows\VirtualizingWrapPanel.dll
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\Themes\DarkTheme.baml
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\Themes\LightTheme.baml
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\Themes\GlobalStyles.baml

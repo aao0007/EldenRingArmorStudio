@@ -3,7 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="UI/MainWindow.xaml">
     <Application.Resources>
-        <xcad:Vs2013DarkTheme x:Key="VS2013DarkTheme" xmlns:xcad="https://github.com/Dirkster99/AvalonDock"/>
-    </Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
 
+                <!-- Tema activo: ThemeManager lo sustituye en caliente -->
+                <ResourceDictionary Source="Themes/DarkTheme.xaml"/>
+
+                <!-- Estilos globales que usan DynamicResource del tema -->
+                <ResourceDictionary Source="Themes/GlobalStyles.xaml"/>
+
+            </ResourceDictionary.MergedDictionaries>
+
+            <xcad:Vs2013DarkTheme x:Key="VS2013DarkTheme"
+                xmlns:xcad="https://github.com/Dirkster99/AvalonDock"/>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>
