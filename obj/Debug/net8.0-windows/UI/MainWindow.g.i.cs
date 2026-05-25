@@ -99,7 +99,7 @@ namespace EldenRingArmorStudio.UI {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/EldenRingArmorStudio;component/ui/mainwindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/EldenRingArmorStudio;V1.0.0.0;component/ui/mainwindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\UI\MainWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

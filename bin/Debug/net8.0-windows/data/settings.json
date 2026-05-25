@@ -11,7 +11,7 @@
     "parts_library_path": "C:\\Users\\Anki\\Documents\\.apps\\PMU\\parts"
   },
   "Ui": {
-    "dark_mode": true,
+    "dark_mode": false,
     "language": "es",
     "grid_size": 140
   }
