@@ -1,14 +1,14 @@
 {
   "Tools": {
-    "witchybnd_path": "tools/witchybnd/WitchyBND.exe",
-    "flver_editor_path": "tools/flver_editor/FLVER_Editor.exe",
-    "smithbox_path": "tools/smithbox/Smithbox.exe"
+    "witchybnd_path": "C:\\Users\\Anki\\source\\repos\\EldenRingArmorStudio\\EldenRingArmorStudio\\tools\\witchybnd\\WitchyBND.exe",
+    "flver_editor_path": "C:\\Users\\Anki\\source\\repos\\EldenRingArmorStudio\\EldenRingArmorStudio\\tools\\flver_editor\\FLVER_Editor.exe",
+    "smithbox_path": "C:\\Users\\Anki\\source\\repos\\EldenRingArmorStudio\\EldenRingArmorStudio\\tools\\smithbox\\Smithbox.exe"
   },
   "ModEngine2": {
-    "root_path": ""
+    "root_path": "D:\\SteamLibrary\\steamapps\\common\\ELDEN RING\\Game\\ModEngine-Coop\\mod\\"
   },
   "Project": {
-    "parts_library_path": "C:\\Users\\Anki\\Documents\\.apps\\PMU\\parts"
+    "parts_library_path": "C:\\Users\\Anki\\Downloads\\parts"
   },
   "Ui": {
     "dark_mode": false,

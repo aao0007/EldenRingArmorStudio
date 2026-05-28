@@ -115,3 +115,9 @@ C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\bin\Debug\n
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\Themes\DarkTheme.baml
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\Themes\LightTheme.baml
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\Themes\GlobalStyles.baml
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Panels\Duplicatorpanel.baml
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Panels\Quickinfopanel.baml
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Panels\Duplicatorpanel.g.cs
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Panels\Quickinfopanel.g.cs
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Dialogs\SettingsDialog.baml
+C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\obj\Debug\net8.0-windows\UI\Dialogs\SettingsDialog.g.cs

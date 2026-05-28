@@ -1,0 +1,114 @@
+﻿<UserControl x:Class="EldenRingArmorStudio.UI.Panels.QuickInfoPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource PanelBackground}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="10,8">
+
+            <!-- Título -->
+            <TextBlock Text="Vista Rápida (CSV)"
+                       FontSize="13" FontWeight="Bold"
+                       Foreground="{DynamicResource TextAccent}"
+                       Margin="0,0,0,10"/>
+
+            <!-- Nombre -->
+            <TextBlock x:Name="TxtName"
+                       Text="—"
+                       FontSize="13" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,6"/>
+
+            <!-- Detalles -->
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="ID Modelo:"
+                           Grid.Row="0" Grid.Column="0"
+                           Foreground="{DynamicResource TextSecondary}"
+                           FontSize="10" VerticalAlignment="Center"/>
+                <TextBlock x:Name="TxtId"
+                           Grid.Row="0" Grid.Column="1"
+                           Foreground="{DynamicResource TextPrimary}"
+                           FontSize="10" FontWeight="SemiBold"
+                           VerticalAlignment="Center"/>
+
+                <TextBlock Text="Categoría:"
+                           Grid.Row="1" Grid.Column="0"
+                           Foreground="{DynamicResource TextSecondary}"
+                           FontSize="10" VerticalAlignment="Center"/>
+                <TextBlock x:Name="TxtCat"
+                           Grid.Row="1" Grid.Column="1"
+                           Foreground="{DynamicResource TextPrimary}"
+                           FontSize="10" VerticalAlignment="Center"/>
+
+                <TextBlock Text="Gender:"
+                           Grid.Row="2" Grid.Column="0"
+                           Foreground="{DynamicResource TextSecondary}"
+                           FontSize="10" VerticalAlignment="Center"/>
+                <TextBlock x:Name="TxtGender"
+                           Grid.Row="2" Grid.Column="1"
+                           Foreground="{DynamicResource TextPrimary}"
+                           FontSize="10" VerticalAlignment="Center"/>
+
+                <TextBlock Text="Archivo:"
+                           Grid.Row="3" Grid.Column="0"
+                           Foreground="{DynamicResource TextSecondary}"
+                           FontSize="10" VerticalAlignment="Top"
+                           Margin="0,1"/>
+                <TextBlock x:Name="TxtFile"
+                           Grid.Row="3" Grid.Column="1"
+                           Foreground="{DynamicResource TextAccent}"
+                           FontSize="10" TextWrapping="Wrap"
+                           VerticalAlignment="Top" Margin="0,1"/>
+            </Grid>
+
+            <Separator/>
+
+            <!-- Herramientas -->
+            <TextBlock Text="Herramientas"
+                       FontSize="11" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextSecondary}"
+                       Margin="0,8,0,6"/>
+
+            <Button x:Name="BtnWitchy"
+                    Content="🔧 WitchyBND (unpack/repack)"
+                    FontSize="11" Padding="8,6"
+                    Margin="0,0,0,5"
+                    IsEnabled="False"
+                    Click="OnWitchyClick"/>
+
+            <Button x:Name="BtnFlver"
+                    Content="🎯 Abrir en FLVER Editor"
+                    FontSize="11" Padding="8,6"
+                    Margin="0,0,0,10"
+                    IsEnabled="False"
+                    Click="OnFlverClick"/>
+
+            <Separator/>
+
+            <!-- Base de datos -->
+            <TextBlock Text="Base de datos"
+                       FontSize="11" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextSecondary}"
+                       Margin="0,8,0,6"/>
+
+            <Button x:Name="BtnLoadCsv"
+                    Content="📂 Cargar CSV"
+                    FontSize="11" Padding="8,6"
+                    Click="OnLoadCsv"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

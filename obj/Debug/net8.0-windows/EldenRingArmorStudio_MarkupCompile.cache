@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 C:\Users\Anki\source\repos\EldenRingArmorStudio\EldenRingArmorStudio\App.xaml
-9-1838881132
+12-2069601643
 
-18-1506274138
+221040544625
 2351593938691
-Themes\DarkTheme.xaml;Themes\GlobalStyles.xaml;Themes\LightTheme.xaml;UI\ArmorListItemTemplate.xaml;UI\MainWindow.xaml;UI\Panels\Armorexplorerpanel.xaml;UI\Panels\ArmorInfoPanel.xaml;UI\Panels\Filetreepanel.xaml;UI\Viewer3D\Viewport3DControl.xaml;
+Themes\DarkTheme.xaml;Themes\GlobalStyles.xaml;Themes\LightTheme.xaml;UI\ArmorListItemTemplate.xaml;UI\Dialogs\SettingsDialog.xaml;UI\MainWindow.xaml;UI\Panels\Armorexplorerpanel.xaml;UI\Panels\ArmorInfoPanel.xaml;UI\Panels\Duplicatorpanel.xaml;UI\Panels\Filetreepanel.xaml;UI\Panels\Quickinfopanel.xaml;UI\Viewer3D\Viewport3DControl.xaml;
 
 False
 

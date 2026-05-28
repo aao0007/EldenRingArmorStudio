@@ -8,7 +8,13 @@
     <Compile Update="UI\Panels\ArmorInfoPanel.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UI\Panels\Duplicatorpanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\Panels\Filetreepanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UI\Panels\Quickinfopanel.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="UI\Viewer3D\Viewport3DControl.xaml.cs">

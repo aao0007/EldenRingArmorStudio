@@ -4,51 +4,42 @@ using Newtonsoft.Json;
 
 namespace EldenRingArmorStudio.Core
 {
-    /// <summary>
-    /// Configuración persistente de la aplicación (data/settings.json).
-    /// Singleton accesible desde cualquier parte de la app.
-    /// </summary>
     public class AppConfig
     {
-        public static string Get(string key, string defaultValue = "")
-        {
-            switch (key)
-            {
-                case "modengine2.root_path":
-                    return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "modengine2");
-                case "project.parts_library_path":
-                    return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "parts");
-                case "tools.witchybnd_path":
-                    return Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\tools\WitchyBND\WitchyBND.exe"));
-                default:
-                    return defaultValue;
-            }
-        }
-
+        // ── Singleton ─────────────────────────────────────────────────────────
         private static AppConfig _instance;
         public static AppConfig Instance => _instance ??= new AppConfig();
 
         private const string SettingsPath = "data/settings.json";
 
-        // ── Secciones de configuración ────────────────────────────────────────────
-
+        // ── Secciones ─────────────────────────────────────────────────────────
         public ToolsSettings Tools { get; set; } = new();
         public ModEngine2Settings ModEngine2 { get; set; } = new();
         public ProjectSettings Project { get; set; } = new();
         public UiSettings Ui { get; set; } = new();
 
-        // ── Load / Save ───────────────────────────────────────────────────────────
+        // ── Acceso rápido por clave (compatibilidad con código existente) ──────
+        public static string Get(string key, string defaultValue = "")
+        {
+            var i = Instance;
+            return key switch
+            {
+                "modengine2.root_path" => i.ModEngine2.RootPath,
+                "project.parts_library_path" => i.Project.PartsLibraryPath,
+                "tools.witchybnd_path" => i.Tools.WitchyBndPath,
+                "tools.flver_editor_path" => i.Tools.FlverEditorPath,
+                "tools.smithbox_path" => i.Tools.SmithboxPath,
+                _ => defaultValue
+            };
+        }
 
+        // ── Load / Save ───────────────────────────────────────────────────────
         public void Load()
         {
             try
             {
                 Directory.CreateDirectory("data");
-                if (!File.Exists(SettingsPath))
-                {
-                    Save();
-                    return;
-                }
+                if (!File.Exists(SettingsPath)) { Save(); return; }
 
                 var json = File.ReadAllText(SettingsPath);
                 var loaded = JsonConvert.DeserializeObject<AppConfig>(json);
@@ -60,14 +51,7 @@ namespace EldenRingArmorStudio.Core
                     Ui = loaded.Ui ?? new();
                 }
             }
-            catch (Exception)
-            {
-                // Fallback por si el JSON está corrupto o no se puede leer
-                Tools = new();
-                ModEngine2 = new();
-                Project = new();
-                Ui = new();
-            }
+            catch { Tools = new(); ModEngine2 = new(); Project = new(); Ui = new(); }
         }
 
         public void Save()
@@ -75,13 +59,10 @@ namespace EldenRingArmorStudio.Core
             try
             {
                 Directory.CreateDirectory("data");
-                var json = JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
-                File.WriteAllText(SettingsPath, json);
+                File.WriteAllText(SettingsPath,
+                    JsonConvert.SerializeObject(this, Formatting.Indented));
             }
-            catch (Exception)
-            {
-                // Log o manejo de error silencioso en fallback
-            }
+            catch { }
         }
     }
 

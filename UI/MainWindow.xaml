@@ -5,7 +5,7 @@
         xmlns:viewer="clr-namespace:EldenRingArmorStudio.UI.Viewer3D"
         xmlns:panels="clr-namespace:EldenRingArmorStudio.UI.Panels"
         Title="Elden Ring Armor Studio"
-        Height="720" Width="1280"
+        Height="780" Width="1380"
         Background="{DynamicResource AppBackground}"
         AllowDrop="True" Drop="Window_Drop">
 
@@ -13,6 +13,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="22"/>
         </Grid.RowDefinitions>
 
         <!-- ── Menú ── -->
@@ -20,52 +21,71 @@
               Background="{DynamicResource MenuBackground}"
               Foreground="{DynamicResource MenuForeground}"
               Padding="4,2">
+
             <MenuItem Header="Archivo">
-                <MenuItem Header="Configurar Directorio de Modelos…" Click="MenuConfigurarModelos_Click"/>
-                <MenuItem Header="Recargar CSV (desde /data)"        Click="MenuRecargarCsv_Click"/>
-                <MenuItem Header="Guardar Cambios (.csv)"/>
+                <MenuItem Header="Recargar CSV"  Click="MenuRecargarCsv_Click"/>
+                <MenuItem Header="Vaciar BD"     Click="MenuVaciarBd_Click"/>
                 <Separator/>
-                <MenuItem Header="Salir" Click="Exit_Click"/>
+                <MenuItem Header="Salir"         Click="Exit_Click"/>
             </MenuItem>
+
             <MenuItem Header="Herramientas">
-                <MenuItem Header="Ejecutar WitchyBND Unpack"/>
                 <MenuItem Header="Generar Invisible Flags" Click="MenuGenerarFlags_Click"/>
             </MenuItem>
+
             <MenuItem Header="Vista">
-                <!-- Toggle en caliente → llama a ThemeManager.Toggle() -->
                 <MenuItem x:Name="MenuToggleTheme"
                           Header="☀  Cambiar a Tema Claro"
                           Click="MenuToggleTheme_Click"/>
             </MenuItem>
+
+            <!-- Configuración -->
+            <MenuItem Header="⚙ Configuración" Click="MenuSettings_Click"/>
+
         </Menu>
 
-        <!-- ── Layout principal ── -->
-        <dock:DockingManager Grid.Row="1"
+        <!-- ── Layout ── -->
+        <dock:DockingManager x:Name="DockManager"
+                             Grid.Row="1"
                              Background="{DynamicResource AppBackground}">
             <dock:LayoutRoot>
                 <dock:LayoutPanel Orientation="Vertical">
 
-                    <dock:LayoutPanel Orientation="Horizontal">
+                    <dock:LayoutPanel Orientation="Horizontal" DockHeight="530">
 
-                        <dock:LayoutAnchorablePane DockWidth="340">
-                            <dock:LayoutAnchorable Title="Propiedades" CanClose="False">
-                                <panels:ArmorInfoPanel x:Name="InfoPanel"/>
-                            </dock:LayoutAnchorable>
-                            <dock:LayoutAnchorable Title="Archivos (Mods/Parts)" CanClose="False">
+                        <!-- Izquierda: árbol -->
+                        <dock:LayoutAnchorablePane DockWidth="230">
+                            <dock:LayoutAnchorable Title="Archivos" CanClose="False">
                                 <panels:FileTreePanel x:Name="FileTree"/>
                             </dock:LayoutAnchorable>
                         </dock:LayoutAnchorablePane>
 
+                        <!-- Centro: visor 3D -->
                         <dock:LayoutDocumentPane>
                             <dock:LayoutDocument Title="Visualizador FLVER 3D" CanClose="False">
                                 <viewer:Viewport3DControl x:Name="FlverViewport"/>
                             </dock:LayoutDocument>
                         </dock:LayoutDocumentPane>
 
+                        <!-- Duplicador -->
+                        <dock:LayoutAnchorablePane DockWidth="300">
+                            <dock:LayoutAnchorable Title="Duplicar modelo a slots" CanClose="False">
+                                <panels:DuplicatorPanel x:Name="DupPanel"/>
+                            </dock:LayoutAnchorable>
+                        </dock:LayoutAnchorablePane>
+
+                        <!-- ArmorInfoPanel -->
+                        <dock:LayoutAnchorablePane DockWidth="280">
+                            <dock:LayoutAnchorable Title="Propiedades" CanClose="False">
+                                <panels:ArmorInfoPanel x:Name="InfoPanel"/>
+                            </dock:LayoutAnchorable>
+                        </dock:LayoutAnchorablePane>
+
                     </dock:LayoutPanel>
 
-                    <dock:LayoutAnchorablePane DockHeight="250">
-                        <dock:LayoutAnchorable Title="Explorador de Armaduras" CanClose="False">
+                    <!-- Explorador DB -->
+                    <dock:LayoutAnchorablePane DockHeight="230">
+                        <dock:LayoutAnchorable Title="Explorador de Armaduras (DB)" CanClose="False">
                             <panels:ArmorExplorerPanel x:Name="ExplorerPanel"/>
                         </dock:LayoutAnchorable>
                     </dock:LayoutAnchorablePane>
@@ -73,5 +93,17 @@
                 </dock:LayoutPanel>
             </dock:LayoutRoot>
         </dock:DockingManager>
+
+        <!-- Barra de estado -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource MenuBackground}"
+                BorderBrush="{DynamicResource BorderSubtle}"
+                BorderThickness="0,1,0,0">
+            <TextBlock x:Name="TxtStatusBar"
+                       Text="Listo"
+                       FontSize="10"
+                       Foreground="{DynamicResource TextSecondary}"
+                       Margin="8,0" VerticalAlignment="Center"/>
+        </Border>
     </Grid>
 </Window>

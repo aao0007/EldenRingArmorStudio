@@ -1,0 +1,172 @@
+﻿<UserControl x:Class="EldenRingArmorStudio.UI.Panels.DuplicatorPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource PanelBackground}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="10,8">
+
+            <!-- Título -->
+            <TextBlock Text="Duplicar modelo a slots"
+                       FontSize="13" FontWeight="Bold"
+                       Foreground="{DynamicResource TextAccent}"
+                       Margin="0,0,0,8"/>
+
+            <!-- Asignar a slots del juego -->
+            <CheckBox x:Name="ChkAssignGame"
+                      Content="Asignar a slots del juego"
+                      IsChecked="True"
+                      Margin="0,0,0,8"/>
+
+            <!-- Pack / subcarpeta destino -->
+            <TextBlock Text="Pack / subcarpeta:"
+                       FontSize="10"
+                       Foreground="{DynamicResource TextSecondary}"
+                       Margin="0,0,0,3"/>
+            <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="ComboPack"
+                          Grid.Column="0"
+                          IsEditable="True"
+                          FontSize="11"
+                          ToolTip="Selecciona una subcarpeta existente o escribe el nombre de una nueva"
+                          SelectionChanged="OnPackSelectionChanged"/>
+                <Button Grid.Column="1"
+                        Content="…"
+                        Margin="4,0,0,0"
+                        Click="OnBrowsePackFolder"
+                        ToolTip="Explorar carpeta"/>
+            </Grid>
+
+            <!-- Categoría -->
+            <TextBlock Text="Categoría:"
+                       FontSize="10"
+                       Foreground="{DynamicResource TextSecondary}"
+                       Margin="0,0,0,3"/>
+            <ComboBox x:Name="ComboCatFilter"
+                      FontSize="11"
+                      Margin="0,0,0,8"
+                      SelectionChanged="OnCatFilterChanged">
+                <ComboBoxItem Content="🪖 Cabeza" Tag="Head"/>
+                <ComboBoxItem Content="🥋 Cuerpo" Tag="Body"/>
+                <ComboBoxItem Content="🧤 Brazos" Tag="Arms"/>
+                <ComboBoxItem Content="👢 Piernas" Tag="Legs"/>
+            </ComboBox>
+
+            <!-- Incluir alterados -->
+            <CheckBox x:Name="ChkIncludeAltered"
+                      Content="Incluir versiones alteradas"
+                      Margin="0,0,0,8"
+                      Checked="OnFilterChanged"
+                      Unchecked="OnFilterChanged"/>
+
+            <!-- Buscador de IDs -->
+            <TextBox x:Name="TxtIdSearch"
+                     FontSize="11"
+                     Margin="0,0,0,6"
+                     Tag="🔍 Buscar ID o nombre…"
+                     TextChanged="OnIdSearchChanged"/>
+
+            <!-- Lista de IDs seleccionables -->
+            <Border BorderBrush="{DynamicResource BorderNormal}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Height="200"
+                    Margin="0,0,0,6">
+                <ListBox x:Name="LstIds"
+                         Background="{DynamicResource InputBackground}"
+                         BorderThickness="0"
+                         SelectionMode="Multiple"
+                         FontSize="11"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         SelectionChanged="OnIdsSelectionChanged">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding"    Value="6,3"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="Bd"
+                                                Background="{TemplateBinding Background}"
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter
+                                                TextBlock.Foreground="{DynamicResource TextPrimary}"
+                                                TextBlock.FontSize="11"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Bd" Property="Background"
+                                                        Value="{DynamicResource CardSelected}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background"
+                                                        Value="{DynamicResource CardHover}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </Border>
+
+            <!-- Botones selección rápida -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <Button Content="Seleccionar todo el set"
+                        FontSize="10" Padding="6,4"
+                        Click="OnSelectSet"/>
+                <Button Content="Limpiar"
+                        FontSize="10" Padding="6,4"
+                        Margin="6,0,0,0"
+                        Click="OnClearSelection"/>
+            </StackPanel>
+
+            <!-- Destino final -->
+            <TextBlock Text="Destino:"
+                       FontSize="10"
+                       Foreground="{DynamicResource TextSecondary}"
+                       Margin="0,0,0,3"/>
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="TxtDestino"
+                         Grid.Column="0"
+                         FontSize="10"
+                         ToolTip="Carpeta de destino final (mod\parts o subcarpeta)"/>
+                <Button Grid.Column="1"
+                        Content="…"
+                        Margin="4,0,0,0"
+                        Click="OnBrowseDestino"/>
+            </Grid>
+
+            <!-- Botón principal -->
+            <Button x:Name="BtnDuplicate"
+                    Content="▶  Duplicar a slots seleccionados"
+                    FontSize="12" FontWeight="Bold"
+                    Padding="8,8"
+                    IsEnabled="False"
+                    Click="OnDuplicate"
+                    Background="{DynamicResource BtnSuccessBg}"
+                    BorderBrush="{DynamicResource BtnSuccessBorder}"
+                    Foreground="{DynamicResource BtnSuccessFg}"/>
+
+            <!-- Log de resultados -->
+            <TextBlock x:Name="TxtStatus"
+                       Text=""
+                       FontSize="10"
+                       Foreground="{DynamicResource TextSecondary}"
+                       TextWrapping="Wrap"
+                       Margin="0,8,0,0"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
