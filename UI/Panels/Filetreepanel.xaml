@@ -11,32 +11,41 @@
         </Grid.RowDefinitions>
 
         <TextBox x:Name="TxtFilter"
-                 Grid.Row="0"
-                 Margin="8,5"
+                 Grid.Row="0" Margin="8,5"
                  VerticalContentAlignment="Center"
                  FontSize="11"
                  Tag="🔍 Filtrar archivos…"
                  TextChanged="OnFilterChanged"/>
 
-        <TabControl x:Name="TabFiles"
-                    Grid.Row="1"
-                    Padding="0">
-            <TabItem Header="📂 Proyecto">
+        <TabControl x:Name="TabFiles" Grid.Row="1" Padding="0">
+
+            <!-- Pestaña Proyecto: muestra packs de ModEngine/mod -->
+            <TabItem Header="📂 ModEngine">
                 <TreeView x:Name="TreeProject"
+                          Background="{DynamicResource TreeBackground}"
+                          BorderThickness="0"
+                          MouseDown="OnTreeMouseDown"
                           MouseDoubleClick="OnTreeDoubleClick"
+                          KeyDown="OnTreeKeyDown"
                           ContextMenuOpening="OnContextMenu"/>
             </TabItem>
-            <TabItem Header="🎮 Mod/Parts">
+
+            <!-- Pestaña Mod/Parts clásica -->
+            <TabItem Header="🗂 Biblioteca">
                 <TreeView x:Name="TreeMod"
+                          Background="{DynamicResource TreeBackground}"
+                          BorderThickness="0"
+                          MouseDown="OnTreeMouseDown"
                           MouseDoubleClick="OnTreeDoubleClick"
+                          KeyDown="OnTreeKeyDown"
                           ContextMenuOpening="OnContextMenu"/>
             </TabItem>
+
         </TabControl>
 
         <Button Grid.Row="2"
                 Content="🔄 Actualizar"
-                Margin="8,3"
-                Click="OnRefreshClick"
+                Margin="8,3" Click="OnRefreshClick"
                 FontSize="11"/>
     </Grid>
 </UserControl>

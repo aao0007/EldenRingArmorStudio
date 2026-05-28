@@ -5,13 +5,13 @@
     "smithbox_path": "C:\\Users\\Anki\\source\\repos\\EldenRingArmorStudio\\EldenRingArmorStudio\\tools\\smithbox\\Smithbox.exe"
   },
   "ModEngine2": {
-    "root_path": "D:\\SteamLibrary\\steamapps\\common\\ELDEN RING\\Game\\ModEngine-Coop\\mod\\"
+    "root_path": "D:\\SteamLibrary\\steamapps\\common\\ELDEN RING\\Game\\ModEngine-Coop"
   },
   "Project": {
     "parts_library_path": "C:\\Users\\Anki\\Downloads\\parts"
   },
   "Ui": {
-    "dark_mode": false,
+    "dark_mode": true,
     "language": "es",
     "grid_size": 140
   }

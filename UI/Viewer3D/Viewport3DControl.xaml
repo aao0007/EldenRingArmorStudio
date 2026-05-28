@@ -8,15 +8,96 @@
              MouseMove="OnMouseMove"
              MouseUp="OnMouseUp"
              MouseWheel="OnMouseWheel">
+
     <Grid>
+        <!-- Viewport GL -->
         <glWpf:GLWpfControl x:Name="GlControl" Render="GlControl_Render"/>
+
+        <!-- Stats arriba izquierda -->
         <TextBlock x:Name="TxtStats"
                    Foreground="{DynamicResource StatsText}"
-                   FontWeight="Bold"
-                   FontSize="11"
-                   Margin="10"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
-                   IsHitTestVisible="False"/>
+                   FontWeight="Bold" FontSize="11"
+                   Margin="10" IsHitTestVisible="False"
+                   HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+        <!-- Hint de controles arriba derecha -->
+        <TextBlock x:Name="TxtHint"
+                   Text="LMB: rotar  |  MMB: pan  |  Scroll: zoom"
+                   Foreground="#60A0A0B0"
+                   FontSize="10" FontStyle="Italic"
+                   Margin="10" IsHitTestVisible="False"
+                   HorizontalAlignment="Right" VerticalAlignment="Top"/>
+
+        <!-- Barra de controles inferior -->
+        <Border VerticalAlignment="Bottom"
+                HorizontalAlignment="Stretch"
+                Background="#CC0D0D14"
+                BorderBrush="#30FFFFFF"
+                BorderThickness="0,1,0,0"
+                Padding="8,5">
+            <StackPanel Orientation="Horizontal">
+
+                <!-- Modo de renderizado -->
+                <TextBlock Text="Render:" FontSize="10"
+                           Foreground="#AAA0A8B8"
+                           VerticalAlignment="Center" Margin="0,0,6,0"/>
+
+                <Button x:Name="BtnTexture"  Content="Texturado"
+                        FontSize="10" Padding="6,3" Margin="0,0,4,0"
+                        Click="OnRenderTexture"
+                        Background="#401A5FB4" BorderBrush="#5A8FDD"
+                        Foreground="#D8E8FF"/>
+                <Button x:Name="BtnSolid"    Content="Sólido"
+                        FontSize="10" Padding="6,3" Margin="0,0,4,0"
+                        Click="OnRenderSolid"
+                        Background="#28282C" BorderBrush="#505060"
+                        Foreground="#B0B0C0"/>
+                <Button x:Name="BtnWireframe" Content="Wireframe"
+                        FontSize="10" Padding="6,3" Margin="0,0,4,0"
+                        Click="OnRenderWireframe"
+                        Background="#28282C" BorderBrush="#505060"
+                        Foreground="#B0B0C0"/>
+                <Button x:Name="BtnNormals"  Content="Normales"
+                        FontSize="10" Padding="6,3" Margin="0,0,16,0"
+                        Click="OnRenderNormals"
+                        Background="#28282C" BorderBrush="#505060"
+                        Foreground="#B0B0C0"/>
+
+                <!-- Separador -->
+                <Border Width="1" Background="#40FFFFFF" Margin="0,0,12,0"/>
+
+                <!-- Grid -->
+                <CheckBox x:Name="ChkGrid"
+                          Content="Grid" IsChecked="True"
+                          FontSize="10" Foreground="#B0B0C0"
+                          VerticalAlignment="Center"
+                          Margin="0,0,12,0"
+                          Checked="OnGridToggle"
+                          Unchecked="OnGridToggle"/>
+
+                <!-- Reset cámara -->
+                <Button Content="⟳ Reset cámara"
+                        FontSize="10" Padding="6,3" Margin="0,0,12,0"
+                        Click="OnResetCamera"
+                        Background="#28282C" BorderBrush="#505060"
+                        Foreground="#B0B0C0"/>
+
+                <!-- Fondo -->
+                <TextBlock Text="Fondo:" FontSize="10"
+                           Foreground="#AAA0A8B8"
+                           VerticalAlignment="Center" Margin="0,0,4,0"/>
+                <ComboBox x:Name="ComboBg" FontSize="10"
+                          Width="90" VerticalContentAlignment="Center"
+                          SelectionChanged="OnBgChanged">
+                    <ComboBoxItem Content="Oscuro" Tag="dark"    IsSelected="True"/>
+                    <ComboBoxItem Content="Gris"   Tag="grey"/>
+                    <ComboBoxItem Content="Azul"   Tag="blue"/>
+                    <ComboBoxItem Content="Negro"  Tag="black"/>
+                </ComboBox>
+
+
+
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

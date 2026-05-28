@@ -7,49 +7,87 @@
                   HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="10,8">
 
-            <!-- Título -->
             <TextBlock Text="Duplicar modelo a slots"
                        FontSize="13" FontWeight="Bold"
                        Foreground="{DynamicResource TextAccent}"
-                       Margin="0,0,0,8"/>
+                       Margin="0,0,0,10"/>
 
-            <!-- Asignar a slots del juego -->
-            <CheckBox x:Name="ChkAssignGame"
-                      Content="Asignar a slots del juego"
-                      IsChecked="True"
-                      Margin="0,0,0,8"/>
-
-            <!-- Pack / subcarpeta destino -->
-            <TextBlock Text="Pack / subcarpeta:"
-                       FontSize="10"
-                       Foreground="{DynamicResource TextSecondary}"
+            <!-- ── Pack destino ── -->
+            <TextBlock Text="Carpeta de destino (ModEngine/mod/...):"
+                       FontSize="10" Foreground="{DynamicResource TextSecondary}"
                        Margin="0,0,0,3"/>
-            <Grid Margin="0,0,0,8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="30"/>
-                </Grid.ColumnDefinitions>
-                <ComboBox x:Name="ComboPack"
-                          Grid.Column="0"
-                          IsEditable="True"
-                          FontSize="11"
-                          ToolTip="Selecciona una subcarpeta existente o escribe el nombre de una nueva"
-                          SelectionChanged="OnPackSelectionChanged"/>
-                <Button Grid.Column="1"
-                        Content="…"
-                        Margin="4,0,0,0"
-                        Click="OnBrowsePackFolder"
-                        ToolTip="Explorar carpeta"/>
-            </Grid>
 
-            <!-- Categoría -->
+            <!-- Lista de packs existentes -->
+            <Border BorderBrush="{DynamicResource BorderNormal}"
+                    BorderThickness="1" CornerRadius="4"
+                    Height="90" Margin="0,0,0,6">
+                <ListBox x:Name="LstPacks"
+                         Background="{DynamicResource InputBackground}"
+                         BorderThickness="0" FontSize="11"
+                         SelectionChanged="OnPackListSelectionChanged"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="6,3"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </Border>
+
+            <!-- Nueva carpeta -->
+            <TextBlock Text="O escribe el nombre de una nueva carpeta:"
+                       FontSize="10" Foreground="{DynamicResource TextSecondary}"
+                       Margin="0,0,0,3"/>
+            <TextBox x:Name="TxtNewPack"
+                     FontSize="11" Margin="0,0,0,4"
+                     Tag="ej. MiMod_Negro"
+                     TextChanged="OnNewPackTextChanged"/>
+
+            <!-- Destino resuelto -->
+            <TextBlock x:Name="TxtDestinoResuelto"
+                       Text="→ (sin selección)"
+                       FontSize="10" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextAccent}"
+                       TextTrimming="CharacterEllipsis"
+                       Margin="0,0,0,10"
+                       ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+
+            <!-- ── Opciones de duplicado ── -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <!-- Género -->
+                <Border BorderBrush="{DynamicResource BorderNormal}"
+                        BorderThickness="1" CornerRadius="4"
+                        Padding="6,4" Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Género:" FontSize="10"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <RadioButton x:Name="RbMale"   Content="♂ M"
+                                     IsChecked="True" FontSize="11"
+                                     VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <RadioButton x:Name="RbFemale" Content="♀ F"
+                                     FontSize="11" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Alterado -->
+                <Border BorderBrush="{DynamicResource BorderNormal}"
+                        BorderThickness="1" CornerRadius="4"
+                        Padding="6,4">
+                    <CheckBox x:Name="ChkAltered"
+                              Content="+ alterado (_l)"
+                              FontSize="11" VerticalAlignment="Center"
+                              ToolTip="Duplica también la versión alterada con sufijo _l"/>
+                </Border>
+            </StackPanel>
+
+            <!-- ── Categoría ── -->
             <TextBlock Text="Categoría:"
-                       FontSize="10"
-                       Foreground="{DynamicResource TextSecondary}"
+                       FontSize="10" Foreground="{DynamicResource TextSecondary}"
                        Margin="0,0,0,3"/>
             <ComboBox x:Name="ComboCatFilter"
-                      FontSize="11"
-                      Margin="0,0,0,8"
+                      FontSize="11" Margin="0,0,0,8"
                       SelectionChanged="OnCatFilterChanged">
                 <ComboBoxItem Content="🪖 Cabeza" Tag="Head"/>
                 <ComboBoxItem Content="🥋 Cuerpo" Tag="Body"/>
@@ -57,26 +95,16 @@
                 <ComboBoxItem Content="👢 Piernas" Tag="Legs"/>
             </ComboBox>
 
-            <!-- Incluir alterados -->
-            <CheckBox x:Name="ChkIncludeAltered"
-                      Content="Incluir versiones alteradas"
-                      Margin="0,0,0,8"
-                      Checked="OnFilterChanged"
-                      Unchecked="OnFilterChanged"/>
-
-            <!-- Buscador de IDs -->
+            <!-- ── Buscador (no deselecciona) ── -->
             <TextBox x:Name="TxtIdSearch"
-                     FontSize="11"
-                     Margin="0,0,0,6"
-                     Tag="🔍 Buscar ID o nombre…"
+                     FontSize="11" Margin="0,0,0,6"
+                     Tag="🔍 Filtrar lista (mantiene selección)…"
                      TextChanged="OnIdSearchChanged"/>
 
-            <!-- Lista de IDs seleccionables -->
+            <!-- ── Lista de IDs ordenada por ID ── -->
             <Border BorderBrush="{DynamicResource BorderNormal}"
-                    BorderThickness="1"
-                    CornerRadius="4"
-                    Height="200"
-                    Margin="0,0,0,6">
+                    BorderThickness="1" CornerRadius="4"
+                    Height="200" Margin="0,0,0,6">
                 <ListBox x:Name="LstIds"
                          Background="{DynamicResource InputBackground}"
                          BorderThickness="0"
@@ -117,55 +145,45 @@
                 </ListBox>
             </Border>
 
-            <!-- Botones selección rápida -->
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+            <!-- Selección rápida -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <Button Content="Seleccionar todo el set"
                         FontSize="10" Padding="6,4"
                         Click="OnSelectSet"/>
-                <Button Content="Limpiar"
+                <Button Content="Limpiar selección"
                         FontSize="10" Padding="6,4"
                         Margin="6,0,0,0"
                         Click="OnClearSelection"/>
             </StackPanel>
 
-            <!-- Destino final -->
-            <TextBlock Text="Destino:"
-                       FontSize="10"
-                       Foreground="{DynamicResource TextSecondary}"
-                       Margin="0,0,0,3"/>
-            <Grid Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="30"/>
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="TxtDestino"
-                         Grid.Column="0"
-                         FontSize="10"
-                         ToolTip="Carpeta de destino final (mod\parts o subcarpeta)"/>
-                <Button Grid.Column="1"
-                        Content="…"
-                        Margin="4,0,0,0"
-                        Click="OnBrowseDestino"/>
-            </Grid>
-
-            <!-- Botón principal -->
+            <!-- Botón duplicar -->
             <Button x:Name="BtnDuplicate"
                     Content="▶  Duplicar a slots seleccionados"
                     FontSize="12" FontWeight="Bold"
-                    Padding="8,8"
-                    IsEnabled="False"
+                    Padding="8,8" IsEnabled="False"
                     Click="OnDuplicate"
                     Background="{DynamicResource BtnSuccessBg}"
                     BorderBrush="{DynamicResource BtnSuccessBorder}"
-                    Foreground="{DynamicResource BtnSuccessFg}"/>
+                    Foreground="{DynamicResource BtnSuccessFg}"
+                    Margin="0,0,0,6"/>
 
-            <!-- Log de resultados -->
+            <!-- Botón vaciar -->
+            <Button x:Name="BtnClear"
+                    Content="🗑  Vaciar carpeta parts"
+                    FontSize="11" Padding="8,6"
+                    IsEnabled="False"
+                    Click="OnClearFolder"
+                    Background="#7A1A1A"
+                    BorderBrush="#5A0A0A"
+                    Foreground="White"
+                    ToolTip="Elimina todos los .partsbnd.dcx de la carpeta parts seleccionada"
+                    Margin="0,0,0,6"/>
+
+            <!-- Estado -->
             <TextBlock x:Name="TxtStatus"
-                       Text=""
-                       FontSize="10"
+                       Text="" FontSize="10"
                        Foreground="{DynamicResource TextSecondary}"
-                       TextWrapping="Wrap"
-                       Margin="0,8,0,0"/>
+                       TextWrapping="Wrap" Margin="0,4,0,0"/>
 
         </StackPanel>
     </ScrollViewer>
