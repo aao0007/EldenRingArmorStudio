@@ -4,7 +4,6 @@ using OpenTK.Mathematics;
 using OpenTK.Wpf;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,18 +15,16 @@ namespace EldenRingArmorStudio.UI.Viewer3D
     {
         // ── Modelo ────────────────────────────────────────────────────────────
         private FlverModel _currentModel;
-        private FlverModel _pendingModel;   // esperando a que GL esté listo
-        private bool _glReady;
 
         // ── Shaders ───────────────────────────────────────────────────────────
         private int _progMain;
         private int _progGrid;
 
-        // GPU meshes / materials (igual que FlverRenderer original)
+        // ── GPU ───────────────────────────────────────────────────────────────
         private readonly List<GpuMesh> _meshes = new();
         private readonly List<GpuMaterial> _materials = new();
 
-        // Grid
+        // ── Grid ──────────────────────────────────────────────────────────────
         private int _gridVao, _gridVbo, _gridN;
         private int _axisVao, _axisVbo;
 
@@ -35,7 +32,7 @@ namespace EldenRingArmorStudio.UI.Viewer3D
         private float _yaw = 0.5f;
         private float _pitch = 0.22f;
         private float _zoom = 3.2f;
-        private Vector3 _target = Vector3.Zero;
+        private Vector3 _target = new Vector3(0, 1f, 0);
 
         // ── Ratón ─────────────────────────────────────────────────────────────
         private Point _lastMousePos;
@@ -43,7 +40,7 @@ namespace EldenRingArmorStudio.UI.Viewer3D
         private bool _isDraggingPan;
 
         // ── Opciones render ───────────────────────────────────────────────────
-        private int _renderMode = 0;   // 0=tex 1=solid 2=wire 3=normals
+        private int _renderMode = 0;
         private bool _showGrid = true;
         private Color4 _bgColor = new(0.07f, 0.07f, 0.10f, 1f);
 
@@ -51,7 +48,9 @@ namespace EldenRingArmorStudio.UI.Viewer3D
         private int _totalVerts, _totalTris;
 
         // ══════════════════════════════════════════════════════════════════════
-        // SHADERS — idénticos al FlverRenderer original que sí funcionaba
+        // SHADERS
+        // FIX CLAVE: uHasAlbedo/uHasNormal/uHasSpecular/uWireframe son INT,
+        // no bool — los uniform bool fallan silenciosamente en drivers AMD/Intel.
         // ══════════════════════════════════════════════════════════════════════
 
         private const string VERT_SRC = @"
@@ -95,56 +94,55 @@ uniform sampler2D uAlbedo;
 uniform sampler2D uNormalMap;
 uniform sampler2D uSpecular;
 
-uniform bool uHasAlbedo;
-uniform bool uHasNormal;
-uniform bool uHasSpecular;
+uniform int uHasAlbedo;
+uniform int uHasNormal;
+uniform int uHasSpecular;
+uniform int uWireframe;
 
 uniform vec3 uCamPos;
 uniform int  uRenderMode;
-uniform bool uWireframe;
 
-vec3 perturbNormal(vec3 N, vec3 V, vec2 uv, vec3 mapNorm)
+vec3 perturbNormal(vec3 N, vec2 uv, vec3 mapNorm)
 {
     vec3 q1  = dFdx(vWorldPos);
     vec3 q2  = dFdy(vWorldPos);
     vec2 st1 = dFdx(uv);
     vec2 st2 = dFdy(uv);
-    vec3 T   = normalize(q1 * st2.t - q2 * st1.t);
-    vec3 B   = -normalize(cross(N, T));
+    vec3 T   = normalize( q1 * st2.t - q2 * st1.t);
+    vec3 B   = normalize(-q1 * st2.s + q2 * st1.s);
     mat3 TBN = mat3(T, B, N);
     return normalize(TBN * mapNorm);
 }
 
 void main()
 {
-    if(uWireframe) { FragColor = vec4(0.08, 0.65, 1.0, 1.0); return; }
+    if (uWireframe != 0) { FragColor = vec4(0.08, 0.65, 1.0, 1.0); return; }
 
     vec3 V = normalize(uCamPos - vWorldPos);
     vec3 N = normalize(vNorm);
 
-    if(uHasNormal && uRenderMode == 0)
+    if (uHasNormal != 0 && uRenderMode == 0)
     {
         vec3 s = texture(uNormalMap, vUV).rgb * 2.0 - 1.0;
-        s.y = -s.y;
-        N = perturbNormal(N, V, vUV, s);
+        N = perturbNormal(N, vUV, s);
     }
 
-    if(uRenderMode == 3) { FragColor = vec4(N * 0.5 + 0.5, 1.0); return; }
+    if (uRenderMode == 3) { FragColor = vec4(N * 0.5 + 0.5, 1.0); return; }
 
-    vec3 albedo;
-    float alpha = 1.0;
+    vec3  albedo = vec3(0.72, 0.70, 0.68);
+    float alpha  = 1.0;
 
-    if(uHasAlbedo && uRenderMode == 0)
+    if (uHasAlbedo != 0 && uRenderMode == 0)
     {
         vec4 s = texture(uAlbedo, vUV);
         albedo = s.rgb * vColor.rgb;
         alpha  = s.a;
     }
-    else if(uRenderMode == 1)
+    else if (uRenderMode == 1)
     {
         albedo = vec3(0.62, 0.60, 0.58);
     }
-    else
+    else if (uRenderMode == 0)
     {
         albedo = vec3(0.72, 0.70, 0.68) * vColor.rgb;
     }
@@ -153,7 +151,7 @@ void main()
     float roughness = 0.6;
     float ao        = 1.0;
 
-    if(uHasSpecular && uRenderMode == 0)
+    if (uHasSpecular != 0 && uRenderMode == 0)
     {
         vec3 spec = texture(uSpecular, vUV).rgb;
         metallic  = spec.r;
@@ -161,36 +159,37 @@ void main()
         ao        = spec.b;
     }
 
-    vec3  L1 = normalize(vec3(0.6,  1.4,  0.8));
+    vec3  L1 = normalize(vec3( 0.6,  1.4,  0.8));
     float d1 = max(dot(N, L1), 0.0);
     vec3  c1 = vec3(1.05, 0.98, 0.90);
 
-    vec3  L2 = normalize(vec3(-0.8, 0.3, -0.6));
+    vec3  L2 = normalize(vec3(-0.8,  0.3, -0.6));
     float d2 = max(dot(N, L2), 0.0) * 0.35;
     vec3  c2 = vec3(0.65, 0.70, 0.80);
 
-    vec3  L3 = normalize(vec3(0.0, -1.0, 0.2));
+    vec3  L3 = normalize(vec3( 0.0, -1.0,  0.2));
     float d3 = max(dot(N, L3), 0.0) * 0.12;
     vec3  c3 = vec3(0.40, 0.35, 0.30);
 
     float shininess = mix(8.0, 128.0, 1.0 - roughness);
-    vec3  H1  = normalize(L1 + V);
-    float sp  = pow(max(dot(N, H1), 0.0), shininess);
-    float F0  = mix(0.04, 0.7, metallic);
-    float cosV = max(dot(N, V), 0.0);
+    vec3  H1    = normalize(L1 + V);
+    float sp    = pow(max(dot(N, H1), 0.0), shininess);
+    float cosV  = max(dot(N, V), 0.0);
+    float F0    = mix(0.04, 0.7, metallic);
     float fresn = F0 + (1.0 - F0) * pow(1.0 - cosV, 5.0);
-    vec3 specColor = mix(vec3(1.0), albedo, metallic);
-    vec3 specTerm  = specColor * sp * fresn * (1.0 - roughness * 0.7);
+    vec3  specColor = mix(vec3(1.0), albedo, metallic);
+    vec3  specTerm  = specColor * sp * fresn * (1.0 - roughness * 0.7);
 
-    float rim   = pow(1.0 - cosV, 3.0) * 0.15;
-    vec3 rimCol = vec3(0.55, 0.60, 0.70) * rim;
+    float rim    = pow(1.0 - cosV, 3.0) * 0.15;
+    vec3  rimCol = vec3(0.55, 0.60, 0.70) * rim;
 
     vec3 ambient = albedo * vec3(0.08, 0.09, 0.11) * ao;
     vec3 diffuse = albedo * (d1*c1 + d2*c2 + d3*c3);
     vec3 color   = ambient + diffuse + specTerm + rimCol;
 
-    color = color*(color+0.0245786)/(color*(0.983729*color+0.432951)+0.238081);
-    color = pow(clamp(color,0.0,1.0), vec3(1.0/2.2));
+    color = color * (color + 0.0245786) /
+            (color * (0.983729 * color + 0.432951) + 0.238081);
+    color = pow(clamp(color, 0.0, 1.0), vec3(1.0 / 2.2));
 
     FragColor = vec4(color, alpha);
 }";
@@ -219,37 +218,117 @@ void main(){ FragColor = uColor; }";
                 Profile = OpenTK.Windowing.Common.ContextProfile.Core
             };
             GlControl.Start(settings);
+
+            // FIX: compilar shaders aquí, justo después de GlControl.Start()
+            // que activa el contexto GL. No hacerlo en el primer frame.
+            InitializeShaders();
         }
 
-        // ── Carga de modelo ───────────────────────────────────────────────────
+        // ── API pública ───────────────────────────────────────────────────────
 
         public void LoadModel(FlverModel model)
         {
             if (model == null) return;
-            // No llamar a GL aquí: el contexto solo está activo en GlControl_Render.
-            // Guardamos el modelo como pendiente; se subirá a GPU en el próximo frame.
-            _pendingModel = model;
+
+            // Limpiar modelo anterior
+            foreach (var m in _meshes) DisposeGpuMesh(m);
+            foreach (var m in _materials) DisposeGpuMaterial(m);
+            _meshes.Clear();
+            _materials.Clear();
+
+            _currentModel = model;
+
+            // ── Texturas via TextureManager (igual que el código de referencia) ──
+            foreach (var mat in model.Materials)
+            {
+                var gm = new GpuMaterial();
+                if (mat.AlbedoData != null)
+                    gm.AlbedoTex = TextureManager.LoadDdsTextureFromBytes(mat.AlbedoData);
+                if (mat.NormalData != null)
+                    gm.NormalTex = TextureManager.LoadDdsTextureFromBytes(mat.NormalData);
+                if (mat.SpecularData != null)
+                    gm.SpecularTex = TextureManager.LoadDdsTextureFromBytes(mat.SpecularData);
+                _materials.Add(gm);
+            }
+            if (_materials.Count == 0)
+                _materials.Add(new GpuMaterial());
+
+            // ── Mallas via Marshal.SizeOf (igual que el código de referencia) ──
+            int vertexSize = Marshal.SizeOf<FlverVertex>();
+            _totalVerts = 0; _totalTris = 0;
+
+            foreach (var mesh in model.Meshes)
+            {
+                if (mesh.Vertices.Length == 0 || mesh.Indices.Length == 0) continue;
+
+                mesh.VaoId = GL.GenVertexArray();
+                mesh.VboId = GL.GenBuffer();
+                mesh.EboId = GL.GenBuffer();
+
+                GL.BindVertexArray(mesh.VaoId);
+
+                GL.BindBuffer(BufferTarget.ArrayBuffer, mesh.VboId);
+                GL.BufferData(BufferTarget.ArrayBuffer,
+                    mesh.Vertices.Length * vertexSize,
+                    mesh.Vertices,
+                    BufferUsageHint.StaticDraw);
+
+                GL.BindBuffer(BufferTarget.ElementArrayBuffer, mesh.EboId);
+                GL.BufferData(BufferTarget.ElementArrayBuffer,
+                    mesh.Indices.Length * sizeof(uint),
+                    mesh.Indices,
+                    BufferUsageHint.StaticDraw);
+
+                // location 0: XYZ      offset  0
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float,
+                    false, vertexSize, 0);
+                GL.EnableVertexAttribArray(0);
+                // location 1: NxNyNz   offset 12
+                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float,
+                    false, vertexSize, 3 * sizeof(float));
+                GL.EnableVertexAttribArray(1);
+                // location 2: UV       offset 24
+                GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float,
+                    false, vertexSize, 6 * sizeof(float));
+                GL.EnableVertexAttribArray(2);
+                // location 3: RGBA     offset 32
+                GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float,
+                    false, vertexSize, 8 * sizeof(float));
+                GL.EnableVertexAttribArray(3);
+
+                GL.BindVertexArray(0);
+
+                // El GpuMesh de la lista necesita los mismos IDs
+                _meshes.Add(new GpuMesh
+                {
+                    Vao = mesh.VaoId,
+                    Vbo = mesh.VboId,
+                    Ebo = mesh.EboId,
+                    IndexCount = mesh.Indices.Length,
+                    MaterialIndex = mesh.MaterialIndex
+                });
+
+                _totalVerts += mesh.Vertices.Length;
+                _totalTris += mesh.Indices.Length / 3;
+            }
 
             TxtStats.Text =
                 $"Vértices: {model.TotalVertices:N0} | Triángulos: {model.TotalTriangles:N0}";
+
+            FitCamera(model);
         }
 
         // ── Render loop ───────────────────────────────────────────────────────
 
         private void GlControl_Render(TimeSpan delta)
         {
-            if (!_glReady) { InitGL(); _glReady = true; }
-
-            // Subir modelo pendiente a GPU ahora que el contexto GL está activo
-            if (_pendingModel != null)
-            {
-                UploadModelToGpu(_pendingModel);
-                _pendingModel = null;
-            }
-
             GL.Viewport(0, 0, (int)GlControl.ActualWidth, (int)GlControl.ActualHeight);
             GL.ClearColor(_bgColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            GL.Disable(EnableCap.CullFace);
 
             float aspect = (float)Math.Max(GlControl.ActualWidth, 1) /
                            (float)Math.Max(GlControl.ActualHeight, 1);
@@ -260,40 +339,29 @@ void main(){ FragColor = uColor; }";
                 MathHelper.DegreesToRadians(45f), aspect, 0.005f, 500f);
             var vp = view * proj;
 
-            // Grid
             if (_showGrid) DrawGrid(vp);
-
             if (_meshes.Count == 0) return;
 
-            // ── Modelo ────────────────────────────────────────────────────────
             GL.UseProgram(_progMain);
 
-            var model = Matrix4.Identity;
-            var normalMat = new Matrix3(Matrix4.Transpose(Matrix4.Invert(model)));
+            var modelMat = Matrix4.Identity;
+            var normalMat = new Matrix3(Matrix4.Transpose(Matrix4.Invert(modelMat)));
 
-            SetUniform(_progMain, "uModel", model);
+            SetUniform(_progMain, "uModel", modelMat);
             SetUniform(_progMain, "uView", view);
             SetUniform(_progMain, "uProj", proj);
             SetUniform(_progMain, "uNormalMat", normalMat);
             GL.Uniform3(GL.GetUniformLocation(_progMain, "uCamPos"), cam);
             GL.Uniform1(GL.GetUniformLocation(_progMain, "uRenderMode"), _renderMode);
-
-            // Unidades de textura fijas
             GL.Uniform1(GL.GetUniformLocation(_progMain, "uAlbedo"), 0);
             GL.Uniform1(GL.GetUniformLocation(_progMain, "uNormalMap"), 1);
             GL.Uniform1(GL.GetUniformLocation(_progMain, "uSpecular"), 2);
+            GL.Uniform1(GL.GetUniformLocation(_progMain, "uWireframe"), _renderMode == 2 ? 1 : 0);
 
             if (_renderMode == 2)
-            {
                 GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Line);
-                GL.Uniform1(GL.GetUniformLocation(_progMain, "uWireframe"), 1);
-            }
             else
-            {
                 GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
-                GL.Uniform1(GL.GetUniformLocation(_progMain, "uWireframe"), 0);
-            }
-            GL.Disable(EnableCap.CullFace);
 
             foreach (var gpuMesh in _meshes)
             {
@@ -305,11 +373,11 @@ void main(){ FragColor = uColor; }";
                 BindTex(mat.SpecularTex, 2);
 
                 GL.Uniform1(GL.GetUniformLocation(_progMain, "uHasAlbedo"),
-                    mat.AlbedoTex != 0 ? 1 : 0);
+                    mat.AlbedoTex > 0 ? 1 : 0);
                 GL.Uniform1(GL.GetUniformLocation(_progMain, "uHasNormal"),
-                    mat.NormalTex != 0 ? 1 : 0);
+                    mat.NormalTex > 0 ? 1 : 0);
                 GL.Uniform1(GL.GetUniformLocation(_progMain, "uHasSpecular"),
-                    mat.SpecularTex != 0 ? 1 : 0);
+                    mat.SpecularTex > 0 ? 1 : 0);
 
                 GL.BindVertexArray(gpuMesh.Vao);
                 GL.DrawElements(PrimitiveType.Triangles,
@@ -324,51 +392,16 @@ void main(){ FragColor = uColor; }";
         private static void BindTex(int tex, int unit)
         {
             GL.ActiveTexture(TextureUnit.Texture0 + unit);
-            GL.BindTexture(TextureTarget.Texture2D, tex);
+            GL.BindTexture(TextureTarget.Texture2D, tex > 0 ? tex : 0);
         }
 
-        // ── Upload modelo a GPU (solo llamar desde dentro del render loop) ────
+        // ── Init shaders + grid ───────────────────────────────────────────────
 
-        private void UploadModelToGpu(FlverModel model)
-        {
-            // Limpiar anterior
-            foreach (var m in _meshes) DisposeGpuMesh(m);
-            foreach (var m in _materials) DisposeGpuMaterial(m);
-            _meshes.Clear();
-            _materials.Clear();
-
-            _currentModel = model;
-
-            foreach (var mat in model.Materials)
-            {
-                var gm = new GpuMaterial();
-                if (mat.AlbedoData != null) gm.AlbedoTex = UploadDds(mat.AlbedoData);
-                if (mat.NormalData != null) gm.NormalTex = UploadDds(mat.NormalData);
-                if (mat.SpecularData != null) gm.SpecularTex = UploadDds(mat.SpecularData);
-                _materials.Add(gm);
-            }
-            if (_materials.Count == 0) _materials.Add(new GpuMaterial());
-
-            _totalVerts = 0; _totalTris = 0;
-            foreach (var mesh in model.Meshes)
-            {
-                if (mesh.Vertices.Length == 0 || mesh.Indices.Length == 0) continue;
-                _meshes.Add(UploadMesh(mesh));
-                _totalVerts += mesh.Vertices.Length;
-                _totalTris += mesh.Indices.Length / 3;
-            }
-
-            FitCamera(model);
-        }
-
-        // ── Init GL ───────────────────────────────────────────────────────────
-
-        private void InitGL()
+        private void InitializeShaders()
         {
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            GL.Enable(EnableCap.Multisample);
 
             _progMain = CompileProgram(VERT_SRC, FRAG_SRC);
             _progGrid = CompileProgram(GRID_VERT, GRID_FRAG);
@@ -389,24 +422,26 @@ void main(){ FragColor = uColor; }";
                 main.AddRange(new[] { -h, 0f, v, h, 0f, v });
             }
             float[] axis = {
-                -h,0f,0f, h,0f,0f,
-                0f,-h,0f, 0f,h,0f,
-                0f,0f,-h, 0f,0f,h
+                -h,0f,0f,  h,0f,0f,
+                 0f,-h,0f, 0f,h,0f,
+                 0f,0f,-h, 0f,0f,h
             };
-
-            var mg = main.ToArray(); _gridN = mg.Length / 3;
+            var mg = main.ToArray();
+            _gridN = mg.Length / 3;
 
             _gridVao = GL.GenVertexArray(); _gridVbo = GL.GenBuffer();
             GL.BindVertexArray(_gridVao);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _gridVbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, mg.Length * 4, mg, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                mg.Length * sizeof(float), mg, BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 12, 0);
             GL.EnableVertexAttribArray(0);
 
             _axisVao = GL.GenVertexArray(); _axisVbo = GL.GenBuffer();
             GL.BindVertexArray(_axisVao);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _axisVbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, axis.Length * 4, axis, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                axis.Length * sizeof(float), axis, BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 12, 0);
             GL.EnableVertexAttribArray(0);
             GL.BindVertexArray(0);
@@ -415,135 +450,49 @@ void main(){ FragColor = uColor; }";
         private void DrawGrid(Matrix4 vp)
         {
             GL.UseProgram(_progGrid);
-            int loc = GL.GetUniformLocation(_progGrid, "uVP");
-            GL.UniformMatrix4(loc, false, ref vp);
+            int vpLoc = GL.GetUniformLocation(_progGrid, "uVP");
+            int cLoc = GL.GetUniformLocation(_progGrid, "uColor");
+            GL.UniformMatrix4(vpLoc, false, ref vp);
 
-            GL.Uniform4(GL.GetUniformLocation(_progGrid, "uColor"),
-                0.20f, 0.20f, 0.24f, 0.6f);
+            GL.Uniform4(cLoc, 0.20f, 0.20f, 0.24f, 0.6f);
             GL.BindVertexArray(_gridVao);
             GL.DrawArrays(PrimitiveType.Lines, 0, _gridN);
 
             GL.BindVertexArray(_axisVao);
-            GL.Uniform4(GL.GetUniformLocation(_progGrid, "uColor"), 0.85f, 0.22f, 0.22f, 0.9f);
+            GL.Uniform4(cLoc, 0.85f, 0.22f, 0.22f, 0.9f);
             GL.DrawArrays(PrimitiveType.Lines, 0, 2);
-            GL.Uniform4(GL.GetUniformLocation(_progGrid, "uColor"), 0.22f, 0.80f, 0.22f, 0.9f);
+            GL.Uniform4(cLoc, 0.22f, 0.80f, 0.22f, 0.9f);
             GL.DrawArrays(PrimitiveType.Lines, 2, 2);
-            GL.Uniform4(GL.GetUniformLocation(_progGrid, "uColor"), 0.22f, 0.42f, 0.90f, 0.9f);
+            GL.Uniform4(cLoc, 0.22f, 0.42f, 0.90f, 0.9f);
             GL.DrawArrays(PrimitiveType.Lines, 4, 2);
             GL.BindVertexArray(0);
         }
 
-        // ── Upload DDS ────────────────────────────────────────────────────────
-
-        private static int UploadDds(byte[] data)
-        {
-            try
-            {
-                using var ms = new System.IO.MemoryStream(data);
-                using var img = Pfim.Pfimage.FromStream(ms);
-
-                int tex = GL.GenTexture();
-                GL.BindTexture(TextureTarget.Texture2D, tex);
-
-                Pfim.ImageFormat fmt = img.Format;
-                PixelFormat pf = fmt == Pfim.ImageFormat.Rgba32
-                    ? PixelFormat.Bgra : PixelFormat.Bgr;
-                PixelInternalFormat pif = fmt == Pfim.ImageFormat.Rgba32
-                    ? PixelInternalFormat.Rgba8 : PixelInternalFormat.Rgb8;
-
-                GL.TexImage2D(TextureTarget.Texture2D, 0, pif,
-                    img.Width, img.Height, 0, pf, PixelType.UnsignedByte, img.Data);
-
-                GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-                GL.TexParameter(TextureTarget.Texture2D,
-                    TextureParameterName.TextureMinFilter,
-                    (int)TextureMinFilter.LinearMipmapLinear);
-                GL.TexParameter(TextureTarget.Texture2D,
-                    TextureParameterName.TextureMagFilter,
-                    (int)TextureMagFilter.Linear);
-                GL.TexParameter(TextureTarget.Texture2D,
-                    TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-                GL.TexParameter(TextureTarget.Texture2D,
-                    TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-
-                GL.BindTexture(TextureTarget.Texture2D, 0);
-                return tex;
-            }
-            catch { return 0; }
-        }
-
-        // ── Upload malla (stride = 48 bytes, igual que FlverRenderer) ─────────
-
-        private const int STRIDE = 48;
-
-        private static GpuMesh UploadMesh(FlverMeshData mesh)
-        {
-            var vdata = new float[mesh.Vertices.Length * 12];
-            for (int i = 0; i < mesh.Vertices.Length; i++)
-            {
-                var v = mesh.Vertices[i];
-                int b = i * 12;
-                vdata[b + 0] = v.X; vdata[b + 1] = v.Y; vdata[b + 2] = v.Z;
-                vdata[b + 3] = v.NX; vdata[b + 4] = v.NY; vdata[b + 5] = v.NZ;
-                vdata[b + 6] = v.U; vdata[b + 7] = v.V;
-                vdata[b + 8] = v.R; vdata[b + 9] = v.G;
-                vdata[b + 10] = v.B; vdata[b + 11] = v.A;
-            }
-
-            int vao = GL.GenVertexArray();
-            int vbo = GL.GenBuffer();
-            int ebo = GL.GenBuffer();
-
-            GL.BindVertexArray(vao);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer,
-                vdata.Length * 4, vdata, BufferUsageHint.StaticDraw);
-
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, STRIDE, 0);
-            GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, STRIDE, 12);
-            GL.EnableVertexAttribArray(1);
-            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, STRIDE, 24);
-            GL.EnableVertexAttribArray(2);
-            GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float, false, STRIDE, 32);
-            GL.EnableVertexAttribArray(3);
-
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
-            GL.BufferData(BufferTarget.ElementArrayBuffer,
-                mesh.Indices.Length * 4, mesh.Indices, BufferUsageHint.StaticDraw);
-
-            GL.BindVertexArray(0);
-            return new GpuMesh
-            {
-                Vao = vao,
-                Vbo = vbo,
-                Ebo = ebo,
-                IndexCount = mesh.Indices.Length,
-                MaterialIndex = mesh.MaterialIndex
-            };
-        }
-
-        // ── Compile shader ────────────────────────────────────────────────────
+        // ── Shader compile ────────────────────────────────────────────────────
 
         private static int CompileProgram(string vert, string frag)
         {
             int vs = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(vs, vert); GL.CompileShader(vs);
+            GL.ShaderSource(vs, vert);
+            GL.CompileShader(vs);
             GL.GetShader(vs, ShaderParameter.CompileStatus, out int okV);
             if (okV == 0) Serilog.Log.Error("VS: {E}", GL.GetShaderInfoLog(vs));
 
             int fs = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(fs, frag); GL.CompileShader(fs);
+            GL.ShaderSource(fs, frag);
+            GL.CompileShader(fs);
             GL.GetShader(fs, ShaderParameter.CompileStatus, out int okF);
             if (okF == 0) Serilog.Log.Error("FS: {E}", GL.GetShaderInfoLog(fs));
 
             int prog = GL.CreateProgram();
-            GL.AttachShader(prog, vs); GL.AttachShader(prog, fs);
+            GL.AttachShader(prog, vs);
+            GL.AttachShader(prog, fs);
             GL.LinkProgram(prog);
             GL.GetProgram(prog, GetProgramParameterName.LinkStatus, out int okL);
             if (okL == 0) Serilog.Log.Error("Link: {E}", GL.GetProgramInfoLog(prog));
 
-            GL.DeleteShader(vs); GL.DeleteShader(fs);
+            GL.DeleteShader(vs);
+            GL.DeleteShader(fs);
             return prog;
         }
 
@@ -554,6 +503,7 @@ void main(){ FragColor = uColor; }";
             int loc = GL.GetUniformLocation(prog, name);
             GL.UniformMatrix4(loc, false, ref m);
         }
+
         private static void SetUniform(int prog, string name, Matrix3 m)
         {
             int loc = GL.GetUniformLocation(prog, name);
@@ -603,7 +553,7 @@ void main(){ FragColor = uColor; }";
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            Point pos = e.GetPosition(this);
+            var pos = e.GetPosition(this);
             float dx = (float)(pos.X - _lastMousePos.X);
             float dy = (float)(pos.Y - _lastMousePos.Y);
 
@@ -647,19 +597,16 @@ void main(){ FragColor = uColor; }";
             var btns = new[] { BtnTexture, BtnSolid, BtnWireframe, BtnNormals };
             for (int i = 0; i < btns.Length; i++)
             {
-                bool active = i == mode;
+                bool on = (i == mode);
                 btns[i].Background = new System.Windows.Media.SolidColorBrush(
-                    active
-                    ? System.Windows.Media.Color.FromArgb(64, 26, 95, 180)
-                    : System.Windows.Media.Color.FromArgb(40, 40, 40, 60));
+                    on ? System.Windows.Media.Color.FromArgb(64, 26, 95, 180)
+                       : System.Windows.Media.Color.FromArgb(40, 40, 40, 60));
                 btns[i].BorderBrush = new System.Windows.Media.SolidColorBrush(
-                    active
-                    ? System.Windows.Media.Color.FromRgb(90, 143, 221)
-                    : System.Windows.Media.Color.FromRgb(80, 80, 96));
+                    on ? System.Windows.Media.Color.FromRgb(90, 143, 221)
+                       : System.Windows.Media.Color.FromRgb(80, 80, 96));
                 btns[i].Foreground = new System.Windows.Media.SolidColorBrush(
-                    active
-                    ? System.Windows.Media.Color.FromRgb(216, 232, 255)
-                    : System.Windows.Media.Color.FromRgb(176, 176, 192));
+                    on ? System.Windows.Media.Color.FromRgb(216, 232, 255)
+                       : System.Windows.Media.Color.FromRgb(176, 176, 192));
             }
         }
 
@@ -674,7 +621,7 @@ void main(){ FragColor = uColor; }";
         private void OnResetCamera(object s, RoutedEventArgs e)
         {
             if (_currentModel != null) FitCamera(_currentModel);
-            else { _yaw = 0.5f; _pitch = 0.22f; _zoom = 3.2f; _target = Vector3.Zero; }
+            else { _yaw = 0.5f; _pitch = 0.22f; _zoom = 3.2f; _target = new(0, 1, 0); }
         }
 
         private void OnBgChanged(object s, SelectionChangedEventArgs e)
@@ -701,9 +648,9 @@ void main(){ FragColor = uColor; }";
 
         private static void DisposeGpuMaterial(GpuMaterial m)
         {
-            if (m.AlbedoTex != 0) GL.DeleteTexture(m.AlbedoTex);
-            if (m.NormalTex != 0) GL.DeleteTexture(m.NormalTex);
-            if (m.SpecularTex != 0) GL.DeleteTexture(m.SpecularTex);
+            if (m.AlbedoTex > 0) GL.DeleteTexture(m.AlbedoTex);
+            if (m.NormalTex > 0) GL.DeleteTexture(m.NormalTex);
+            if (m.SpecularTex > 0) GL.DeleteTexture(m.SpecularTex);
         }
     }
 }

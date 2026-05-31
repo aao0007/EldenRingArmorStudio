@@ -253,6 +253,8 @@ namespace EldenRingArmorStudio.UI
             await LoadModelWorkflowAsync(path);
         }
 
+        // ── REEMPLAZA LoadModelWorkflowAsync en MainWindow.xaml.cs ───────────────────
+
         private async Task LoadModelWorkflowAsync(string filePath)
         {
             try
@@ -267,24 +269,40 @@ namespace EldenRingArmorStudio.UI
                 string ext = Path.GetExtension(filePath).ToLower();
                 string unpackedDir = "";
 
+                // ── FLVER directo ─────────────────────────────────────────────────────
                 if (ext == ".flver")
                 {
                     unpackedDir = Path.Combine(tempDir, "direct_flver");
                     Directory.CreateDirectory(unpackedDir);
-                    File.Copy(filePath, Path.Combine(unpackedDir,
-                        Path.GetFileName(filePath)));
+                    File.Copy(filePath, Path.Combine(unpackedDir, Path.GetFileName(filePath)));
+                    Log.Information("[Load] FLVER directo: {F}", filePath);
                 }
+
+                // ── DCX → WitchyBND ───────────────────────────────────────────────────
                 else if (ext == ".dcx")
                 {
+                    string witchy = AppConfig.Instance.Tools.WitchyBndPath;
+
+                    // Validar que WitchyBND existe
+                    if (string.IsNullOrWhiteSpace(witchy) || !File.Exists(witchy))
+                    {
+                        string msg =
+                            "No se encontró WitchyBND.\n\n" +
+                            $"Ruta configurada:\n{(string.IsNullOrWhiteSpace(witchy) ? "(vacía)" : witchy)}\n\n" +
+                            "Ve a ⚙ Configuración y selecciona WitchyBND.exe,\n" +
+                            "o colócalo en:\n  tools/witchybnd/WitchyBND.exe";
+
+                        SetStatus("⚠ WitchyBND no encontrado — configúralo en ⚙ Configuración");
+                        MessageBox.Show(msg, "WitchyBND no encontrado",
+                            MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // Copiar DCX a temp y ejecutar WitchyBND
                     string tmp = Path.Combine(tempDir, Path.GetFileName(filePath));
                     File.Copy(filePath, tmp);
 
-                    string witchy = AppConfig.Instance.Tools.WitchyBndPath;
-                    if (string.IsNullOrEmpty(witchy) || !File.Exists(witchy))
-                    {
-                        SetStatus("WitchyBND no encontrado. Configúralo en ⚙ Configuración.");
-                        return;
-                    }
+                    Log.Information("[Load] Ejecutando WitchyBND: {W} -s \"{F}\"", witchy, tmp);
 
                     var antes = Directory.GetDirectories(tempDir);
                     var proc = new Process
@@ -295,43 +313,144 @@ namespace EldenRingArmorStudio.UI
                             Arguments = $"-s \"{tmp}\"",
                             WorkingDirectory = tempDir,
                             UseShellExecute = false,
-                            CreateNoWindow = true
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
                         }
                     };
-                    proc.Start();
-                    try { await proc.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15)); }
-                    catch (TimeoutException) { proc.Kill(); return; }
 
+                    proc.Start();
+                    string stdout = "", stderr = "";
+                    try
+                    {
+                        var outTask = proc.StandardOutput.ReadToEndAsync();
+                        var errTask = proc.StandardError.ReadToEndAsync();
+                        await proc.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(20));
+                        stdout = await outTask;
+                        stderr = await errTask;
+                    }
+                    catch (TimeoutException)
+                    {
+                        proc.Kill();
+                        SetStatus("⚠ WitchyBND tardó demasiado (timeout 20s)");
+                        MessageBox.Show(
+                            $"WitchyBND tardó más de 20 segundos y fue cancelado.\n\nArchivo: {Path.GetFileName(filePath)}",
+                            "Timeout", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    Log.Information("[WitchyBND] Exit={Code} | out={Out} | err={Err}",
+                        proc.ExitCode, stdout.Trim(), stderr.Trim());
+
+                    // Buscar carpeta extraída
                     var despues = Directory.GetDirectories(tempDir);
                     unpackedDir = despues.FirstOrDefault(d => !antes.Contains(d)) ?? "";
 
+                    // Fallback por nombre si no se detectó por diferencia
                     if (string.IsNullOrEmpty(unpackedDir))
                     {
                         string bn = Path.GetFileNameWithoutExtension(tmp).Split('.')[0];
-                        unpackedDir = Directory.GetDirectories(tempDir)
-                            .FirstOrDefault(d => Path.GetFileName(d)
-                                .StartsWith(bn, StringComparison.OrdinalIgnoreCase)) ?? "";
+                        unpackedDir = Array.Find(
+                            Directory.GetDirectories(tempDir),
+                            d => Path.GetFileName(d).StartsWith(bn,
+                                     StringComparison.OrdinalIgnoreCase)) ?? "";
                     }
+
+                    // Validar que se extrajo algo
+                    if (string.IsNullOrEmpty(unpackedDir) || !Directory.Exists(unpackedDir))
+                    {
+                        string detalle =
+                            $"WitchyBND no generó ninguna carpeta de salida.\n\n" +
+                            $"Archivo: {Path.GetFileName(filePath)}\n" +
+                            $"Código de salida: {proc.ExitCode}\n" +
+                            (string.IsNullOrWhiteSpace(stderr) ? "" : $"Error: {stderr.Trim()}\n") +
+                            (string.IsNullOrWhiteSpace(stdout) ? "" : $"Salida: {stdout.Trim()}\n") +
+                            $"\nTemp dir: {tempDir}";
+
+                        Log.Error("[Load] WitchyBND no generó carpeta. {D}", detalle);
+                        SetStatus("⚠ WitchyBND no pudo extraer el archivo");
+                        MessageBox.Show(detalle, "Error al extraer",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    Log.Information("[Load] Carpeta extraída: {D}", unpackedDir);
+
+                    // Verificar que hay contenido útil
+                    var flvers = Directory.GetFiles(unpackedDir, "*.flver",
+                                     SearchOption.AllDirectories);
+                    if (flvers.Length == 0)
+                    {
+                        string detalle =
+                            $"WitchyBND extrajo la carpeta pero no contiene archivos .flver.\n\n" +
+                            $"Carpeta: {unpackedDir}\n" +
+                            $"Contenido:\n" +
+                            string.Join("\n", Directory.GetFiles(unpackedDir,
+                                "*", SearchOption.AllDirectories));
+
+                        Log.Warning("[Load] Sin .flver en {D}", unpackedDir);
+                        SetStatus("⚠ No se encontró .flver en el archivo extraído");
+                        MessageBox.Show(detalle, "Sin FLVER",
+                            MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                }
+                else
+                {
+                    SetStatus($"⚠ Formato no soportado: {ext}");
+                    MessageBox.Show($"Formato no soportado: {ext}\n\nSolo se admiten .flver y .partsbnd.dcx",
+                        "Formato inválido", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
 
+                // ── Cargar FLVER ──────────────────────────────────────────────────────
                 if (!string.IsNullOrEmpty(unpackedDir) && Directory.Exists(unpackedDir))
                 {
+                    SetStatus($"Parseando FLVER…");
                     var model = FlverLoader.LoadFromDirectory(unpackedDir);
-                    if (model != null)
+
+                    if (model == null)
                     {
-                        FlverViewport.LoadModel(model);
-                        SetStatus($"{Path.GetFileName(filePath)} — " +
-                                  $"{model.TotalVertices:N0} verts · " +
-                                  $"{model.TotalTriangles:N0} tris");
+                        SetStatus("⚠ FlverLoader no pudo parsear el modelo");
+                        MessageBox.Show(
+                            $"FlverLoader devolvió null.\n\nRevisa los logs en data/logs/ para más detalle.",
+                            "Error de parseo", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
                     }
-                    else SetStatus("FLVER sin geometría.");
+
+                    if (model.Meshes.Count == 0)
+                    {
+                        SetStatus("⚠ El modelo no contiene geometría");
+                        MessageBox.Show(
+                            "El FLVER se parseó correctamente pero no tiene mallas con geometría.\n\n" +
+                            "Puede ser un modelo vacío o un formato no compatible.",
+                            "Sin geometría", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    FlverViewport.LoadModel(model);
+                    SetStatus(
+                        $"{Path.GetFileName(filePath)} — " +
+                        $"{model.TotalVertices:N0} verts · " +
+                        $"{model.TotalTriangles:N0} tris · " +
+                        $"{model.Materials.Count} materiales");
+
+                    Log.Information("[Load] OK: {V} verts, {T} tris, {M} materiales",
+                        model.TotalVertices, model.TotalTriangles, model.Materials.Count);
                 }
-                else SetStatus("No se encontró la carpeta extraída.");
+                else
+                {
+                    SetStatus("⚠ No se encontró la carpeta extraída");
+                }
             }
             catch (Exception ex)
             {
-                SetStatus($"Error: {ex.Message}");
+                SetStatus($"⚠ Error: {ex.Message}");
                 Log.Error(ex, "LoadModelWorkflowAsync");
+                MessageBox.Show(
+                    $"Error inesperado al cargar el modelo:\n\n{ex.Message}\n\n" +
+                    $"Revisa los logs en data/logs/ para más detalle.",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
