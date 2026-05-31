@@ -175,9 +175,8 @@ namespace EldenRingArmorStudio.UI.Panels
                 _multiSelected.Clear();
             }
 
-            // Emitir FileSelected si es un archivo .dcx
-            if (clickedItem.Tag is string path && path.ToLower().EndsWith(DcxExt))
-                FileSelected?.Invoke(path);
+            // Un solo clic solo selecciona el item visualmente.
+            // El doble clic en OnTreeDoubleClick es quien emite FileSelected.
         }
 
         private void OnTreeDoubleClick(object sender, MouseButtonEventArgs e)
@@ -186,15 +185,16 @@ namespace EldenRingArmorStudio.UI.Panels
             var item = GetTreeViewItem(src);
             if (item == null) return;
 
-            // Doble clic en archivo: abrir en visor (ya lo maneja FileSelected arriba)
-            // Doble clic en nombre del nodo editable: renombrar
             if (item.Tag is string path &&
                 !string.IsNullOrEmpty(path) &&
-                (File.Exists(path) || Directory.Exists(path)))
+                File.Exists(path) &&
+                path.ToLower().EndsWith(".partsbnd.dcx"))
             {
-                StartRename(item, path);
+                // Doble clic en .dcx → cargar en visor
+                FileSelected?.Invoke(path);
                 e.Handled = true;
             }
+            // Si es carpeta, el TreeView expande/colapsa por defecto — no interferir
         }
 
         private void OnTreeKeyDown(object sender, KeyEventArgs e)
