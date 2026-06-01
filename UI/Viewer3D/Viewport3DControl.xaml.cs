@@ -1,9 +1,9 @@
 ﻿using EldenRingArmorStudio.Core;
+using OpenTK.GLControl;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Wpf;
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,200 +13,14 @@ namespace EldenRingArmorStudio.UI.Viewer3D
 {
     public partial class Viewport3DControl : UserControl
     {
-        // ── Modelo ────────────────────────────────────────────────────────────
         private FlverModel _currentModel;
+        private int _shaderProgram;
 
-        // ── Shaders ───────────────────────────────────────────────────────────
-        private int _progMain;
-        private int _progGrid;
-
-        // ── GPU ───────────────────────────────────────────────────────────────
-        private readonly List<GpuMesh> _meshes = new();
-        private readonly List<GpuMaterial> _materials = new();
-
-        // ── Grid ──────────────────────────────────────────────────────────────
-        private int _gridVao, _gridVbo, _gridN;
-        private int _axisVao, _axisVbo;
-
-        // ── Cámara ────────────────────────────────────────────────────────────
-        private float _yaw = 0.5f;
-        private float _pitch = 0.22f;
-        private float _zoom = 3.2f;
+        // Cámara
+        private float _yaw = 0.5f, _pitch = 0.22f, _zoom = 3.2f;
         private Vector3 _target = new Vector3(0, 1f, 0);
-
-        // ── Ratón ─────────────────────────────────────────────────────────────
         private Point _lastMousePos;
-        private bool _isDraggingCam;
-        private bool _isDraggingPan;
-
-        // ── Opciones render ───────────────────────────────────────────────────
-        private int _renderMode = 0;
-        private bool _showGrid = true;
-        private Color4 _bgColor = new(0.07f, 0.07f, 0.10f, 1f);
-
-        // ── Stats ─────────────────────────────────────────────────────────────
-        private int _totalVerts, _totalTris;
-
-        // ══════════════════════════════════════════════════════════════════════
-        // SHADERS
-        // FIX CLAVE: uHasAlbedo/uHasNormal/uHasSpecular/uWireframe son INT,
-        // no bool — los uniform bool fallan silenciosamente en drivers AMD/Intel.
-        // ══════════════════════════════════════════════════════════════════════
-
-        private const string VERT_SRC = @"
-#version 330 core
-layout(location=0) in vec3 aPos;
-layout(location=1) in vec3 aNorm;
-layout(location=2) in vec2 aUV;
-layout(location=3) in vec4 aColor;
-
-uniform mat4 uModel;
-uniform mat4 uView;
-uniform mat4 uProj;
-uniform mat3 uNormalMat;
-
-out vec3 vWorldPos;
-out vec3 vNorm;
-out vec2 vUV;
-out vec4 vColor;
-
-void main()
-{
-    vec4 worldPos = uModel * vec4(aPos, 1.0);
-    vWorldPos     = worldPos.xyz;
-    vNorm         = normalize(uNormalMat * aNorm);
-    vUV           = aUV;
-    vColor        = aColor;
-    gl_Position   = uProj * uView * worldPos;
-}";
-
-        private const string FRAG_SRC = @"
-#version 330 core
-
-in vec3 vWorldPos;
-in vec3 vNorm;
-in vec2 vUV;
-in vec4 vColor;
-
-out vec4 FragColor;
-
-uniform sampler2D uAlbedo;
-uniform sampler2D uNormalMap;
-uniform sampler2D uSpecular;
-
-uniform int uHasAlbedo;
-uniform int uHasNormal;
-uniform int uHasSpecular;
-uniform int uWireframe;
-
-uniform vec3 uCamPos;
-uniform int  uRenderMode;
-
-vec3 perturbNormal(vec3 N, vec2 uv, vec3 mapNorm)
-{
-    vec3 q1  = dFdx(vWorldPos);
-    vec3 q2  = dFdy(vWorldPos);
-    vec2 st1 = dFdx(uv);
-    vec2 st2 = dFdy(uv);
-    vec3 T   = normalize( q1 * st2.t - q2 * st1.t);
-    vec3 B   = normalize(-q1 * st2.s + q2 * st1.s);
-    mat3 TBN = mat3(T, B, N);
-    return normalize(TBN * mapNorm);
-}
-
-void main()
-{
-    if (uWireframe != 0) { FragColor = vec4(0.08, 0.65, 1.0, 1.0); return; }
-
-    vec3 V = normalize(uCamPos - vWorldPos);
-    vec3 N = normalize(vNorm);
-
-    if (uHasNormal != 0 && uRenderMode == 0)
-    {
-        vec3 s = texture(uNormalMap, vUV).rgb * 2.0 - 1.0;
-        N = perturbNormal(N, vUV, s);
-    }
-
-    if (uRenderMode == 3) { FragColor = vec4(N * 0.5 + 0.5, 1.0); return; }
-
-    vec3  albedo = vec3(0.72, 0.70, 0.68);
-    float alpha  = 1.0;
-
-    if (uHasAlbedo != 0 && uRenderMode == 0)
-    {
-        vec4 s = texture(uAlbedo, vUV);
-        albedo = s.rgb * vColor.rgb;
-        alpha  = s.a;
-    }
-    else if (uRenderMode == 1)
-    {
-        albedo = vec3(0.62, 0.60, 0.58);
-    }
-    else if (uRenderMode == 0)
-    {
-        albedo = vec3(0.72, 0.70, 0.68) * vColor.rgb;
-    }
-
-    float metallic  = 0.0;
-    float roughness = 0.6;
-    float ao        = 1.0;
-
-    if (uHasSpecular != 0 && uRenderMode == 0)
-    {
-        vec3 spec = texture(uSpecular, vUV).rgb;
-        metallic  = spec.r;
-        roughness = spec.g;
-        ao        = spec.b;
-    }
-
-    vec3  L1 = normalize(vec3( 0.6,  1.4,  0.8));
-    float d1 = max(dot(N, L1), 0.0);
-    vec3  c1 = vec3(1.05, 0.98, 0.90);
-
-    vec3  L2 = normalize(vec3(-0.8,  0.3, -0.6));
-    float d2 = max(dot(N, L2), 0.0) * 0.35;
-    vec3  c2 = vec3(0.65, 0.70, 0.80);
-
-    vec3  L3 = normalize(vec3( 0.0, -1.0,  0.2));
-    float d3 = max(dot(N, L3), 0.0) * 0.12;
-    vec3  c3 = vec3(0.40, 0.35, 0.30);
-
-    float shininess = mix(8.0, 128.0, 1.0 - roughness);
-    vec3  H1    = normalize(L1 + V);
-    float sp    = pow(max(dot(N, H1), 0.0), shininess);
-    float cosV  = max(dot(N, V), 0.0);
-    float F0    = mix(0.04, 0.7, metallic);
-    float fresn = F0 + (1.0 - F0) * pow(1.0 - cosV, 5.0);
-    vec3  specColor = mix(vec3(1.0), albedo, metallic);
-    vec3  specTerm  = specColor * sp * fresn * (1.0 - roughness * 0.7);
-
-    float rim    = pow(1.0 - cosV, 3.0) * 0.15;
-    vec3  rimCol = vec3(0.55, 0.60, 0.70) * rim;
-
-    vec3 ambient = albedo * vec3(0.08, 0.09, 0.11) * ao;
-    vec3 diffuse = albedo * (d1*c1 + d2*c2 + d3*c3);
-    vec3 color   = ambient + diffuse + specTerm + rimCol;
-
-    color = color * (color + 0.0245786) /
-            (color * (0.983729 * color + 0.432951) + 0.238081);
-    color = pow(clamp(color, 0.0, 1.0), vec3(1.0 / 2.2));
-
-    FragColor = vec4(color, alpha);
-}";
-
-        private const string GRID_VERT = @"
-#version 330 core
-layout(location=0) in vec3 aPos;
-uniform mat4 uVP;
-void main(){ gl_Position = uVP * vec4(aPos,1.0); }";
-
-        private const string GRID_FRAG = @"
-#version 330 core
-out vec4 FragColor;
-uniform vec4 uColor;
-void main(){ FragColor = uColor; }";
-
-        // ══════════════════════════════════════════════════════════════════════
+        private bool _isDragging;
 
         public Viewport3DControl()
         {
@@ -218,49 +32,24 @@ void main(){ FragColor = uColor; }";
                 Profile = OpenTK.Windowing.Common.ContextProfile.Core
             };
             GlControl.Start(settings);
-
-            // FIX: compilar shaders aquí, justo después de GlControl.Start()
-            // que activa el contexto GL. No hacerlo en el primer frame.
             InitializeShaders();
         }
-
-        // ── API pública ───────────────────────────────────────────────────────
 
         public void LoadModel(FlverModel model)
         {
             if (model == null) return;
-
-            // Limpiar modelo anterior
-            foreach (var m in _meshes) DisposeGpuMesh(m);
-            foreach (var m in _materials) DisposeGpuMaterial(m);
-            _meshes.Clear();
-            _materials.Clear();
-
             _currentModel = model;
 
-            // ── Texturas via TextureManager (igual que el código de referencia) ──
-            foreach (var mat in model.Materials)
+            foreach (var mat in _currentModel.Materials)
             {
-                var gm = new GpuMaterial();
                 if (mat.AlbedoData != null)
-                    gm.AlbedoTex = TextureManager.LoadDdsTextureFromBytes(mat.AlbedoData);
-                if (mat.NormalData != null)
-                    gm.NormalTex = TextureManager.LoadDdsTextureFromBytes(mat.NormalData);
-                if (mat.SpecularData != null)
-                    gm.SpecularTex = TextureManager.LoadDdsTextureFromBytes(mat.SpecularData);
-                _materials.Add(gm);
+                {
+                    mat.GlAlbedoTextureId = TextureManager.LoadDdsTextureFromBytes(mat.AlbedoData);
+                }
             }
-            if (_materials.Count == 0)
-                _materials.Add(new GpuMaterial());
 
-            // ── Mallas via Marshal.SizeOf (igual que el código de referencia) ──
-            int vertexSize = Marshal.SizeOf<FlverVertex>();
-            _totalVerts = 0; _totalTris = 0;
-
-            foreach (var mesh in model.Meshes)
+            foreach (var mesh in _currentModel.Meshes)
             {
-                if (mesh.Vertices.Length == 0 || mesh.Indices.Length == 0) continue;
-
                 mesh.VaoId = GL.GenVertexArray();
                 mesh.VboId = GL.GenBuffer();
                 mesh.EboId = GL.GenBuffer();
@@ -268,389 +57,200 @@ void main(){ FragColor = uColor; }";
                 GL.BindVertexArray(mesh.VaoId);
 
                 GL.BindBuffer(BufferTarget.ArrayBuffer, mesh.VboId);
-                GL.BufferData(BufferTarget.ArrayBuffer,
-                    mesh.Vertices.Length * vertexSize,
-                    mesh.Vertices,
-                    BufferUsageHint.StaticDraw);
+                int vertexSize = Marshal.SizeOf<FlverVertex>();
+                GL.BufferData(BufferTarget.ArrayBuffer, mesh.Vertices.Length * vertexSize, mesh.Vertices, BufferUsageHint.StaticDraw);
 
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, mesh.EboId);
-                GL.BufferData(BufferTarget.ElementArrayBuffer,
-                    mesh.Indices.Length * sizeof(uint),
-                    mesh.Indices,
-                    BufferUsageHint.StaticDraw);
+                GL.BufferData(BufferTarget.ElementArrayBuffer, mesh.Indices.Length * sizeof(uint), mesh.Indices, BufferUsageHint.StaticDraw);
 
-                // location 0: XYZ      offset  0
-                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float,
-                    false, vertexSize, 0);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertexSize, 0);
                 GL.EnableVertexAttribArray(0);
-                // location 1: NxNyNz   offset 12
-                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float,
-                    false, vertexSize, 3 * sizeof(float));
+
+                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertexSize, 3 * sizeof(float));
                 GL.EnableVertexAttribArray(1);
-                // location 2: UV       offset 24
-                GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float,
-                    false, vertexSize, 6 * sizeof(float));
+
+                GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertexSize, 6 * sizeof(float));
                 GL.EnableVertexAttribArray(2);
-                // location 3: RGBA     offset 32
-                GL.VertexAttribPointer(3, 4, VertexAttribPointerType.Float,
-                    false, vertexSize, 8 * sizeof(float));
-                GL.EnableVertexAttribArray(3);
 
                 GL.BindVertexArray(0);
-
-                // El GpuMesh de la lista necesita los mismos IDs
-                _meshes.Add(new GpuMesh
-                {
-                    Vao = mesh.VaoId,
-                    Vbo = mesh.VboId,
-                    Ebo = mesh.EboId,
-                    IndexCount = mesh.Indices.Length,
-                    MaterialIndex = mesh.MaterialIndex
-                });
-
-                _totalVerts += mesh.Vertices.Length;
-                _totalTris += mesh.Indices.Length / 3;
             }
 
-            TxtStats.Text =
-                $"Vértices: {model.TotalVertices:N0} | Triángulos: {model.TotalTriangles:N0}";
+            TxtStats.Text = $"Vértices: {_currentModel.TotalVertices:N0} | Triángulos: {_currentModel.TotalTriangles:N0}";
 
-            FitCamera(model);
+            _zoom = 3.0f;
+            _target = new Vector3(0, 1, 0);
         }
-
-        // ── Render loop ───────────────────────────────────────────────────────
 
         private void GlControl_Render(TimeSpan delta)
         {
-            GL.Viewport(0, 0, (int)GlControl.ActualWidth, (int)GlControl.ActualHeight);
-            GL.ClearColor(_bgColor);
+            GL.ClearColor(0.05f, 0.05f, 0.06f, 1.0f);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-            GL.Disable(EnableCap.CullFace);
 
-            float aspect = (float)Math.Max(GlControl.ActualWidth, 1) /
-                           (float)Math.Max(GlControl.ActualHeight, 1);
+            if (_currentModel == null || _currentModel.Meshes.Count == 0) return;
 
-            var cam = CamPos();
-            var view = Matrix4.LookAt(cam, _target, Vector3.UnitY);
-            var proj = Matrix4.CreatePerspectiveFieldOfView(
-                MathHelper.DegreesToRadians(45f), aspect, 0.005f, 500f);
-            var vp = view * proj;
+            GL.UseProgram(_shaderProgram);
 
-            if (_showGrid) DrawGrid(vp);
-            if (_meshes.Count == 0) return;
+            Vector3 camPos = GetCameraPos();
+            Matrix4 view = Matrix4.LookAt(camPos, _target, Vector3.UnitY);
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), (float)GlControl.ActualWidth / (float)GlControl.ActualHeight, 0.01f, 500f);
+            Matrix4 modelMatrix = Matrix4.Identity;
 
-            GL.UseProgram(_progMain);
+            Matrix4 mvp = modelMatrix * view * projection;
 
-            var modelMat = Matrix4.Identity;
-            var normalMat = new Matrix3(Matrix4.Transpose(Matrix4.Invert(modelMat)));
+            GL.UniformMatrix4(GL.GetUniformLocation(_shaderProgram, "uMVP"), false, ref mvp);
+            GL.UniformMatrix4(GL.GetUniformLocation(_shaderProgram, "uModel"), false, ref modelMatrix);
 
-            SetUniform(_progMain, "uModel", modelMat);
-            SetUniform(_progMain, "uView", view);
-            SetUniform(_progMain, "uProj", proj);
-            SetUniform(_progMain, "uNormalMat", normalMat);
-            GL.Uniform3(GL.GetUniformLocation(_progMain, "uCamPos"), cam);
-            GL.Uniform1(GL.GetUniformLocation(_progMain, "uRenderMode"), _renderMode);
-            GL.Uniform1(GL.GetUniformLocation(_progMain, "uAlbedo"), 0);
-            GL.Uniform1(GL.GetUniformLocation(_progMain, "uNormalMap"), 1);
-            GL.Uniform1(GL.GetUniformLocation(_progMain, "uSpecular"), 2);
-            GL.Uniform1(GL.GetUniformLocation(_progMain, "uWireframe"), _renderMode == 2 ? 1 : 0);
-
-            if (_renderMode == 2)
-                GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Line);
-            else
-                GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
-
-            foreach (var gpuMesh in _meshes)
+            foreach (var mesh in _currentModel.Meshes)
             {
-                int matIdx = Math.Clamp(gpuMesh.MaterialIndex, 0, _materials.Count - 1);
-                var mat = _materials[matIdx];
+                int useTextureLoc = GL.GetUniformLocation(_shaderProgram, "uUseTexture");
+                int texHandle = -1;
 
-                BindTex(mat.AlbedoTex, 0);
-                BindTex(mat.NormalTex, 1);
-                BindTex(mat.SpecularTex, 2);
+                if (mesh.MaterialIndex >= 0 && mesh.MaterialIndex < _currentModel.Materials.Count)
+                {
+                    texHandle = _currentModel.Materials[mesh.MaterialIndex].GlAlbedoTextureId;
+                }
 
-                GL.Uniform1(GL.GetUniformLocation(_progMain, "uHasAlbedo"),
-                    mat.AlbedoTex > 0 ? 1 : 0);
-                GL.Uniform1(GL.GetUniformLocation(_progMain, "uHasNormal"),
-                    mat.NormalTex > 0 ? 1 : 0);
-                GL.Uniform1(GL.GetUniformLocation(_progMain, "uHasSpecular"),
-                    mat.SpecularTex > 0 ? 1 : 0);
+                if (texHandle != -1)
+                {
+                    GL.ActiveTexture(TextureUnit.Texture0);
+                    GL.BindTexture(TextureTarget.Texture2D, texHandle);
+                    GL.Uniform1(GL.GetUniformLocation(_shaderProgram, "uDiffuseMap"), 0);
+                    GL.Uniform1(useTextureLoc, 1);
+                }
+                else
+                {
+                    GL.Uniform1(useTextureLoc, 0);
+                }
 
-                GL.BindVertexArray(gpuMesh.Vao);
-                GL.DrawElements(PrimitiveType.Triangles,
-                    gpuMesh.IndexCount, DrawElementsType.UnsignedInt, 0);
+                GL.BindVertexArray(mesh.VaoId);
+                GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
             }
-
             GL.BindVertexArray(0);
-            GL.UseProgram(0);
-            GL.PolygonMode(TriangleFace.FrontAndBack, PolygonMode.Fill);
         }
-
-        private static void BindTex(int tex, int unit)
-        {
-            GL.ActiveTexture(TextureUnit.Texture0 + unit);
-            GL.BindTexture(TextureTarget.Texture2D, tex > 0 ? tex : 0);
-        }
-
-        // ── Init shaders + grid ───────────────────────────────────────────────
 
         private void InitializeShaders()
         {
-            GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            string vertexShaderSource = @"
+                #version 330 core
+                layout(location = 0) in vec3 aPos;
+                layout(location = 1) in vec3 aNorm;
+                layout(location = 2) in vec2 aUV;
 
-            _progMain = CompileProgram(VERT_SRC, FRAG_SRC);
-            _progGrid = CompileProgram(GRID_VERT, GRID_FRAG);
-            BuildGrid();
-        }
+                uniform mat4 uMVP;
+                uniform mat4 uModel;
 
-        // ── Grid ──────────────────────────────────────────────────────────────
+                out vec3 vNorm;
+                out vec2 vUV;
 
-        private void BuildGrid()
-        {
-            var main = new List<float>();
-            float h = 3f;
-            for (int i = -24; i <= 24; i++)
-            {
-                if (i == 0) continue;
-                float v = i * (h / 24f);
-                main.AddRange(new[] { v, 0f, -h, v, 0f, h });
-                main.AddRange(new[] { -h, 0f, v, h, 0f, v });
-            }
-            float[] axis = {
-                -h,0f,0f,  h,0f,0f,
-                 0f,-h,0f, 0f,h,0f,
-                 0f,0f,-h, 0f,0f,h
-            };
-            var mg = main.ToArray();
-            _gridN = mg.Length / 3;
-
-            _gridVao = GL.GenVertexArray(); _gridVbo = GL.GenBuffer();
-            GL.BindVertexArray(_gridVao);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _gridVbo);
-            GL.BufferData(BufferTarget.ArrayBuffer,
-                mg.Length * sizeof(float), mg, BufferUsageHint.StaticDraw);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 12, 0);
-            GL.EnableVertexAttribArray(0);
-
-            _axisVao = GL.GenVertexArray(); _axisVbo = GL.GenBuffer();
-            GL.BindVertexArray(_axisVao);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _axisVbo);
-            GL.BufferData(BufferTarget.ArrayBuffer,
-                axis.Length * sizeof(float), axis, BufferUsageHint.StaticDraw);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 12, 0);
-            GL.EnableVertexAttribArray(0);
-            GL.BindVertexArray(0);
-        }
-
-        private void DrawGrid(Matrix4 vp)
-        {
-            GL.UseProgram(_progGrid);
-            int vpLoc = GL.GetUniformLocation(_progGrid, "uVP");
-            int cLoc = GL.GetUniformLocation(_progGrid, "uColor");
-            GL.UniformMatrix4(vpLoc, false, ref vp);
-
-            GL.Uniform4(cLoc, 0.20f, 0.20f, 0.24f, 0.6f);
-            GL.BindVertexArray(_gridVao);
-            GL.DrawArrays(PrimitiveType.Lines, 0, _gridN);
-
-            GL.BindVertexArray(_axisVao);
-            GL.Uniform4(cLoc, 0.85f, 0.22f, 0.22f, 0.9f);
-            GL.DrawArrays(PrimitiveType.Lines, 0, 2);
-            GL.Uniform4(cLoc, 0.22f, 0.80f, 0.22f, 0.9f);
-            GL.DrawArrays(PrimitiveType.Lines, 2, 2);
-            GL.Uniform4(cLoc, 0.22f, 0.42f, 0.90f, 0.9f);
-            GL.DrawArrays(PrimitiveType.Lines, 4, 2);
-            GL.BindVertexArray(0);
-        }
-
-        // ── Shader compile ────────────────────────────────────────────────────
-
-        private static int CompileProgram(string vert, string frag)
-        {
-            int vs = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(vs, vert);
-            GL.CompileShader(vs);
-            GL.GetShader(vs, ShaderParameter.CompileStatus, out int okV);
-            if (okV == 0) Serilog.Log.Error("VS: {E}", GL.GetShaderInfoLog(vs));
-
-            int fs = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(fs, frag);
-            GL.CompileShader(fs);
-            GL.GetShader(fs, ShaderParameter.CompileStatus, out int okF);
-            if (okF == 0) Serilog.Log.Error("FS: {E}", GL.GetShaderInfoLog(fs));
-
-            int prog = GL.CreateProgram();
-            GL.AttachShader(prog, vs);
-            GL.AttachShader(prog, fs);
-            GL.LinkProgram(prog);
-            GL.GetProgram(prog, GetProgramParameterName.LinkStatus, out int okL);
-            if (okL == 0) Serilog.Log.Error("Link: {E}", GL.GetProgramInfoLog(prog));
-
-            GL.DeleteShader(vs);
-            GL.DeleteShader(fs);
-            return prog;
-        }
-
-        // ── Uniform helpers ───────────────────────────────────────────────────
-
-        private static void SetUniform(int prog, string name, Matrix4 m)
-        {
-            int loc = GL.GetUniformLocation(prog, name);
-            GL.UniformMatrix4(loc, false, ref m);
-        }
-
-        private static void SetUniform(int prog, string name, Matrix3 m)
-        {
-            int loc = GL.GetUniformLocation(prog, name);
-            GL.UniformMatrix3(loc, false, ref m);
-        }
-
-        // ── Cámara ────────────────────────────────────────────────────────────
-
-        private Vector3 CamPos()
-        {
-            float cp = MathF.Cos(_pitch);
-            return _target + _zoom * new Vector3(
-                cp * MathF.Sin(_yaw),
-                MathF.Sin(_pitch),
-                cp * MathF.Cos(_yaw));
-        }
-
-        private void FitCamera(FlverModel model)
-        {
-            if (model.Meshes.Count == 0) return;
-            float minX = float.MaxValue, maxX = float.MinValue;
-            float minY = float.MaxValue, maxY = float.MinValue;
-            float minZ = float.MaxValue, maxZ = float.MinValue;
-            foreach (var m in model.Meshes)
-                foreach (var v in m.Vertices)
-                {
-                    if (v.X < minX) minX = v.X; if (v.X > maxX) maxX = v.X;
-                    if (v.Y < minY) minY = v.Y; if (v.Y > maxY) maxY = v.Y;
-                    if (v.Z < minZ) minZ = v.Z; if (v.Z > maxZ) maxZ = v.Z;
+                void main() {
+                    vNorm = mat3(transpose(inverse(uModel))) * aNorm;
+                    vUV = vec2(aUV.x, 1.0 - aUV.y); 
+                    gl_Position = uMVP * vec4(aPos, 1.0);
                 }
-            _target = new((minX + maxX) * .5f, (minY + maxY) * .5f, (minZ + maxZ) * .5f);
-            float ext = Math.Max(maxX - minX, Math.Max(maxY - minY, maxZ - minZ));
-            _zoom = Math.Max(ext * 1.8f, 0.2f);
-            _yaw = 0.5f;
-            _pitch = 0.22f;
+            ";
+
+            string fragmentShaderSource = @"
+                #version 330 core
+                in vec3 vNorm;
+                in vec2 vUV;
+
+                out vec4 FragColor;
+
+                uniform sampler2D uDiffuseMap;
+                uniform int uUseTexture;
+
+                void main() {
+                    vec4 baseColor = vec4(0.5, 0.5, 0.5, 1.0);
+                    if (uUseTexture == 1) {
+                        baseColor = texture(uDiffuseMap, vUV);
+                    }
+
+                    vec3 N = normalize(vNorm);
+                    vec3 L = normalize(vec3(1.0, 1.5, 1.0));
+                    float diff = max(dot(N, L), 0.2); 
+                    
+                    FragColor = vec4(baseColor.rgb * diff, baseColor.a);
+                }
+            ";
+
+            int vertexShader = GL.CreateShader(ShaderType.VertexShader);
+            GL.ShaderSource(vertexShader, vertexShaderSource);
+            GL.CompileShader(vertexShader);
+
+            int fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+            GL.ShaderSource(fragmentShader, fragmentShaderSource);
+            GL.CompileShader(fragmentShader);
+
+            _shaderProgram = GL.CreateProgram();
+            GL.AttachShader(_shaderProgram, vertexShader);
+            GL.AttachShader(_shaderProgram, fragmentShader);
+            GL.LinkProgram(_shaderProgram);
+
+            GL.DeleteShader(vertexShader);
+            GL.DeleteShader(fragmentShader);
         }
 
-        // ── Mouse ─────────────────────────────────────────────────────────────
+        private Vector3 GetCameraPos()
+        {
+            return _target + _zoom * new Vector3(
+                (float)(Math.Cos(_pitch) * Math.Sin(_yaw)),
+                (float)Math.Sin(_pitch),
+                (float)(Math.Cos(_pitch) * Math.Cos(_yaw)));
+        }
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            _lastMousePos = e.GetPosition(this);
-            if (e.LeftButton == MouseButtonState.Pressed) _isDraggingCam = true;
-            if (e.MiddleButton == MouseButtonState.Pressed) _isDraggingPan = true;
-            this.CaptureMouse();
+            if (e.LeftButton == MouseButtonState.Pressed || e.MiddleButton == MouseButtonState.Pressed)
+            {
+                _isDragging = true;
+                _lastMousePos = e.GetPosition(this);
+                this.CaptureMouse(); // <- Ahora C# reconocerá esto porque por fin heredará de UserControl limpio
+            }
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            var pos = e.GetPosition(this);
-            float dx = (float)(pos.X - _lastMousePos.X);
-            float dy = (float)(pos.Y - _lastMousePos.Y);
+            if (_isDragging)
+            {
+                Point currentPos = e.GetPosition(this);
+                float dx = (float)(currentPos.X - _lastMousePos.X);
+                float dy = (float)(currentPos.Y - _lastMousePos.Y);
 
-            if (_isDraggingCam)
-            {
-                _yaw -= dx * 0.01f;
-                _pitch += dy * 0.01f;
-                _pitch = Math.Clamp(_pitch, -1.5f, 1.5f);
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    _yaw -= dx * 0.01f;
+                    _pitch += dy * 0.01f;
+                    _pitch = Math.Clamp(_pitch, -1.5f, 1.5f);
+                }
+                else if (e.MiddleButton == MouseButtonState.Pressed)
+                {
+                    Vector3 camPos = GetCameraPos();
+                    Vector3 forward = Vector3.Normalize(_target - camPos);
+                    Vector3 right = Vector3.Normalize(Vector3.Cross(forward, Vector3.UnitY));
+                    Vector3 up = Vector3.Cross(right, forward);
+
+                    float speed = _zoom * 0.002f;
+                    _target -= right * dx * speed;
+                    _target += up * dy * speed;
+                }
+
+                _lastMousePos = currentPos;
             }
-            else if (_isDraggingPan)
-            {
-                var cam = CamPos();
-                var forward = Vector3.Normalize(_target - cam);
-                var right = Vector3.Normalize(Vector3.Cross(forward, Vector3.UnitY));
-                var up = Vector3.Cross(right, forward);
-                float spd = _zoom * 0.002f;
-                _target -= right * dx * spd;
-                _target += up * dy * spd;
-            }
-            _lastMousePos = pos;
         }
 
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Released) _isDraggingCam = false;
-            if (e.MiddleButton == MouseButtonState.Released) _isDraggingPan = false;
-            if (!_isDraggingCam && !_isDraggingPan) this.ReleaseMouseCapture();
+            _isDragging = false;
+            this.ReleaseMouseCapture();
         }
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            float f = e.Delta > 0 ? 0.85f : 1.15f;
-            _zoom = Math.Clamp(_zoom * f, 0.05f, 500f);
-        }
-
-        // ── Controles barra inferior ──────────────────────────────────────────
-
-        private void SetRenderMode(int mode)
-        {
-            _renderMode = mode;
-            var btns = new[] { BtnTexture, BtnSolid, BtnWireframe, BtnNormals };
-            for (int i = 0; i < btns.Length; i++)
-            {
-                bool on = (i == mode);
-                btns[i].Background = new System.Windows.Media.SolidColorBrush(
-                    on ? System.Windows.Media.Color.FromArgb(64, 26, 95, 180)
-                       : System.Windows.Media.Color.FromArgb(40, 40, 40, 60));
-                btns[i].BorderBrush = new System.Windows.Media.SolidColorBrush(
-                    on ? System.Windows.Media.Color.FromRgb(90, 143, 221)
-                       : System.Windows.Media.Color.FromRgb(80, 80, 96));
-                btns[i].Foreground = new System.Windows.Media.SolidColorBrush(
-                    on ? System.Windows.Media.Color.FromRgb(216, 232, 255)
-                       : System.Windows.Media.Color.FromRgb(176, 176, 192));
-            }
-        }
-
-        private void OnRenderTexture(object s, RoutedEventArgs e) => SetRenderMode(0);
-        private void OnRenderSolid(object s, RoutedEventArgs e) => SetRenderMode(1);
-        private void OnRenderWireframe(object s, RoutedEventArgs e) => SetRenderMode(2);
-        private void OnRenderNormals(object s, RoutedEventArgs e) => SetRenderMode(3);
-
-        private void OnGridToggle(object s, RoutedEventArgs e) =>
-            _showGrid = ChkGrid.IsChecked == true;
-
-        private void OnResetCamera(object s, RoutedEventArgs e)
-        {
-            if (_currentModel != null) FitCamera(_currentModel);
-            else { _yaw = 0.5f; _pitch = 0.22f; _zoom = 3.2f; _target = new(0, 1, 0); }
-        }
-
-        private void OnBgChanged(object s, SelectionChangedEventArgs e)
-        {
-            if (ComboBg.SelectedItem is ComboBoxItem ci)
-                _bgColor = (ci.Tag as string) switch
-                {
-                    "dark" => new Color4(0.07f, 0.07f, 0.10f, 1f),
-                    "grey" => new Color4(0.25f, 0.25f, 0.27f, 1f),
-                    "blue" => new Color4(0.05f, 0.08f, 0.18f, 1f),
-                    "black" => new Color4(0.01f, 0.01f, 0.01f, 1f),
-                    _ => new Color4(0.07f, 0.07f, 0.10f, 1f)
-                };
-        }
-
-        // ── Dispose helpers ───────────────────────────────────────────────────
-
-        private static void DisposeGpuMesh(GpuMesh m)
-        {
-            if (m.Vbo != 0) GL.DeleteBuffer(m.Vbo);
-            if (m.Ebo != 0) GL.DeleteBuffer(m.Ebo);
-            if (m.Vao != 0) GL.DeleteVertexArray(m.Vao);
-        }
-
-        private static void DisposeGpuMaterial(GpuMaterial m)
-        {
-            if (m.AlbedoTex > 0) GL.DeleteTexture(m.AlbedoTex);
-            if (m.NormalTex > 0) GL.DeleteTexture(m.NormalTex);
-            if (m.SpecularTex > 0) GL.DeleteTexture(m.SpecularTex);
+            float factor = e.Delta > 0 ? 0.85f : 1.15f;
+            _zoom = Math.Clamp(_zoom * factor, 0.1f, 300f);
         }
     }
 }
