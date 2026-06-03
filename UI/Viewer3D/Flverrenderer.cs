@@ -104,16 +104,16 @@ uniform sampler2D uNormalMap;
 uniform sampler2D uSpecular;
 
 // Flags de textura disponible
-uniform bool uHasAlbedo;
-uniform bool uHasNormal;
-uniform bool uHasSpecular;
+uniform int uHasAlbedo;
+uniform int uHasNormal;
+uniform int uHasSpecular;
 
 // Cámara
 uniform vec3 uCamPos;
 
 // Modo de render
 uniform int  uRenderMode;    // 0=texturado, 1=sólido, 2=wireframe, 3=normales
-uniform bool uWireframe;
+uniform int uWireframe;     // int, no bool
 
 // ── Funciones auxiliares ──────────────────────────────────────────────────────
 
@@ -135,7 +135,7 @@ vec3 perturbNormal(vec3 N, vec3 V, vec2 uv, vec3 mapNorm)
 void main()
 {
     // ── Modo wireframe ────────────────────────────────────────────────────────
-    if(uWireframe)
+    if(uWireframe != 0)
     {
         FragColor = vec4(0.08, 0.65, 1.0, 1.0);
         return;
@@ -146,7 +146,7 @@ void main()
     // ── Normal base ───────────────────────────────────────────────────────────
     vec3 N = normalize(vNorm);
 
-    if(uHasNormal && uRenderMode == 0)
+    if(uHasNormal != 0 && uRenderMode == 0)
     {
         vec3 mapSample = texture(uNormalMap, vUV).rgb * 2.0 - 1.0;
         // Las normal maps de ER están en DX convention (Y invertido)
@@ -165,7 +165,7 @@ void main()
     vec3 albedo;
     float alpha = 1.0;
 
-    if(uHasAlbedo && uRenderMode == 0)
+    if(uHasAlbedo != 0 && uRenderMode == 0)
     {
         vec4 albedoSample = texture(uAlbedo, vUV);
         albedo = albedoSample.rgb;
@@ -189,7 +189,7 @@ void main()
     float roughness = 0.6;
     float ao        = 1.0;
 
-    if(uHasSpecular && uRenderMode == 0)
+    if(uHasSpecular != 0 && uRenderMode == 0)
     {
         vec3 spec = texture(uSpecular, vUV).rgb;
         metallic  = spec.r;
@@ -279,6 +279,9 @@ void main(){ FragColor = uColor; }";
     public int RenderMode = 0;   // 0=tex, 1=solid, 2=wire, 3=normals
     public bool ShowGrid = true;
     public bool Wireframe => RenderMode == 2;
+
+    // Color de fondo: "dark" | "grey" | "blue" | "black"
+    public string BgPreset = "dark";
 
     private int _totalTris;
     private int _totalVerts;
@@ -518,6 +521,15 @@ void main(){ FragColor = uColor; }";
     public void Render(int viewportW, int viewportH)
     {
         GL.Viewport(0, 0, viewportW, viewportH);
+
+        switch (BgPreset)
+        {
+            case "grey": GL.ClearColor(0.22f, 0.22f, 0.25f, 1f); break;
+            case "blue": GL.ClearColor(0.06f, 0.10f, 0.20f, 1f); break;
+            case "black": GL.ClearColor(0.00f, 0.00f, 0.00f, 1f); break;
+            default: GL.ClearColor(0.09f, 0.09f, 0.11f, 1f); break;
+        }
+
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
         var cam = CamPos();

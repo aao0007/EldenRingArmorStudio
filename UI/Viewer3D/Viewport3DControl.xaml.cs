@@ -1,30 +1,28 @@
 ﻿using EldenRingArmorStudio.Core;
-using OpenTK.GLControl;
-using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Wpf;
 using System;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace EldenRingArmorStudio.UI.Viewer3D
 {
     public partial class Viewport3DControl : UserControl
     {
-        private FlverModel _currentModel;
-        private int _shaderProgram;
+        // ── Único renderer — contiene todos los shaders y la GPU ──────────────
+        private FlverRenderer _renderer;
+        private bool _glReady = false;
 
-        // Cámara
-        private float _yaw = 0.5f, _pitch = 0.22f, _zoom = 3.2f;
-        private Vector3 _target = new Vector3(0, 1f, 0);
+        // ── Cámara input ──────────────────────────────────────────────────────
         private Point _lastMousePos;
         private bool _isDragging;
 
         public Viewport3DControl()
         {
             InitializeComponent();
+
             var settings = new GLWpfControlSettings
             {
                 MajorVersion = 3,
@@ -32,225 +30,167 @@ namespace EldenRingArmorStudio.UI.Viewer3D
                 Profile = OpenTK.Windowing.Common.ContextProfile.Core
             };
             GlControl.Start(settings);
-            InitializeShaders();
+            // NO llamamos nada GL aquí — el contexto no existe todavía.
+            // Se inicializa en el primer GlControl_Render.
         }
+
+        // ── Carga de modelo ───────────────────────────────────────────────────
 
         public void LoadModel(FlverModel model)
         {
             if (model == null) return;
-            _currentModel = model;
 
-            foreach (var mat in _currentModel.Materials)
+            // Si el GL todavía no está listo (aún no se disparó Render),
+            // creamos e inicializamos el renderer ahora que el contexto existe
+            // porque LoadModel se llama siempre desde el hilo UI con GL activo.
+            if (!_glReady)
             {
-                if (mat.AlbedoData != null)
-                {
-                    mat.GlAlbedoTextureId = TextureManager.LoadDdsTextureFromBytes(mat.AlbedoData);
-                }
+                _renderer = new FlverRenderer();
+                _renderer.Initialize();
+                _glReady = true;
             }
 
-            foreach (var mesh in _currentModel.Meshes)
-            {
-                mesh.VaoId = GL.GenVertexArray();
-                mesh.VboId = GL.GenBuffer();
-                mesh.EboId = GL.GenBuffer();
-
-                GL.BindVertexArray(mesh.VaoId);
-
-                GL.BindBuffer(BufferTarget.ArrayBuffer, mesh.VboId);
-                int vertexSize = Marshal.SizeOf<FlverVertex>();
-                GL.BufferData(BufferTarget.ArrayBuffer, mesh.Vertices.Length * vertexSize, mesh.Vertices, BufferUsageHint.StaticDraw);
-
-                GL.BindBuffer(BufferTarget.ElementArrayBuffer, mesh.EboId);
-                GL.BufferData(BufferTarget.ElementArrayBuffer, mesh.Indices.Length * sizeof(uint), mesh.Indices, BufferUsageHint.StaticDraw);
-
-                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, vertexSize, 0);
-                GL.EnableVertexAttribArray(0);
-
-                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, vertexSize, 3 * sizeof(float));
-                GL.EnableVertexAttribArray(1);
-
-                GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, vertexSize, 6 * sizeof(float));
-                GL.EnableVertexAttribArray(2);
-
-                GL.BindVertexArray(0);
-            }
-
-            TxtStats.Text = $"Vértices: {_currentModel.TotalVertices:N0} | Triángulos: {_currentModel.TotalTriangles:N0}";
-
-            _zoom = 3.0f;
-            _target = new Vector3(0, 1, 0);
+            _renderer.LoadModel(model);
+            TxtStats.Text = _renderer.StatsText;
         }
+
+        // ── Loop GL ───────────────────────────────────────────────────────────
 
         private void GlControl_Render(TimeSpan delta)
         {
-            GL.ClearColor(0.05f, 0.05f, 0.06f, 1.0f);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-
-            if (_currentModel == null || _currentModel.Meshes.Count == 0) return;
-
-            GL.UseProgram(_shaderProgram);
-
-            Vector3 camPos = GetCameraPos();
-            Matrix4 view = Matrix4.LookAt(camPos, _target, Vector3.UnitY);
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), (float)GlControl.ActualWidth / (float)GlControl.ActualHeight, 0.01f, 500f);
-            Matrix4 modelMatrix = Matrix4.Identity;
-
-            Matrix4 mvp = modelMatrix * view * projection;
-
-            GL.UniformMatrix4(GL.GetUniformLocation(_shaderProgram, "uMVP"), false, ref mvp);
-            GL.UniformMatrix4(GL.GetUniformLocation(_shaderProgram, "uModel"), false, ref modelMatrix);
-
-            foreach (var mesh in _currentModel.Meshes)
+            if (!_glReady)
             {
-                int useTextureLoc = GL.GetUniformLocation(_shaderProgram, "uUseTexture");
-                int texHandle = -1;
-
-                if (mesh.MaterialIndex >= 0 && mesh.MaterialIndex < _currentModel.Materials.Count)
-                {
-                    texHandle = _currentModel.Materials[mesh.MaterialIndex].GlAlbedoTextureId;
-                }
-
-                if (texHandle != -1)
-                {
-                    GL.ActiveTexture(TextureUnit.Texture0);
-                    GL.BindTexture(TextureTarget.Texture2D, texHandle);
-                    GL.Uniform1(GL.GetUniformLocation(_shaderProgram, "uDiffuseMap"), 0);
-                    GL.Uniform1(useTextureLoc, 1);
-                }
-                else
-                {
-                    GL.Uniform1(useTextureLoc, 0);
-                }
-
-                GL.BindVertexArray(mesh.VaoId);
-                GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
+                _renderer = new FlverRenderer();
+                _renderer.Initialize();
+                _glReady = true;
             }
-            GL.BindVertexArray(0);
+
+            int w = Math.Max((int)GlControl.ActualWidth, 1);
+            int h = Math.Max((int)GlControl.ActualHeight, 1);
+            _renderer.Render(w, h);
         }
 
-        private void InitializeShaders()
+        // ── Botones de la barra inferior ──────────────────────────────────────
+
+        private void OnRenderTexture(object sender, RoutedEventArgs e)
         {
-            string vertexShaderSource = @"
-                #version 330 core
-                layout(location = 0) in vec3 aPos;
-                layout(location = 1) in vec3 aNorm;
-                layout(location = 2) in vec2 aUV;
-
-                uniform mat4 uMVP;
-                uniform mat4 uModel;
-
-                out vec3 vNorm;
-                out vec2 vUV;
-
-                void main() {
-                    vNorm = mat3(transpose(inverse(uModel))) * aNorm;
-                    vUV = vec2(aUV.x, 1.0 - aUV.y); 
-                    gl_Position = uMVP * vec4(aPos, 1.0);
-                }
-            ";
-
-            string fragmentShaderSource = @"
-                #version 330 core
-                in vec3 vNorm;
-                in vec2 vUV;
-
-                out vec4 FragColor;
-
-                uniform sampler2D uDiffuseMap;
-                uniform int uUseTexture;
-
-                void main() {
-                    vec4 baseColor = vec4(0.5, 0.5, 0.5, 1.0);
-                    if (uUseTexture == 1) {
-                        baseColor = texture(uDiffuseMap, vUV);
-                    }
-
-                    vec3 N = normalize(vNorm);
-                    vec3 L = normalize(vec3(1.0, 1.5, 1.0));
-                    float diff = max(dot(N, L), 0.2); 
-                    
-                    FragColor = vec4(baseColor.rgb * diff, baseColor.a);
-                }
-            ";
-
-            int vertexShader = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(vertexShader, vertexShaderSource);
-            GL.CompileShader(vertexShader);
-
-            int fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(fragmentShader, fragmentShaderSource);
-            GL.CompileShader(fragmentShader);
-
-            _shaderProgram = GL.CreateProgram();
-            GL.AttachShader(_shaderProgram, vertexShader);
-            GL.AttachShader(_shaderProgram, fragmentShader);
-            GL.LinkProgram(_shaderProgram);
-
-            GL.DeleteShader(vertexShader);
-            GL.DeleteShader(fragmentShader);
+            if (_renderer == null) return;
+            _renderer.RenderMode = 0;
+            SetActiveButton(BtnTexture);
         }
 
-        private Vector3 GetCameraPos()
+        private void OnRenderSolid(object sender, RoutedEventArgs e)
         {
-            return _target + _zoom * new Vector3(
-                (float)(Math.Cos(_pitch) * Math.Sin(_yaw)),
-                (float)Math.Sin(_pitch),
-                (float)(Math.Cos(_pitch) * Math.Cos(_yaw)));
+            if (_renderer == null) return;
+            _renderer.RenderMode = 1;
+            SetActiveButton(BtnSolid);
         }
+
+        private void OnRenderWireframe(object sender, RoutedEventArgs e)
+        {
+            if (_renderer == null) return;
+            _renderer.RenderMode = 2;
+            SetActiveButton(BtnWireframe);
+        }
+
+        private void OnRenderNormals(object sender, RoutedEventArgs e)
+        {
+            if (_renderer == null) return;
+            _renderer.RenderMode = 3;
+            SetActiveButton(BtnNormals);
+        }
+
+        private void OnGridToggle(object sender, RoutedEventArgs e)
+        {
+            if (_renderer == null) return;
+            _renderer.ShowGrid = ChkGrid.IsChecked == true;
+        }
+
+        private void OnResetCamera(object sender, RoutedEventArgs e)
+        {
+            if (_renderer == null) return;
+            _renderer.Yaw = 0.5f;
+            _renderer.Pitch = 0.22f;
+            _renderer.Zoom = 3.2f;
+            _renderer.Target = new Vector3(0, 1, 0);
+        }
+
+        private void OnBgChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_renderer == null) return;
+            if (ComboBg.SelectedItem is ComboBoxItem item)
+                _renderer.BgPreset = item.Tag as string ?? "dark";
+        }
+
+        // ── Visual: resalta botón activo ──────────────────────────────────────
+
+        private void SetActiveButton(Button active)
+        {
+            var all = new[] { BtnTexture, BtnSolid, BtnWireframe, BtnNormals };
+            foreach (var btn in all)
+            {
+                bool on = btn == active;
+                btn.Background = new SolidColorBrush(on
+                    ? Color.FromArgb(0x40, 0x1A, 0x5F, 0xB4)
+                    : Color.FromRgb(0x28, 0x28, 0x2C));
+                btn.BorderBrush = new SolidColorBrush(on
+                    ? Color.FromRgb(0x5A, 0x8F, 0xDD)
+                    : Color.FromRgb(0x50, 0x50, 0x60));
+            }
+        }
+
+        // ── Mouse: orbitar / pan / zoom ───────────────────────────────────────
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed || e.MiddleButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed ||
+                e.MiddleButton == MouseButtonState.Pressed)
             {
                 _isDragging = true;
                 _lastMousePos = e.GetPosition(this);
-                this.CaptureMouse(); // <- Ahora C# reconocerá esto porque por fin heredará de UserControl limpio
+                CaptureMouse();
             }
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            if (_isDragging)
+            if (!_isDragging || _renderer == null) return;
+
+            Point cur = e.GetPosition(this);
+            float dx = (float)(cur.X - _lastMousePos.X);
+            float dy = (float)(cur.Y - _lastMousePos.Y);
+
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                Point currentPos = e.GetPosition(this);
-                float dx = (float)(currentPos.X - _lastMousePos.X);
-                float dy = (float)(currentPos.Y - _lastMousePos.Y);
-
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    _yaw -= dx * 0.01f;
-                    _pitch += dy * 0.01f;
-                    _pitch = Math.Clamp(_pitch, -1.5f, 1.5f);
-                }
-                else if (e.MiddleButton == MouseButtonState.Pressed)
-                {
-                    Vector3 camPos = GetCameraPos();
-                    Vector3 forward = Vector3.Normalize(_target - camPos);
-                    Vector3 right = Vector3.Normalize(Vector3.Cross(forward, Vector3.UnitY));
-                    Vector3 up = Vector3.Cross(right, forward);
-
-                    float speed = _zoom * 0.002f;
-                    _target -= right * dx * speed;
-                    _target += up * dy * speed;
-                }
-
-                _lastMousePos = currentPos;
+                _renderer.Yaw -= dx * 0.01f;
+                _renderer.Pitch += dy * 0.01f;
+                _renderer.Pitch = Math.Clamp(_renderer.Pitch, -1.5f, 1.5f);
             }
+            else if (e.MiddleButton == MouseButtonState.Pressed)
+            {
+                var cam = _renderer.CamPos();
+                var forward = Vector3.Normalize(_renderer.Target - cam);
+                var right = Vector3.Normalize(Vector3.Cross(forward, Vector3.UnitY));
+                var up = Vector3.Cross(right, forward);
+                float speed = _renderer.Zoom * 0.002f;
+                _renderer.Target -= right * (dx * speed);
+                _renderer.Target += up * (dy * speed);
+            }
+
+            _lastMousePos = cur;
         }
 
         private void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             _isDragging = false;
-            this.ReleaseMouseCapture();
+            ReleaseMouseCapture();
         }
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
+            if (_renderer == null) return;
             float factor = e.Delta > 0 ? 0.85f : 1.15f;
-            _zoom = Math.Clamp(_zoom * factor, 0.1f, 300f);
+            _renderer.Zoom = Math.Clamp(_renderer.Zoom * factor, 0.1f, 300f);
         }
     }
 }
